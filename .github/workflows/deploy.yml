@@ -1,4 +1,4 @@
-name: Build and Deploy Pohlman Protean Task Manager
+name: Build and Deploy Pohlman Protean TaskManager
 
 on:
   push:
@@ -25,11 +25,9 @@ jobs:
     with:
       branches: "${{ github.ref_name }}"
       slack_enabled: true
-      npm_publish_enabled: false
     secrets:
       token: ${{ secrets.GH_TOKEN }}
       slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
-      npm_token: ${{ secrets.NPM_TOKEN }}
   deploy:
      needs: execute-release
      runs-on: ubuntu-latest
@@ -51,3 +49,40 @@ jobs:
            echo "LATEST_TAG=${LATEST_TAG}" >> $GITHUB_ENV
            echo "Latest tag is ${{ env.LATEST_TAG }}"
 
+       - name: Set Image Tag
+         id: set_image_tag
+         run: |
+             IMAGE_TAG=$(date +%Y%m%d%H%M%S)
+             echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
+             echo "Image tag is ${{ env.IMAGE_TAG }}"
+
+      #  - name: Authenticate to Azure
+      #    uses: azure/login@v2
+      #    with:
+      #       creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+      #  - name: Login Azure Container Registry
+      #    run: az acr login --name ${{ secrets.ACR_NAME }}
+
+      #  - name: Build Docker Image
+      #    run: |
+      #     docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/automation-portal:${{ env.IMAGE_TAG }} .
+
+      #  - name: Push Docker Image
+      #    run: |
+      #       docker push ${{ secrets.ACR_NAME }}.azurecr.io/automation-portal:${{ env.IMAGE_TAG }}
+         
+      #  - name: Deploy Azure Container Instances
+      #    run: |
+      #         az container create \
+      #           --resource-group pohlmanprotean \
+      #           --name ${{ env.BRANCH_NAME }}-az-automation-portal \
+      #           --image ${{ secrets.ACR_NAME }}.azurecr.io/automation-portal:${{ env.IMAGE_TAG }} \
+      #           --registry-login-server ${{ secrets.ACR_NAME }}.azurecr.io \
+      #           --os-type Linux \
+      #           --cpu 1 \
+      #           --memory 1 \
+      #           --registry-username $(az acr credential show --name ${{ secrets.ACR_NAME }} --query "username" --output tsv) \
+      #           --registry-password $(az acr credential show --name ${{ secrets.ACR_NAME }} --query "passwords[0].value" --output tsv) \
+      #           --dns-name-label ${{ env.BRANCH_NAME }}-az-automation-portal-pohlmanprotean-dns \
+      #           --ports 8080
