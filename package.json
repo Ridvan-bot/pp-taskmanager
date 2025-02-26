@@ -1,0 +1,26 @@
+{
+  "name": "pp-taskmanager",
+  "version": "1.0.0",
+  "description": "A task manager provided by Pohlman Protean",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ridvan-bot/pp-taskmanager.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Ridvan-bot/pp-taskmanager/issues"
+  },
+  "homepage": "https://github.com/Ridvan-bot/pp-taskmanager#readme",
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}
