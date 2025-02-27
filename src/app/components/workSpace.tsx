@@ -1,7 +1,5 @@
 import React from 'react';
-import { Customer, WorkSpaceProps } from '../../types/index'
-
-
+import { WorkSpaceProps } from '../../types/index'
 
 const WorkSpace: React.FC<WorkSpaceProps> = ({selectedCustomer}) => {
   return (

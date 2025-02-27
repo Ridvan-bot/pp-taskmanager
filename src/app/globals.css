@@ -65,7 +65,6 @@ footer {
   color: var(--foreground);
   padding: 1rem;
   text-align: center;
-  border: var(--border-color-blue) 2px solid;
 }
 
 /* Border color classes */
