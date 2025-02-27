@@ -1,7 +1,14 @@
 import React from 'react';
 import Image from 'next/image';
+import { Customer, HeaderProps } from '../../types/index';
 
-const Header = () => {
+
+
+const Header: React.FC<HeaderProps> = ({ setSelectedCustomer }) => {
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCustomer(event.target.value as Customer);
+  };
+  
   return (
     <header className="w-full p-4 text-white flex">
       <div className="flex items-center">
@@ -9,7 +16,7 @@ const Header = () => {
         <h1 className="text-s ml-4">Pohlman Protean Task Manager</h1>
       </div>
       <div className="flex-grow flex justify-center select-customer ">
-        <select className="p-3 px-20">
+        <select className="p-3 px-20" onChange={handleSelectChange} >
         <option value="" disabled selected hidden>Select customer</option>
           <option value="Aspia">Aspia</option>
           <option value="Lantmännen">Lantmännen</option>
