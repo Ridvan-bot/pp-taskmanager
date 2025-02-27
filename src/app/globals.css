@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0e1217;
+  --foreground: #011169;
+  --header-background: #f5f5f5;
+  --border-color-red: #ff4d4d;
+  --border-color-green: #4dff4d;
+  --border-color-blue: #4d4dff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0e1217;
+    --foreground: #ededed;
+    --border-color-red: #ff4d4d;
+    --border-color-green: #4dff4d;
+    --border-color-blue: #030353;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+  color: var(--foreground);
+  text-align: center;
+  background: #0e12170c;
+}
+
+.select-customer select {
+  border-radius: 0.375rem;
+  color: var(--foreground);
+  text-align: center;
+  background: #192029;
+  text-align: left;
+  text-align-last: left;
+}
+
+.select-customer select:focus {
+  outline: none; 
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6); 
+}
+
+.select-customer option {
+  border-radius: 0.375rem;
+  color: var(--foreground);
+  background: #192029;
+}
+
+.pohlman-button {
+  color: var(--foreground);
+  background: rgba(66, 153, 225, 0.6);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, transform 0.3s;
+}
+
+footer {
+  color: var(--foreground);
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Border color classes */
+.border-red {
+  border: 2px solid var(--border-color-red);
+}
+
+.border-green {
+  border: 2px solid var(--border-color-green);
+}
+
+.border-blue {
+  border: 2px solid var(--border-color-blue);
+}
