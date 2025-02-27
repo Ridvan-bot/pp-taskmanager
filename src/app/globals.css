@@ -25,14 +25,40 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
-  border: var(--border-color-green) 2px solid;
 }
 
 header {
   color: var(--foreground);
   text-align: center;
-  background: #0e1217;
-  /* border: var(--border-color-red) 2px solid; */
+  background: #0e12170c;
+}
+
+.select-customer select {
+  border-radius: 0.375rem;
+  color: var(--foreground);
+  text-align: center;
+  background: #192029;
+  text-align: left;
+  text-align-last: left;
+}
+
+.select-customer select:focus {
+  outline: none; 
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6); 
+}
+
+.select-customer option {
+  border-radius: 0.375rem;
+  color: var(--foreground);
+  background: #192029;
+}
+
+.pohlman-button {
+  color: var(--foreground);
+  background: rgba(66, 153, 225, 0.6);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, transform 0.3s;
 }
 
 footer {
