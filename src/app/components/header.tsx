@@ -2,13 +2,11 @@ import React from 'react';
 import Image from 'next/image';
 import { Customer, HeaderProps } from '../../types/index';
 
-
-
 const Header: React.FC<HeaderProps> = ({ setSelectedCustomer }) => {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCustomer(event.target.value as Customer);
   };
-  
+
   return (
     <header className="w-full p-4 text-white flex">
       <div className="flex items-center">
