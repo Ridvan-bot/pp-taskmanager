@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
-import {HeaderProps } from '../../types';
+import { HeaderProps } from '../../types';
 import LoginModal from './loginModal';
 import RegisterModal from './registerModal';
 

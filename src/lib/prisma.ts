@@ -23,3 +23,10 @@ export async function getTasksByCustomerName(customerName: string) {
     },
   });
 }
+
+export async function getAllUsersCustomer(userId: string) {
+  return await prisma.user.findUnique({
+    where: { id: userId },
+    include: { customers: true },
+  });
+}

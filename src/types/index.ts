@@ -1,4 +1,6 @@
 
+import { Session } from 'next-auth';
+
 export type Customer = 'Aspia' | 'Lantmännen' | 'Kvadrat' | '';
 
 export type HeaderProps = {
@@ -28,3 +30,12 @@ export type Task = {
     isOpen: boolean;
     onRequestClose: () => void;
   };
+
+  export interface CustomSession extends Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+  }

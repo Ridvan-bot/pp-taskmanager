@@ -17,7 +17,7 @@
     --foreground: #ededed;
     --border-color-red: #ff4d4d;
     --border-color-green: #4dff4d;
-    --border-color-blue: #030353;
+    --border-color-blue: #077ad8;
   }
 }
 
@@ -107,4 +107,30 @@ footer {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.75);
+}
+
+.workspace-container {
+  display: flex;
+  justify-content: space-between; /* Spread out the divs evenly */
+  width: 100%;
+  height: 100%;
+  padding: 16px; /* Add padding to create space inside the container */
+}
+
+.workspace-div {
+  flex: 1;
+  border: 2px solid;
+  box-sizing: border-box;
+}
+
+.border-red {
+  border: 2px solid var(--border-color-red);
+}
+
+.border-green {
+  border: 2px solid var(--border-color-green);
+}
+
+.border-blue {
+  border: 2px solid var(--border-color-red);
 }
