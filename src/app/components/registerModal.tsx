@@ -54,7 +54,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
       <form className="space-y-4" onSubmit={handleSubmit}>
         {error && <p className="text-red-500">{error}</p>}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name:</label>
+          <label htmlFor="name" className="block text-sm font-medium text-white-700">Name:</label>
           <input
             type="text"
             id="name"
@@ -66,7 +66,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
           />
         </div>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email:</label>
+          <label htmlFor="email" className="block text-sm font-medium text-white-700">Email:</label>
           <input
             type="email"
             id="email"
@@ -78,7 +78,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password:</label>
+          <label htmlFor="password" className="block text-sm font-medium text-white-700">Password:</label>
           <input
             type="password"
             id="password"

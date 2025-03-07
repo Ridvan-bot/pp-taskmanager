@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
+import { signIn } from 'next-auth/react';
 import { LoginModalProps } from '@/types';
 
 Modal.setAppElement('#__next');
@@ -12,28 +13,16 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+    const result = await signIn('credentials', {
+      redirect: false,
+      email,
+      password,
+    });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // Handle successful login
-        console.log('Login successful:', data);
-        onRequestClose();
-      } else {
-        // Handle login error
-        setError(data.error);
-      }
-    } catch (error) {
-      console.error('Failed to login:', error);
-      setError('An unexpected error occurred');
+    if (result && result.error) {
+      setError(result.error);
+    } else {
+      onRequestClose();
     }
   };
 
@@ -45,11 +34,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
       className="modal"
       overlayClassName="modal-overlay"
     >
-      <h2 className="text-2xl font-bold mb-4">Login </h2>
+      <h2 className="text-2xl font-bold mb-4">Login</h2>
       <form className="space-y-4" onSubmit={handleSubmit}>
         {error && <p className="text-red-500">{error}</p>}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email:</label>
+          <label htmlFor="email" className="block text-sm font-medium text-white-700">Email:</label>
           <input
             type="email"
             id="email"
@@ -61,7 +50,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password:</label>
+          <label htmlFor="password" className="block text-sm font-medium text-white-700">Password:</label>
           <input
             type="password"
             id="password"

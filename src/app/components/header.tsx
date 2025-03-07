@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Customer, HeaderProps } from '../../types';
+import { signOut, useSession } from 'next-auth/react';
+import {HeaderProps } from '../../types';
 import LoginModal from './loginModal';
 import RegisterModal from './registerModal';
 
-const Header: React.FC<HeaderProps> = ({ setSelectedCustomer }) => {
+const Header: React.FC<HeaderProps> = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCustomer(event.target.value as Customer);
-  };
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const sessionData = useSession();
+  const session = sessionData?.data;
+  const status = sessionData?.status;
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -18,8 +19,6 @@ const Header: React.FC<HeaderProps> = ({ setSelectedCustomer }) => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
   const openRegister = () => {
     setIsRegisterOpen(true);
@@ -35,21 +34,18 @@ const Header: React.FC<HeaderProps> = ({ setSelectedCustomer }) => {
         <Image src="/pohlmanproteanab.png" alt="Logo" width={40} height={40} />
         <h1 className="text-s ml-4">Pohlman Protean Task Manager</h1>
       </div>
-      <div className="flex-grow flex justify-center select-customer">
-        <select className="p-3 px-20" onChange={handleSelectChange} defaultValue="">
-          <option value="" disabled hidden>Select customer</option>
-          <option value="Aspia">Aspia</option>
-          <option value="Lantmännen">Lantmännen</option>
-          <option value="Kvadrat">Kvadrat</option>
-        </select>
-      </div>
-      <div className="flex items-center">
-        <button className="p-3 px-6 rounded-lg pohlman-button" onClick={openModal}>Login</button>
-      </div>
+      {status === 'authenticated' ? (
+        <div className="flex items-center ml-auto">
+          <span className="mr-4">Welcome, {session?.user?.name}</span>
+          <button className="p-3 px-6 rounded-lg pohlman-button" onClick={() => signOut()}>Logout</button>
+        </div>
+      ) : (
+        <div className="flex items-center ml-auto">
+          <button className="p-3 px-6 rounded-lg pohlman-button" onClick={openModal}>Login</button>
+          <button className="ml-2 p-3 px-6 rounded-lg pohlman-button" onClick={openRegister}>Register</button>
+        </div>
+      )}
       <LoginModal isOpen={isModalOpen} onRequestClose={closeModal} />
-      <div className="flex items-center">
-        <button className="ml-2 p-3 px-6 rounded-lg pohlman-button" onClick={openRegister}>Register</button>
-      </div>
       <RegisterModal isOpen={isRegisterOpen} onRequestClose={closeRegisterModal} />
     </header>
   );

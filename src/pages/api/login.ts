@@ -25,11 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
-
-    // Authentication successful
-    res.status(200).json({ message: 'Login successful' });
-    console.log('Login successful');
-    return true;
+    res.status(200).json({ message: 'Login successful', success: true });
   } catch (error) {
     console.error('Failed to login:', error);
     res.status(500).json({ error: 'Internal server error' });

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { WorkSpaceProps, Task } from '../../types';
 
 const WorkSpace: React.FC<WorkSpaceProps> = ({ selectedCustomer }) => {
+  const {status } = useSession();
   const [tasks, setTasks] = useState<Task[]>([]);
 
   const fetchTasks = async () => {
@@ -17,7 +19,7 @@ const WorkSpace: React.FC<WorkSpaceProps> = ({ selectedCustomer }) => {
   const fetchCustomerTasks = async () => {
     try {
       console.log(selectedCustomer);
-      const response = await fetch(`/api/tasks/`);	
+      const response = await fetch(`/api/tasks/${selectedCustomer}`);
       const data = await response.json();
       setTasks(data);
       console.log(data);
@@ -25,6 +27,10 @@ const WorkSpace: React.FC<WorkSpaceProps> = ({ selectedCustomer }) => {
       console.error('Failed to fetch tasks:', error);
     }
   };
+
+  if (status !== 'authenticated') {
+    return <p>Please log in to view tasks.</p>;
+  }
 
   return (
     <div>

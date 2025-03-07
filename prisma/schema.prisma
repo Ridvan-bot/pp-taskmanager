@@ -15,6 +15,7 @@ model Customer {
   updatedAt DateTime  @updatedAt
   projects  Project[]
   tasks     Task[]
+  users     User[]    @relation("UserCustomers")
 }
 
 model Task {
@@ -32,12 +33,13 @@ model Task {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
   password  String   @map("_password")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  customers Customer[] @relation("UserCustomers")
 }
 
 model Project {
