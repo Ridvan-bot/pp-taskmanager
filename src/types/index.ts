@@ -1,15 +1,14 @@
 
 import { Session } from 'next-auth';
 
-export type Customer = 'Aspia' | 'Lantmännen' | 'Kvadrat' | '';
 
-export type HeaderProps = {
-  setSelectedCustomer: (customer: Customer) => void;
-};
-
-export type WorkSpaceProps = {
-  selectedCustomer: Customer;
-};
+export type Customer = {
+    id: number;
+    name: string;
+    email: string;
+    image: string;
+    tasks: Task[];
+  };
 
 export type Task = {
     id: number;

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { WorkSpaceProps } from '../../types';
+;
 import styles from './workSpace.module.css';
 import { CustomSession } from '../../types';
 import { Customer } from '@prisma/client';
 
-const WorkSpace: React.FC<WorkSpaceProps> = () => {
+const WorkSpace: React.FC = () => {
   const { data: session, status } = useSession() as { data: CustomSession | null; status: string };
   const [customers, setCustomers] = useState<string[]>([]);
 

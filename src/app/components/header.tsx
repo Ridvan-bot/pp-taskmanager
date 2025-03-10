@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
-import { HeaderProps } from '../../types';
 import LoginModal from './loginModal';
 import RegisterModal from './registerModal';
 
-const Header: React.FC<HeaderProps> = () => {
+const Header: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const sessionData = useSession();
