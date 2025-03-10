@@ -7,23 +7,11 @@ import { Customer } from '@prisma/client';
 
 const WorkSpace: React.FC<WorkSpaceProps> = () => {
   const { data: session, status } = useSession() as { data: CustomSession | null; status: string };
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  // const [tasks, setTasks] = useState<Task[]>([]);
-
-  // const fetchTasks = async () => {
-  //   try {
-  //     const response = await fetch('/api/tasks');
-  //     const data = await response.json();
-  //     setTasks(data);
-  //   } catch (error) {
-  //     console.error('Failed to fetch tasks:', error);
-  //   }
-  // };
+  const [customers, setCustomers] = useState<string[]>([]);
 
   useEffect(() => {
     console.log('Customers updated:', customers);
   }, [customers]);
-
 
   const fetchUserCustomers = async () => {
     if (!session || !session.user) {
@@ -35,24 +23,13 @@ const WorkSpace: React.FC<WorkSpaceProps> = () => {
     try {
       const response = await fetch(`/api/customer?userId=${session.user.id}`);
       const data = await response.json();
-      console.log('data:' ,data);
-      setCustomers(data);
+      const customerArray = data.customers.map((customer: Customer) => customer.name);
+      setCustomers(customerArray);
+
     } catch (error) {
       console.error('Failed to fetch customers:', error);
     }
   };
-
-  // const fetchCustomerTasks = async () => {
-  //   try {
-  //     console.log(selectedCustomer);
-  //     const response = await fetch(`/api/tasks/${selectedCustomer}`);
-  //     const data = await response.json();
-  //     setTasks(data);
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error('Failed to fetch tasks:', error);
-  //   }
-  // };
 
   if (status !== 'authenticated') {
     return <p>Please log in to view tasks.</p>;
@@ -66,7 +43,6 @@ const WorkSpace: React.FC<WorkSpaceProps> = () => {
       </div>
       <div className={`${styles.workspaceDiv} ${styles.borderGreen}`}>Div 2</div>
       <div className={`${styles.workspaceDiv} ${styles.borderBlue}`}>Div 3</div>
-
     </div>
   );
 };
