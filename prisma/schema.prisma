@@ -7,6 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Priority {
+  HIGH
+  MEDIUM
+  LOW
+  BC
+}
+
+enum Status {
+  NOT_STARTED
+  WIP
+  WAITING
+  CLOSED
+}
+
 model Customer {
   id        Int       @id @default(autoincrement())
   name      String
@@ -22,8 +36,8 @@ model Task {
   id          Int       @id @default(autoincrement())
   title       String
   content     String
-  status      String
-  priority    Int
+  status      Status
+  priority    Priority  // Ändra från Int till Priority
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   customerId  Int
@@ -46,8 +60,8 @@ model Project {
   id          Int       @id @default(autoincrement())
   title       String
   content     String
-  status      String
-  priority    Int
+  status      Status
+  priority    Priority  // Ändra från Int till Priority
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   customerId  Int

@@ -7,18 +7,6 @@
   
   .workspaceDiv {
     flex: 1;
-    border: 2px solid;
     box-sizing: border-box;
   }
   
-  .borderRed {
-    border-color: var(--border-color-red);
-  }
-  
-  .borderGreen {
-    border-color: var(--border-color-green);
-  }
-  
-  .borderBlue {
-    border-color: var(--border-color-blue);
-  }

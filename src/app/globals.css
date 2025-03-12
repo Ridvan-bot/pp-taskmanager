@@ -67,19 +67,6 @@ footer {
   text-align: center;
 }
 
-/* Border color classes */
-.border-red {
-  border: 2px solid var(--border-color-red);
-}
-
-.border-green {
-  border: 2px solid var(--border-color-green);
-}
-
-.border-blue {
-  border: 2px solid var(--border-color-blue);
-}
-
 .modal {
   color: var(--foreground);
   background: var(--background);
@@ -139,13 +126,4 @@ footer {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.taskCard {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 8px 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

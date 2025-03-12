@@ -1,8 +1,23 @@
 .taskCard {
-    background-color: #413f3f6c;
-    border: 1px solid #cccccc9f;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 8px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+  background-color: #2c2c2c; 
+  border: 1px solid #444; 
+  border-radius: 8px;
+  padding: 16px;
+  margin: 8px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); 
+  color: #f0f0f0; 
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.taskCard:hover {
+  transform: translateY(-4px); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7); 
+}
+
+.taskCard strong {
+  color: #ffcc00; 
+}
+
+.taskCard p {
+  margin: 8px 0;
+}
