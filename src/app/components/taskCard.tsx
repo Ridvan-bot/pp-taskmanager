@@ -1,28 +1,21 @@
 import React from 'react';
-import { Task } from '../../types';
+import { Task } from '@prisma/client';
+import styles from './taskCard.module.css';
 
 interface TaskCardProps {
   task: Task;
-  onUpdateStatus: (taskId: number, newStatus: string) => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateStatus }) => {
-  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onUpdateStatus(task.id, event.target.value);
-  };
-
+export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
   return (
-    <div className="task-card">
-      <h3>{task.title}</h3>
-      <p>{task.content}</p>
-      <div>
-        <label>Status: </label>
-        <select value={task.status} onChange={handleStatusChange}>
-          <option value="todo">To Do</option>
-          <option value="in-progress">In Progress</option>
-          <option value="done">Done</option>
-        </select>
-      </div>
+    <div className={styles.taskCard}>
+      <strong>Title:</strong> {task.title}
+      <br />
+      <strong>Beskrivning:</strong> {task.content}
+      <br />
+      <strong>Prio:</strong> {task.priority}
+      <br />
+      <strong>Status:</strong> {task.status}
     </div>
   );
 };
