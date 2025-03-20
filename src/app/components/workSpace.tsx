@@ -11,6 +11,13 @@ const WorkSpace: React.FC = () => {
   const [customers, setCustomers] = useState<string[]>([]);
   const [tasks, setTasks] = useState<{ [key: string]: Task[] }>({});
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+  const [sortOrders, setSortOrders] = useState<{ [key: string]: 'asc' | 'desc' }>({
+    NOT_STARTED: 'asc',
+    WIP: 'asc',
+    WAITING: 'asc',
+    CLOSED: 'asc',
+    OTHER: 'asc',
+  });
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -107,6 +114,23 @@ const WorkSpace: React.FC = () => {
     return categories;
   };
 
+  const sortTasksByPriority = (tasks: Task[], sortOrder: 'asc' | 'desc') => {
+    return tasks.sort((a, b) => {
+      if (sortOrder === 'asc') {
+        return a.priority.localeCompare(b.priority);
+      } else {
+        return b.priority.localeCompare(a.priority);
+      }
+    });
+  };
+
+  const handleSortClick = (category: string) => {
+    setSortOrders(prevSortOrders => ({
+      ...prevSortOrders,
+      [category]: prevSortOrders[category] === 'asc' ? 'desc' : 'asc',
+    }));
+  };
+
   const allTasks = Object.values(tasks).flat();
   const categorizedTasks = categorizeTasks(allTasks);
 
@@ -127,33 +151,48 @@ const WorkSpace: React.FC = () => {
       <div className={`${styles.workspaceDiv} ${styles.borderBlue}`}>
         {/* Display all tasks in a table */}
         <div className={styles.taskTable}>
-          <div className={styles.taskTableHeader}>Not Started</div>
-          <div className={styles.taskTableHeader}>WIP</div>
-          <div className={styles.taskTableHeader}>Waiting</div>
-          <div className={styles.taskTableHeader}>Closed</div>
-          <div className={styles.taskTableHeader}>Other</div>
+          <div className={styles.taskTableHeader}>
+            Not Started
+            <button className={styles.sortButton} onClick={() => handleSortClick('NOT_STARTED')}>▼</button>
+          </div>
+          <div className={styles.taskTableHeader}>
+            WIP
+            <button className={styles.sortButton} onClick={() => handleSortClick('WIP')}>▼</button>
+          </div>
+          <div className={styles.taskTableHeader}>
+            Waiting
+            <button className={styles.sortButton} onClick={() => handleSortClick('WAITING')}>▼</button>
+          </div>
+          <div className={styles.taskTableHeader}>
+            Closed
+            <button className={styles.sortButton} onClick={() => handleSortClick('CLOSED')}>▼</button>
+          </div>
+          <div className={styles.taskTableHeader}>
+            Other
+            <button className={styles.sortButton} onClick={() => handleSortClick('OTHER')}>▼</button>
+          </div>
           <div className={styles.taskList}>
-            {categorizedTasks.NOT_STARTED.map((task, index) => (
+            {sortTasksByPriority(categorizedTasks.NOT_STARTED, sortOrders.NOT_STARTED).map((task, index) => (
               <TaskCard key={index} task={task} />
             ))}
           </div>
           <div className={styles.taskList}>
-            {categorizedTasks.WIP.map((task, index) => (
+            {sortTasksByPriority(categorizedTasks.WIP, sortOrders.WIP).map((task, index) => (
               <TaskCard key={index} task={task} />
             ))}
           </div>
           <div className={styles.taskList}>
-            {categorizedTasks.WAITING.map((task, index) => (
+            {sortTasksByPriority(categorizedTasks.WAITING, sortOrders.WAITING).map((task, index) => (
               <TaskCard key={index} task={task} />
             ))}
           </div>
           <div className={styles.taskList}>
-            {categorizedTasks.CLOSED.map((task, index) => (
+            {sortTasksByPriority(categorizedTasks.CLOSED, sortOrders.CLOSED).map((task, index) => (
               <TaskCard key={index} task={task} />
             ))}
           </div>
           <div className={styles.taskList}>
-            {categorizedTasks.OTHER.map((task, index) => (
+            {sortTasksByPriority(categorizedTasks.OTHER, sortOrders.OTHER).map((task, index) => (
               <TaskCard key={index} task={task} />
             ))}
           </div>
