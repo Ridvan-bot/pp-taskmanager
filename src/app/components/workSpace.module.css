@@ -61,3 +61,31 @@
   flex-direction: column;
   gap: 16px;
 }
+
+.customSelect {
+  appearance: none;
+  background-color: #2c2c2c;
+  border: 2px solid #444;
+  border-radius: 8px;
+  color: #f0f0f0;
+  padding: 8px 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.customSelect:hover {
+  box-shadow: 0 4px 8px rgba(2, 58, 241, 0.7), 0 0 15px rgba(2, 58, 241, 0.9); 
+}
+
+.customSelect:focus {
+  outline: none;
+  border-color: rgba(2, 58, 241, 0.7);
+  box-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+}
+
+.customSelect option {
+  background-color: #192029;
+  color: #f0f0f0;
+  border-radius: 8px;
+}

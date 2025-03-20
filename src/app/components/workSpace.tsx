@@ -138,11 +138,12 @@ const WorkSpace: React.FC = () => {
     <div className={styles.workspaceContainer}>
       <div className={`${styles.workspaceDiv} ${styles.borderRed}`}>
         {/* Display customer information */}
-        <ul>
+        <p>Filtrerar på kund</p>
+        <select className={styles.customSelect}>
           {customers.map((customer, index) => (
-            <li key={index}>{customer}</li>
+            <option key={index} value={customer}>{customer}</option>
           ))}
-        </ul>
+        </select>
       </div>
       <div className={`${styles.workspaceDiv} ${styles.borderGreen}`}>
         {/* Display the title of the first task */}
