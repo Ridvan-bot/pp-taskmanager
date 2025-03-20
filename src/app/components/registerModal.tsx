@@ -45,7 +45,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
 
   const handleLoginClick = () => {
     onRequestClose();
-    window.location.reload(); // Uppdatera sidan
+    window.location.reload();
   };
 
   return (
