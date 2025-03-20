@@ -75,6 +75,41 @@ const WorkSpace: React.FC = () => {
     );
   }
 
+  const categorizeTasks = (tasks: Task[]) => {
+    const categories = {
+      NOT_STARTED: [] as Task[],
+      WIP: [] as Task[],
+      WAITING: [] as Task[],
+      CLOSED: [] as Task[],
+      OTHER: [] as Task[],
+    };
+
+    tasks.forEach(task => {
+      switch (task.status) {
+        case 'NOT_STARTED':
+          categories.NOT_STARTED.push(task);
+          break;
+        case 'WIP':
+          categories.WIP.push(task);
+          break;
+        case 'WAITING':
+          categories.WAITING.push(task);
+          break;
+        case 'CLOSED':
+          categories.CLOSED.push(task);
+          break;
+        default:
+          categories.OTHER.push(task);
+          break;
+      }
+    });
+
+    return categories;
+  };
+
+  const allTasks = Object.values(tasks).flat();
+  const categorizedTasks = categorizeTasks(allTasks);
+
   return (
     <div className={styles.workspaceContainer}>
       <div className={`${styles.workspaceDiv} ${styles.borderRed}`}>
@@ -90,16 +125,39 @@ const WorkSpace: React.FC = () => {
         {Object.keys(tasks).length > 0 ? tasks[customers[0]]?.[0]?.title : 'No tasks available'}
       </div>
       <div className={`${styles.workspaceDiv} ${styles.borderBlue}`}>
-        {/* Display all tasks */}
-        {Object.keys(tasks).length > 0 ? (
+        {/* Display all tasks in a table */}
+        <div className={styles.taskTable}>
+          <div className={styles.taskTableHeader}>Not Started</div>
+          <div className={styles.taskTableHeader}>WIP</div>
+          <div className={styles.taskTableHeader}>Waiting</div>
+          <div className={styles.taskTableHeader}>Closed</div>
+          <div className={styles.taskTableHeader}>Other</div>
           <div className={styles.taskList}>
-            {Object.values(tasks).flat().map((task, index) => (
+            {categorizedTasks.NOT_STARTED.map((task, index) => (
               <TaskCard key={index} task={task} />
             ))}
           </div>
-        ) : (
-          'No tasks available'
-        )}
+          <div className={styles.taskList}>
+            {categorizedTasks.WIP.map((task, index) => (
+              <TaskCard key={index} task={task} />
+            ))}
+          </div>
+          <div className={styles.taskList}>
+            {categorizedTasks.WAITING.map((task, index) => (
+              <TaskCard key={index} task={task} />
+            ))}
+          </div>
+          <div className={styles.taskList}>
+            {categorizedTasks.CLOSED.map((task, index) => (
+              <TaskCard key={index} task={task} />
+            ))}
+          </div>
+          <div className={styles.taskList}>
+            {categorizedTasks.OTHER.map((task, index) => (
+              <TaskCard key={index} task={task} />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
