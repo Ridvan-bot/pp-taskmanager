@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';;
+import { useSession } from 'next-auth/react';
 import styles from './workSpace.module.css';
 import { CustomSession } from '../../types';
 import { Customer, Task } from '@prisma/client';
-import { TaskCard } from './taskCard';
+import TaskCard from './taskCard';
+import LoginModal from './loginModal';
 
 const WorkSpace: React.FC = () => {
   const { data: session, status } = useSession() as { data: CustomSession | null; status: string };
   const [customers, setCustomers] = useState<string[]>([]);
   const [tasks, setTasks] = useState<{ [key: string]: Task[] }>({});
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      setIsLoginModalOpen(true);
+    } else {
+      setIsLoginModalOpen(false);
+    }
+  }, [status]);
 
   useEffect(() => {
     console.log('Customers updated:', customers);
@@ -16,7 +26,6 @@ const WorkSpace: React.FC = () => {
       fetchTasksForCustomers(customers);
     }
   }, [customers]);
-  
 
   useEffect(() => {
     if (Object.keys(tasks).length > 0) {
@@ -61,9 +70,10 @@ const WorkSpace: React.FC = () => {
   };
 
   if (status !== 'authenticated') {
-    return <p>Please log in to view tasks.</p>;
+    return (
+      <LoginModal isOpen={isLoginModalOpen} onRequestClose={() => setIsLoginModalOpen(false)} />
+    );
   }
-
 
   return (
     <div className={styles.workspaceContainer}>

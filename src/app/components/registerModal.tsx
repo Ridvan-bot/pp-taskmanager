@@ -27,6 +27,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
         // Handle successful registration
         console.log('Account created successfully:', data);
         onRequestClose();
+        window.location.reload(); 
       } else {
         // Handle registration error
         setError(data.error);
@@ -42,6 +43,11 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
     handleCreateAccount(event);
   };
 
+  const handleLoginClick = () => {
+    onRequestClose();
+    window.location.reload(); // Uppdatera sidan
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -49,6 +55,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
       contentLabel="Register Modal"
       className="modal"
       overlayClassName="modal-overlay"
+      shouldCloseOnOverlayClick={false}
     >
       <h2 className="text-2xl font-bold mb-4">Register User</h2>
       <form className="space-y-4" onSubmit={handleSubmit}>
@@ -100,10 +107,10 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
       </form>
       <div className="flex justify-center mt-4">
         <button
-          onClick={onRequestClose}
-          className="max-w-xs flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          onClick={handleLoginClick}
+          className="max-w-xs flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
-          Close
+          Login
         </button>
       </div>
     </Modal>

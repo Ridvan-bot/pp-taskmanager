@@ -11,16 +11,8 @@ const Header: React.FC = () => {
   const session = sessionData?.data;
   const status = sessionData?.status;
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
   const closeModal = () => {
     setIsModalOpen(false);
-  };
-
-  const openRegister = () => {
-    setIsRegisterOpen(true);
   };
 
   const closeRegisterModal = () => {
@@ -39,9 +31,7 @@ const Header: React.FC = () => {
           <button className="p-3 px-6 rounded-lg pohlman-button" onClick={() => signOut()}>Logout</button>
         </div>
       ) : (
-        <div className="flex items-center ml-auto">
-          <button className="p-3 px-6 rounded-lg pohlman-button" onClick={openModal}>Login</button>
-          <button className="ml-2 p-3 px-6 rounded-lg pohlman-button" onClick={openRegister}>Register</button>
+        <div className="flex items-center ml-auto space-x-4">
         </div>
       )}
       <LoginModal isOpen={isModalOpen} onRequestClose={closeModal} />
