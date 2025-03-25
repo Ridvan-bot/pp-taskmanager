@@ -54,6 +54,7 @@ export type Task = {
     isOpen: boolean;
     onRequestClose: () => void;
     onUpdateTask: (updatedTask: Task) => void;
+    customersName?: string[];
   }
 
   export type TaskCardProps = {

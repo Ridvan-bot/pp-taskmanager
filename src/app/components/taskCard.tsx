@@ -3,6 +3,7 @@ import { Task } from '@prisma/client';
 import styles from './taskCard.module.css';
 import TaskModal from './modals/taskModal';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface TaskCardProps {
   task: Task;
   onClick?: () => void;
@@ -37,7 +38,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
         <br />
         <strong>Status:</strong> {task.status}
       </div>
-      <TaskModal task={task} isOpen={isModalOpen} onRequestClose={handleCloseModal} onUpdateTask={(updatedTask) => { /* handle task update */ }} />
+      <TaskModal 
+      task={task} 
+      isOpen={isModalOpen} 
+      onRequestClose={handleCloseModal}
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars 
+      onUpdateTask={(updatedTask) => { /* handle task update */ }} /> 
     </>
   );
 };

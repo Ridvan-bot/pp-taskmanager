@@ -4,7 +4,7 @@
   border-radius: 8px;
   padding: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 10px rgba(68, 68, 68, 0.8); 
-  color: #f0f0f0; 
+  color: #d6d5d5; 
   transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s, border-color 0.2s;
   min-height: 100px; 
   max-height: 150px; 
@@ -19,7 +19,7 @@
 }
 
 .taskCard strong {
-  color: #ffcc00; 
+  color: #f0f0f0; ; 
 }
 
 .taskCard p {

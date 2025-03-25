@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import styles from './workSpace.module.css';
 import { CustomSession, Customer } from '../../types';
@@ -6,7 +6,7 @@ import { Task } from '@prisma/client';
 import TaskCard from './taskCard';
 import LoginModal from './modals/loginModal';
 import NewTaskModal from './modals/newTaskModal';
-import TaskModal from './modals/taskModal';
+import { fetchTasksForCustomers } from '@/lib/getRequest';
 
 const WorkSpace: React.FC = () => {
   const { data: session, status } = useSession() as { data: CustomSession | null; status: string };
@@ -16,7 +16,8 @@ const WorkSpace: React.FC = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState<boolean>(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null); 
   const [sortOrders, setSortOrders] = useState<{ [key: string]: 'asc' | 'desc' }>({
     NOT_STARTED: 'asc',
     WIP: 'asc',
@@ -24,6 +25,8 @@ const WorkSpace: React.FC = () => {
     CLOSED: 'asc',
     OTHER: 'asc',
   });
+
+  const prevIsTaskModalOpen = useRef(isTaskModalOpen);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -35,7 +38,11 @@ const WorkSpace: React.FC = () => {
 
   useEffect(() => {
     if (customersName.length > 0) {
-      fetchTasksForCustomers(customersName);
+      const fetchData = async () => {
+        const data = await fetchTasksForCustomers(customersName);
+        setTasks(data);
+      };
+      fetchData();
     }
   }, [customersName]);
 
@@ -54,6 +61,13 @@ const WorkSpace: React.FC = () => {
       fetchUserCustomers();
     }
   }, [session]);
+
+  useEffect(() => {
+    if (prevIsTaskModalOpen.current && !isTaskModalOpen) {
+      console.log('från öppen till stängd');
+    }
+    prevIsTaskModalOpen.current = isTaskModalOpen;
+  }, [isTaskModalOpen]);
 
   const fetchUserCustomers = async () => {
     if (!session || !session.user) {
@@ -74,17 +88,6 @@ const WorkSpace: React.FC = () => {
     }
   };
 
-  const fetchTasksForCustomers = async (customers: string[]) => {
-    for (const customer of customers) {
-      try {
-        const response = await fetch(`/api/task?customerName=${customer}`);
-        const data = await response.json();
-        setTasks(data);
-      } catch (error) {
-        console.error(`Failed to fetch tasks for customer ${customer}:`, error);
-      }
-    }
-  };
 
   if (status !== 'authenticated') {
     return (
@@ -174,34 +177,6 @@ const WorkSpace: React.FC = () => {
     setIsTaskModalOpen(true);
   };
 
-  const handleUpdateTask = async (updatedTask: Task) => {
-    try {
-      console.log('kommer vi ens hit?')
-      const response = await fetch(`/api/task/${updatedTask.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedTask),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update task');
-      }
-
-      const updatedTasks = tasks[updatedTask.status].map(task =>
-        task.id === updatedTask.id ? updatedTask : task
-      );
-
-      setTasks(prevTasks => ({
-        ...prevTasks,
-        [updatedTask.status]: updatedTasks,
-      }));
-    } catch (error) {
-      console.error('Failed to update task:', error);
-    }
-  };
-
   const allTasks = Object.values(tasks).flat();
   const categorizedTasks = categorizeTasks(allTasks);
 
@@ -286,14 +261,6 @@ const WorkSpace: React.FC = () => {
         onCreateTask={handleCreateTask}
         customers={customerData}
       />
-      {selectedTask && (
-        <TaskModal
-          task={selectedTask}
-          isOpen={isTaskModalOpen}
-          onRequestClose={() => setIsTaskModalOpen(false)}
-          onUpdateTask={handleUpdateTask}
-        />
-      )}
     </div>
   );
 };

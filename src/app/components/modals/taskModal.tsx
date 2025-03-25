@@ -7,9 +7,10 @@ interface TaskModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   onUpdateTask: (updatedTask: Task) => void;
+
 }
 
-const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onUpdateTask }) => {
+const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onUpdateTask}) => {
   const [title, setTitle] = useState(task.title);
   const [content, setContent] = useState(task.content);
   const [priority, setPriority] = useState(task.priority);
@@ -17,18 +18,6 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
 
   useEffect(() => {
     if (!isOpen) {
-      console.log('Title changed:', title);
-      console.log('Content changed:', content);
-      console.log('Priority changed:', priority);
-      console.log('Status changed:', status);
-
-      onUpdateTask({
-        ...task,
-        title,
-        content,
-        priority,
-        status,
-      });
     }
   }, [isOpen]);
 
@@ -87,6 +76,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
       console.error('Failed to update task:', error);
     }
   };
+
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
