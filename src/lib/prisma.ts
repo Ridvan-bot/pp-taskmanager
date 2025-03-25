@@ -24,7 +24,7 @@ export async function getTasksByCustomerName(customerName: string) {
   });
 }
 
-export async function getAllUsersCustomer(userId: string) {
+export async function getAllUsersTasks(userId: string) {
   return await prisma.user.findUnique({
     where: { id: userId },
     include: { 
@@ -68,4 +68,19 @@ export async function createTask(data: { title: string; content: string; priorit
       project: { connect: { id: data.projectId } },
     },
   });
+}
+
+export async function getAllUsersCustomers(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: {
+      customers: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  return user.customers;
 }

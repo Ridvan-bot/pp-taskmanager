@@ -22,10 +22,10 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
     // Fetch projects and customers from your API or Prisma client
     const fetchProjectsAndCustomers = async () => {
       // Replace with your actual API calls or Prisma client calls
-      const fetchedProjects = await fetch('/api/projects').then(res => res.json());
-      const fetchedCustomers = await fetch('/api/customers').then(res => res.json());
-      setProjects(fetchedProjects);
-      setCustomers(fetchedCustomers);
+    //   const fetchedProjects = await fetch('/api/projects').then(res => res.json());
+    //   const fetchedCustomers = await fetch('/api/customers').then(res => res.json());
+    //   setProjects(fetchedProjects);
+    //   setCustomers(fetchedCustomers);
     };
 
     fetchProjectsAndCustomers();

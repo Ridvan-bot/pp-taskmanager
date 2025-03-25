@@ -53,11 +53,12 @@ const WorkSpace: React.FC = () => {
       console.error('User ID is not available');
       return;
     }
-    console.log(session.user);
+    console.log('user Session: ', session.user);
 
     try {
       const response = await fetch(`/api/customer?userId=${session.user.id}`);
       const data = await response.json();
+      console.log('Customers:', data[1]);
       const customerArray = data.customers.map((customer: Customer) => customer.name);
       setCustomers(customerArray);
 
