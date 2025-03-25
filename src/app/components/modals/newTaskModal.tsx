@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './newTaskModal.module.css';
-import { Priority, Status, Customer } from '@prisma/client';
+import { Priority, Status } from '@prisma/client';
 import { NewTaskModalProps } from '@/types';
 
 const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, customers}) => {

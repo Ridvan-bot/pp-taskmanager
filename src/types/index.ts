@@ -47,3 +47,16 @@ export type Task = {
     projects: Project[];
     tasks: Task[];
   };
+
+
+  export type TaskModalProps = {
+    task: Task;
+    isOpen: boolean;
+    onRequestClose: () => void;
+    onUpdateTask: (updatedTask: Task) => void;
+  }
+
+  export type TaskCardProps = {
+    task: Task;
+    onClick?: () => void;
+  }

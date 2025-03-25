@@ -14,9 +14,9 @@
   background-color: #2c2c2c;
   border: 2px solid #444;
   border-radius: 8px;
-  padding: 16px;
+  padding: 32px;
   color: #f0f0f0;
-  max-width: 500px;
+  max-width: 800px;
   width: 100%;
   position: relative;
 }
@@ -36,7 +36,7 @@
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 16px;
-  color: #f0f0f0;;
+  color: #f0f0f0;
 }
 
 .modalBody {
@@ -45,4 +45,57 @@
 
 .modalBody p {
   margin: 8px 0;
+}
+
+.modalTextarea,
+.modalTitleTextarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #3c3c3c;
+  color: #f0f0f0;
+  font-size: 16px;
+}
+
+.modalTitleTextarea {
+  min-height: 20px;
+}
+
+.modalTextarea {
+  min-height: 300px;
+}
+
+.modalSelect {
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #3c3c3c;
+  color: #f0f0f0;
+  font-size: 16px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.updateButton {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.updateButton:hover {
+  background-color: #45a049;
 }

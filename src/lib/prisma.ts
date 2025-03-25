@@ -89,3 +89,18 @@ export async function getAllUsersCustomers(userId: string) {
 
   return user.customers;
 }
+
+export async function updateTask(taskId: number, data: { title?: string; content?: string; priority?: Priority; status?: Status; customerId?: number; projectId?: number }) {
+  return await prisma.task.update({
+    where: { id: taskId },
+    data: {
+      title: data.title,
+      content: data.content,
+      priority: data.priority,
+      status: data.status,
+      customer: data.customerId ? { connect: { id: data.customerId } } : undefined,
+      project: data.projectId ? { connect: { id: data.projectId } } : undefined,
+    },
+  });
+}
+

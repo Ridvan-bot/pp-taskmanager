@@ -5,6 +5,7 @@ import TaskModal from './modals/taskModal';
 
 interface TaskCardProps {
   task: Task;
+  onClick?: () => void;
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
@@ -36,7 +37,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
         <br />
         <strong>Status:</strong> {task.status}
       </div>
-      <TaskModal task={task} isOpen={isModalOpen} onRequestClose={handleCloseModal} />
+      <TaskModal task={task} isOpen={isModalOpen} onRequestClose={handleCloseModal} onUpdateTask={(updatedTask) => { /* handle task update */ }} />
     </>
   );
 };
