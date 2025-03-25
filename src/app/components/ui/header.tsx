@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { signOut, useSession } from 'next-auth/react';
-import LoginModal from './loginModal';
-import RegisterModal from './registerModal';
+import LoginModal from '../modals/loginModal';
+import RegisterModal from '../modals/registerModal';
 
 const Header: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

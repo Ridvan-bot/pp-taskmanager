@@ -4,13 +4,15 @@ import styles from './workSpace.module.css';
 import { CustomSession } from '../../types';
 import { Customer, Task } from '@prisma/client';
 import TaskCard from './taskCard';
-import LoginModal from './loginModal';
+import LoginModal from './modals/loginModal';
+import NewTaskModal from './modals/newTaskModal';
 
 const WorkSpace: React.FC = () => {
   const { data: session, status } = useSession() as { data: CustomSession | null; status: string };
   const [customers, setCustomers] = useState<string[]>([]);
   const [tasks, setTasks] = useState<{ [key: string]: Task[] }>({});
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+  const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState<boolean>(false);
   const [sortOrders, setSortOrders] = useState<{ [key: string]: 'asc' | 'desc' }>({
     NOT_STARTED: 'asc',
     WIP: 'asc',
@@ -131,6 +133,38 @@ const WorkSpace: React.FC = () => {
     }));
   };
 
+  const handleNewTaskClick = () => {
+    setIsNewTaskModalOpen(true);
+  };
+  const handleCreateTask = async (title: string, content: string, priority: string, status: string) => {
+    try {
+      const response = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, content, priority, status, customerId: 1, projectId: 2 }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to create task');
+      }
+  
+      const newTask = await response.json();
+      setTasks(prevTasks => ({
+        ...prevTasks,
+        [status]: [...(prevTasks[status] || []), newTask],
+      }));
+    } catch (error) {
+      console.error('Failed to create task:', error);
+    }
+  };
+
+  const handleNewProjectClick = () => {
+    // Implement the logic to add a new task
+    console.log('New Task button clicked');
+  };
+
   const allTasks = Object.values(tasks).flat();
   const categorizedTasks = categorizeTasks(allTasks);
 
@@ -147,6 +181,8 @@ const WorkSpace: React.FC = () => {
       </div>
       <div className={`${styles.workspaceDiv} ${styles.borderGreen}`}>
         {/* Display the title of the first task */}
+        <button className={styles.newTaskButton} onClick={handleNewTaskClick}>New Task</button>
+        <button className={styles.newProjectButton} onClick={handleNewProjectClick}>New Project</button>
         {Object.keys(tasks).length > 0 ? tasks[customers[0]]?.[0]?.title : 'No tasks available'}
       </div>
       <div className={`${styles.workspaceDiv} ${styles.borderBlue}`}>
@@ -199,6 +235,11 @@ const WorkSpace: React.FC = () => {
           </div>
         </div>
       </div>
+      <NewTaskModal
+        isOpen={isNewTaskModalOpen}
+        onRequestClose={() => setIsNewTaskModalOpen(false)}
+        onCreateTask={handleCreateTask}
+      />
     </div>
   );
 };

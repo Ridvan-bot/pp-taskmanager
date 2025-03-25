@@ -1,7 +1,7 @@
 'use client';
 import { SessionProvider } from 'next-auth/react';
-import Header from "./components/header";
-import Footer from "./components/footer";
+import Header from "./components/ui/header";
+import Footer from "./components/ui/footer";
 import WorkSpace from "./components/workSpace";
 
 export default function Home() {
