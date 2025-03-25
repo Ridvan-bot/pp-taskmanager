@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import styles from './workSpace.module.css';
-import { CustomSession } from '../../types';
-import { Customer, Task } from '@prisma/client';
+import { CustomSession, Customer } from '../../types';
+import { Task } from '@prisma/client';
 import TaskCard from './taskCard';
 import LoginModal from './modals/loginModal';
 import NewTaskModal from './modals/newTaskModal';
@@ -31,14 +31,12 @@ const WorkSpace: React.FC = () => {
   }, [status]);
 
   useEffect(() => {
-    console.log('Customers updated:', customersName);
     if (customersName.length > 0) {
       fetchTasksForCustomers(customersName);
     }
   }, [customersName]);
 
   useEffect(() => {
-    console.log('CustomersData updated:', customerData);
     if (customerData.length > 0) {
     }
   }, [customerData]);
@@ -143,14 +141,21 @@ const WorkSpace: React.FC = () => {
   const handleNewTaskClick = () => {
     setIsNewTaskModalOpen(true);
   };
-  const handleCreateTask = async (title: string, content: string, priority: string, status: string) => {
+  const handleCreateTask = async (
+    title: string, 
+    content: string, 
+    priority: string, 
+    status: string, 
+    customerId: number, 
+    projectId: number 
+  ) => {
     try {
       const response = await fetch('/api/task', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, content, priority, status, customerId: 1, projectId: 2 }),
+        body: JSON.stringify({ title, content, priority, status, customerId: customerId, projectId  }),
       });
   
       if (!response.ok) {

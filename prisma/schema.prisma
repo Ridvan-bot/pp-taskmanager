@@ -37,7 +37,7 @@ model Task {
   title       String
   content     String
   status      Status
-  priority    Priority  // Ändra från Int till Priority
+  priority    Priority  
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   customerId  Int
@@ -61,7 +61,7 @@ model Project {
   title       String
   content     String
   status      Status
-  priority    Priority  // Ändra från Int till Priority
+  priority    Priority  
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   customerId  Int

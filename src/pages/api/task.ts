@@ -25,7 +25,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       case 'POST':
         try {
           const { title, content, priority, status, customerId, projectId } = req.body;
-          console.log('Incoming data:', { title, content, priority, status, customerId, projectId });
           if (!title || !content || !priority || !status || !customerId || !projectId) {
             throw new Error('Missing required fields');
           }

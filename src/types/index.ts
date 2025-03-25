@@ -1,12 +1,7 @@
 
 import { Session } from 'next-auth';
+import { Project } from '@prisma/client';
 
-
-export type Customer = {
-    id: number;
-    name: string;
-    email: string;
-  };
 
 export type Task = {
     id: number;
@@ -37,10 +32,18 @@ export type Task = {
     };
   }
 
-
   export type NewTaskModalProps = {
     isOpen: boolean;
     onRequestClose: () => void;
-    onCreateTask: (title: string, content: string, priority: string, status: string) => void;
+    onCreateTask: (title: string, content: string, priority: string, status: string, customerId: number, projectId: number) => void;
     customers: Customer[];
   }
+
+  export type Customer = {
+    id: number;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    projects: Project[];
+    tasks: Task[];
+  };

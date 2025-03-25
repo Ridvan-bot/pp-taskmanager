@@ -1,30 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from './newTaskModal.module.css';
-import { Priority, Status, Project, Customer } from '@prisma/client';
+import { Priority, Status, Customer } from '@prisma/client';
 import { NewTaskModalProps } from '@/types';
-
-
 
 const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, customers}) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [priority, setPriority] = useState<Priority | ''>('');
   const [status, setStatus] = useState('');
-  const [projectId, setProjectId] = useState<number | ''>('');
-  const [customerId, setCustomerId] = useState<number | ''>('');
-  const [projects, setProjects] = useState<Project[]>([]);
-
-  useEffect(() => {
-    // Fetch projects and customers from your API or Prisma client
-    const fetchProjectsAndCustomers = async () => {
-      // Replace with your actual API calls or Prisma client calls
-    //   const fetchedProjects = await fetch('/api/projects').then(res => res.json());
-    //   setProjects(fetchedProjects);
-    //   setCustomers(fetchedCustomers);
-    };
-
-    fetchProjectsAndCustomers();
-  }, []);
+  const [projectId, setProjectId] = useState<number | ''>(''); 
+  const [customerId, setCustomerId] = useState<number | ''>(''); 
 
   const resetForm = () => {
     setTitle('');
@@ -43,19 +28,19 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onCreateTask(title, content, priority, status);
+    onCreateTask(title, content, priority, status, customerId as number, projectId as number);
+    resetForm();
     onRequestClose();
   };
 
   if (!isOpen) {
     return null;
   }
-
+  
   return (
     <div className={styles.modalOverlay} onClick={handleClose}>
-    <div className={styles.modalOverlay} onClick={onRequestClose}>
       <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-        <button className={styles.closeButton} onClick={onRequestClose}>X</button>
+        <button className={styles.closeButton} onClick={handleClose}>X</button>
         <h2>New Task</h2>
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
@@ -113,8 +98,8 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
               onChange={e => setProjectId(Number(e.target.value))}
               required
             >
-              <option value="" disabled>Select project</option>
-              {projects.map((project) => (
+              <option value="" disabled>Select Project</option>
+              {customers.flatMap(customer => customer.projects).map((project) => (
                 <option key={project.id} value={project.id}>{project.title}</option>
               ))}
             </select>
@@ -136,7 +121,6 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
           <button type="submit" className={styles.submitButton}>Create Task</button>
         </form>
       </div>
-    </div>
     </div>
   );
 };
