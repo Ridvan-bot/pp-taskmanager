@@ -6,8 +6,6 @@ export type Customer = {
     id: number;
     name: string;
     email: string;
-    image: string;
-    tasks: Task[];
   };
 
 export type Task = {
@@ -37,4 +35,12 @@ export type Task = {
       email?: string | null;
       image?: string | null;
     };
+  }
+
+
+  export type NewTaskModalProps = {
+    isOpen: boolean;
+    onRequestClose: () => void;
+    onCreateTask: (title: string, content: string, priority: string, status: string) => void;
+    customers: Customer[];
   }

@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styles from './newTaskModal.module.css';
 import { Priority, Status, Project, Customer } from '@prisma/client';
+import { NewTaskModalProps } from '@/types';
 
-interface NewTaskModalProps {
-  isOpen: boolean;
-  onRequestClose: () => void;
-  onCreateTask: (title: string, content: string, priority: string, status: string) => void;
-}
 
-const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask }) => {
+
+const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, customers}) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [priority, setPriority] = useState<Priority | ''>('');
@@ -16,14 +13,12 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
   const [projectId, setProjectId] = useState<number | ''>('');
   const [customerId, setCustomerId] = useState<number | ''>('');
   const [projects, setProjects] = useState<Project[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
 
   useEffect(() => {
     // Fetch projects and customers from your API or Prisma client
     const fetchProjectsAndCustomers = async () => {
       // Replace with your actual API calls or Prisma client calls
     //   const fetchedProjects = await fetch('/api/projects').then(res => res.json());
-    //   const fetchedCustomers = await fetch('/api/customers').then(res => res.json());
     //   setProjects(fetchedProjects);
     //   setCustomers(fetchedCustomers);
     };

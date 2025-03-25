@@ -9,7 +9,8 @@ import NewTaskModal from './modals/newTaskModal';
 
 const WorkSpace: React.FC = () => {
   const { data: session, status } = useSession() as { data: CustomSession | null; status: string };
-  const [customers, setCustomers] = useState<string[]>([]);
+  const [customersName, setCustomersName] = useState<string[]>([]);
+  const [customerData, setCustomerData] = useState<Customer[]>([]);
   const [tasks, setTasks] = useState<{ [key: string]: Task[] }>({});
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState<boolean>(false);
@@ -30,15 +31,20 @@ const WorkSpace: React.FC = () => {
   }, [status]);
 
   useEffect(() => {
-    console.log('Customers updated:', customers);
-    if (customers.length > 0) {
-      fetchTasksForCustomers(customers);
+    console.log('Customers updated:', customersName);
+    if (customersName.length > 0) {
+      fetchTasksForCustomers(customersName);
     }
-  }, [customers]);
+  }, [customersName]);
+
+  useEffect(() => {
+    console.log('CustomersData updated:', customerData);
+    if (customerData.length > 0) {
+    }
+  }, [customerData]);
 
   useEffect(() => {
     if (Object.keys(tasks).length > 0) {
-      console.log('Tasks:', tasks);
     }
   }, [tasks]);
 
@@ -57,10 +63,10 @@ const WorkSpace: React.FC = () => {
 
     try {
       const response = await fetch(`/api/customer?userId=${session.user.id}`);
-      const data = await response.json();
-      console.log('Customers:', data[1]);
-      const customerArray = data.customers.map((customer: Customer) => customer.name);
-      setCustomers(customerArray);
+      const customerData = await response.json();
+      const customerArray = customerData.customers.map((customer: Customer) => customer.name);
+      setCustomersName(customerArray);
+      setCustomerData(customerData.customers);
 
     } catch (error) {
       console.error('Failed to fetch customers:', error);
@@ -70,7 +76,7 @@ const WorkSpace: React.FC = () => {
   const fetchTasksForCustomers = async (customers: string[]) => {
     for (const customer of customers) {
       try {
-        const response = await fetch(`/api/tasks?customerName=${customer}`);
+        const response = await fetch(`/api/task?customerName=${customer}`);
         const data = await response.json();
         setTasks(data);
       } catch (error) {
@@ -139,7 +145,7 @@ const WorkSpace: React.FC = () => {
   };
   const handleCreateTask = async (title: string, content: string, priority: string, status: string) => {
     try {
-      const response = await fetch('/api/tasks', {
+      const response = await fetch('/api/task', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -175,7 +181,7 @@ const WorkSpace: React.FC = () => {
         {/* Display customer information */}
         <p>Filtrerar på kund</p>
         <select className={styles.customSelect}>
-          {customers.map((customer, index) => (
+          {customersName.map((customer, index) => (
             <option key={index} value={customer}>{customer}</option>
           ))}
         </select>
@@ -184,7 +190,7 @@ const WorkSpace: React.FC = () => {
         {/* Display the title of the first task */}
         <button className={styles.newTaskButton} onClick={handleNewTaskClick}>New Task</button>
         <button className={styles.newProjectButton} onClick={handleNewProjectClick}>New Project</button>
-        {Object.keys(tasks).length > 0 ? tasks[customers[0]]?.[0]?.title : 'No tasks available'}
+        {Object.keys(tasks).length > 0 ? tasks[customersName[0]]?.[0]?.title : 'No tasks available'}
       </div>
       <div className={`${styles.workspaceDiv} ${styles.borderBlue}`}>
         {/* Display all tasks in a table */}
@@ -240,6 +246,7 @@ const WorkSpace: React.FC = () => {
         isOpen={isNewTaskModalOpen}
         onRequestClose={() => setIsNewTaskModalOpen(false)}
         onCreateTask={handleCreateTask}
+        customers={customerData}
       />
     </div>
   );
