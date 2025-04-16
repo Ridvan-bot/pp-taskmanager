@@ -3,13 +3,13 @@ import { Task } from '@prisma/client';
 import styles from './taskCard.module.css';
 import TaskModal from './modals/taskModal';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface TaskCardProps {
   task: Task;
   onClick?: () => void;
+  onUpdateTask: (updatedTask: Task) => void; // Ny prop
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const truncateContent = (content: string, length: number) => {
@@ -36,14 +36,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
         <br />
         <strong>Prio:</strong> {task.priority}
         <br />
-        <strong>Status:</strong> {task.status}
       </div>
       <TaskModal 
-      task={task} 
-      isOpen={isModalOpen} 
-      onRequestClose={handleCloseModal}
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars 
-      onUpdateTask={(updatedTask) => { /* handle task update */ }} /> 
+        task={task} 
+        isOpen={isModalOpen} 
+        onRequestClose={handleCloseModal}
+        onUpdateTask={onUpdateTask}  // Skicka vidare funktionen
+      /> 
     </>
   );
 };

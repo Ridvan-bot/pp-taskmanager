@@ -11,10 +11,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(400).json({ error: 'Invalid userId' });
           }
           const tasks = await getAllUsersTasks(userId);
-          console.log('tasks:', tasks);
           res.status(200).json(tasks);
         } else {
           const tasks = await getAllTasks();
+
           res.status(200).json(tasks);
         }
       } catch (error) {

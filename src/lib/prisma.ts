@@ -27,10 +27,15 @@ export async function getTasksByCustomerName(customerName: string) {
 export async function getAllUsersTasks(userId: string) {
   return await prisma.user.findUnique({
     where: { id: userId },
-    include: { 
+    include: {
       customers: {
         include: {
-          tasks: true,
+          tasks: {
+            include: {
+              customer: { select: { name: true } }, 
+              project: { select: { title: true } } 
+            }
+          },
         },
       },
     },
@@ -43,7 +48,12 @@ export async function getTasksByUserId(userId: string) {
     include: {
       customers: {
         include: {
-          tasks: true,
+          tasks: {
+            include: {
+              customer: { select: { name: true } }, 
+              project: { select: { title: true } } 
+            }
+          },
         },
       },
     },
@@ -53,6 +63,7 @@ export async function getTasksByUserId(userId: string) {
     throw new Error('User not found');
   }
 
+  // Plattar ut tasks, där varje task innehåller exempelvis task.customer.name och task.project.name
   return user.customers.flatMap(customer => customer.tasks);
 }
 

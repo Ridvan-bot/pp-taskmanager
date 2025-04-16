@@ -12,11 +12,11 @@ const WorkSpace: React.FC = () => {
   const { data: session, status } = useSession() as { data: CustomSession | null; status: string };
   const [customersName, setCustomersName] = useState<string[]>([]);
   const [customerData, setCustomerData] = useState<Customer[]>([]);
-  const [tasks, setTasks] = useState<{ [key: string]: Task[] }>({});
+  // Ändra state: lagra tasks som en array istället för ett objekt
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState<boolean>(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedTask, setSelectedTask] = useState<Task | null>(null); 
   const [sortOrders, setSortOrders] = useState<{ [key: string]: 'asc' | 'desc' }>({
     NOT_STARTED: 'asc',
@@ -39,22 +39,13 @@ const WorkSpace: React.FC = () => {
   useEffect(() => {
     if (customersName.length > 0) {
       const fetchData = async () => {
+        // Förväntar oss nu en array med tasks
         const data = await fetchTasksForCustomers(customersName);
         setTasks(data);
       };
       fetchData();
     }
   }, [customersName]);
-
-  useEffect(() => {
-    if (customerData.length > 0) {
-    }
-  }, [customerData]);
-
-  useEffect(() => {
-    if (Object.keys(tasks).length > 0) {
-    }
-  }, [tasks]);
 
   useEffect(() => {
     if (session && session.user) {
@@ -64,7 +55,7 @@ const WorkSpace: React.FC = () => {
 
   useEffect(() => {
     if (prevIsTaskModalOpen.current && !isTaskModalOpen) {
-      console.log('från öppen till stängd');
+      // Om du behöver någon logik när modal stängs
     }
     prevIsTaskModalOpen.current = isTaskModalOpen;
   }, [isTaskModalOpen]);
@@ -74,20 +65,16 @@ const WorkSpace: React.FC = () => {
       console.error('User ID is not available');
       return;
     }
-    console.log('user Session: ', session.user);
-
     try {
       const response = await fetch(`/api/customer?userId=${session.user.id}`);
       const customerData = await response.json();
       const customerArray = customerData.customers.map((customer: Customer) => customer.name);
       setCustomersName(customerArray);
       setCustomerData(customerData.customers);
-
     } catch (error) {
       console.error('Failed to fetch customers:', error);
     }
   };
-
 
   if (status !== 'authenticated') {
     return (
@@ -95,6 +82,7 @@ const WorkSpace: React.FC = () => {
     );
   }
 
+  // Nu grupperar vi tasks baserat på status direkt från arrayen
   const categorizeTasks = (tasks: Task[]) => {
     const categories = {
       NOT_STARTED: [] as Task[],
@@ -129,18 +117,16 @@ const WorkSpace: React.FC = () => {
 
   const sortTasksByPriority = (tasks: Task[], sortOrder: 'asc' | 'desc') => {
     return tasks.sort((a, b) => {
-      if (sortOrder === 'asc') {
-        return a.priority.localeCompare(b.priority);
-      } else {
-        return b.priority.localeCompare(a.priority);
-      }
+      return sortOrder === 'asc'
+        ? a.priority.localeCompare(b.priority)
+        : b.priority.localeCompare(a.priority);
     });
   };
 
   const handleSortClick = (category: string) => {
-    setSortOrders(prevSortOrders => ({
-      ...prevSortOrders,
-      [category]: prevSortOrders[category] === 'asc' ? 'desc' : 'asc',
+    setSortOrders(prev => ({
+      ...prev,
+      [category]: prev[category] === 'asc' ? 'desc' : 'asc',
     }));
   };
 
@@ -152,9 +138,7 @@ const WorkSpace: React.FC = () => {
     try {
       const response = await fetch('/api/task', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, content, priority, status, customerId, projectId }),
       });
 
@@ -163,10 +147,7 @@ const WorkSpace: React.FC = () => {
       }
 
       const newTask = await response.json();
-      setTasks(prevTasks => ({
-        ...prevTasks,
-        [status]: [...(prevTasks[status] || []), newTask],
-      }));
+      setTasks(prev => [...prev, newTask]);
     } catch (error) {
       console.error('Failed to create task:', error);
     }
@@ -177,21 +158,22 @@ const WorkSpace: React.FC = () => {
     setIsTaskModalOpen(true);
   };
 
-  const allTasks = Object.values(tasks).flat();
-  const categorizedTasks = categorizeTasks(allTasks);
+  const categorizedTasks = categorizeTasks(tasks);
 
   const handleNewProjectClick = () => {
-    // Logic to handle new project creation
     console.log('New project button clicked');
-    // You can open a modal or navigate to a new page for project creation
-    // For example, you can set a state to open a new project modal
-    // setIsNewProjectModalOpen(true);
+  };
+
+  // Uppdatera en task genom att bara "map:a" över arrayen
+  const handleUpdateTask = (updatedTask: Task) => {
+    setTasks(prev =>
+      prev.map(task => task.id === updatedTask.id ? updatedTask : task)
+    );
   };
 
   return (
     <div className={styles.workspaceContainer}>
       <div className={`${styles.workspaceDiv} ${styles.borderRed}`}>
-        {/* Display customer information */}
         <p>Filtrerar på kund</p>
         <select className={styles.customSelect}>
           {customersName.map((customer, index) => (
@@ -200,59 +182,32 @@ const WorkSpace: React.FC = () => {
         </select>
       </div>
       <div className={`${styles.workspaceDiv} ${styles.borderGreen}`}>
-        {/* Display the title of the first task */}
         <button className={styles.newTaskButton} onClick={handleNewTaskClick}>New Task</button>
         <button className={styles.newProjectButton} onClick={handleNewProjectClick}>New Project</button>
-        {Object.keys(tasks).length > 0 ? tasks[customersName[0]]?.[0]?.title : 'No tasks available'}
+        {tasks.length > 0 ? tasks[0].title : 'No tasks available'}
       </div>
       <div className={`${styles.workspaceDiv} ${styles.borderBlue}`}>
-        {/* Display all tasks in a table */}
         <div className={styles.taskTable}>
-          <div className={styles.taskTableHeader}>
-            Not Started
-            <button className={styles.sortButton} onClick={() => handleSortClick('NOT_STARTED')}>▼</button>
-          </div>
-          <div className={styles.taskTableHeader}>
-            WIP
-            <button className={styles.sortButton} onClick={() => handleSortClick('WIP')}>▼</button>
-          </div>
-          <div className={styles.taskTableHeader}>
-            Waiting
-            <button className={styles.sortButton} onClick={() => handleSortClick('WAITING')}>▼</button>
-          </div>
-          <div className={styles.taskTableHeader}>
-            Closed
-            <button className={styles.sortButton} onClick={() => handleSortClick('CLOSED')}>▼</button>
-          </div>
-          <div className={styles.taskTableHeader}>
-            Other
-            <button className={styles.sortButton} onClick={() => handleSortClick('OTHER')}>▼</button>
-          </div>
-          <div className={styles.taskList}>
-            {sortTasksByPriority(categorizedTasks.NOT_STARTED, sortOrders.NOT_STARTED).map((task, index) => (
-              <TaskCard key={index} task={task} onClick={() => handleTaskClick(task)} />
-            ))}
-          </div>
-          <div className={styles.taskList}>
-            {sortTasksByPriority(categorizedTasks.WIP, sortOrders.WIP).map((task, index) => (
-              <TaskCard key={index} task={task} onClick={() => handleTaskClick(task)} />
-            ))}
-          </div>
-          <div className={styles.taskList}>
-            {sortTasksByPriority(categorizedTasks.WAITING, sortOrders.WAITING).map((task, index) => (
-              <TaskCard key={index} task={task} onClick={() => handleTaskClick(task)} />
-            ))}
-          </div>
-          <div className={styles.taskList}>
-            {sortTasksByPriority(categorizedTasks.CLOSED, sortOrders.CLOSED).map((task, index) => (
-              <TaskCard key={index} task={task} onClick={() => handleTaskClick(task)} />
-            ))}
-          </div>
-          <div className={styles.taskList}>
-            {sortTasksByPriority(categorizedTasks.OTHER, sortOrders.OTHER).map((task, index) => (
-              <TaskCard key={index} task={task} onClick={() => handleTaskClick(task)} />
-            ))}
-          </div>
+          {/* Rubriker med sorterings-knappar */}
+          {['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'].map(category => (
+            <div key={category} className={styles.taskTableHeader}>
+              {category}
+              <button className={styles.sortButton} onClick={() => handleSortClick(category)}>▼</button>
+            </div>
+          ))}
+          {/* Rendera varje kategori */}
+          {(['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'] as const).map(category => (
+            <div key={category} className={styles.taskList}>
+              {sortTasksByPriority(categorizedTasks[category], sortOrders[category]).map((task, index) => (
+                <TaskCard
+                  key={index}
+                  task={task}
+                  onClick={() => handleTaskClick(task)}
+                  onUpdateTask={handleUpdateTask}
+                />
+              ))}
+            </div>
+          ))}
         </div>
       </div>
       <NewTaskModal

@@ -7,7 +7,6 @@ interface TaskModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   onUpdateTask: (updatedTask: Task) => void;
-
 }
 
 const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onUpdateTask}) => {
@@ -15,6 +14,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
   const [content, setContent] = useState(task.content);
   const [priority, setPriority] = useState(task.priority);
   const [status, setStatus] = useState(task.status);
+
 
   useEffect(() => {
     if (!isOpen) {
@@ -54,6 +54,8 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
       content,
       priority,
       status,
+      customerId: task.customerId,
+      projectId: task.projectId,
     };
 
     try {
@@ -76,6 +78,8 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
       console.error('Failed to update task:', error);
     }
   };
+
+  console.log('TaskModal task:', task);
 
 
   return (
@@ -120,6 +124,26 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
               <option key={value} value={value}>{value}</option>
             ))}
           </select>
+           
+          {/* Customer ID */}
+          <label htmlFor="customerId"><strong>Kund ID:</strong></label>
+          <input
+            type="text"
+            id="customerId"
+            value={task.customerId}
+            readOnly
+            className={styles.modalInput}
+          />
+
+          {/* Project ID */}
+          <label htmlFor="projectId"><strong>Projekt ID:</strong></label>
+          <input
+            type="text"
+            id="projectId"
+            value={task.projectId}
+            readOnly
+            className={styles.modalInput}
+          />
         </div>
         <div className={styles.buttonContainer}>
           <button className={styles.updateButton} onClick={handleUpdateClick}>Update</button>
