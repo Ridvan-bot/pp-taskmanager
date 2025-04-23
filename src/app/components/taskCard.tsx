@@ -3,10 +3,11 @@ import { Task } from '@prisma/client';
 import styles from './taskCard.module.css';
 import TaskModal from './modals/taskModal';
 
+
 interface TaskCardProps {
   task: Task;
   onClick?: () => void;
-  onUpdateTask: (updatedTask: Task) => void; // Ny prop
+  onUpdateTask: (updatedTask: Task) => void;
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask }) => {
@@ -41,7 +42,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask }) => {
         task={task} 
         isOpen={isModalOpen} 
         onRequestClose={handleCloseModal}
-        onUpdateTask={onUpdateTask}  // Skicka vidare funktionen
+        onUpdateTask={onUpdateTask}
       /> 
     </>
   );

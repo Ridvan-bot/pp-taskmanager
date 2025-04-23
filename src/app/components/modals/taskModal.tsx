@@ -79,9 +79,6 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
     }
   };
 
-  console.log('TaskModal task:', task);
-
-
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
       <div className={styles.modalContent}>

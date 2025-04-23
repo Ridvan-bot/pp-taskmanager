@@ -43,7 +43,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
         overlayClassName="modal-overlay"
         shouldCloseOnOverlayClick={false}
       >
-        <h2 className="text-2xl font-bold mb-4">Login</h2>
+          <style jsx>{`
+    .modal {
+      border: 2px solid #000;
+      border-radius: 8px;
+      padding: 1rem;
+      /* andra stilar */
+    }
+  `}</style>
+        <h2 className="text-3xl font-bold mb-4 text-center">Login</h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           {error && <p className="text-red-500">{error}</p>}
           <div>
@@ -55,7 +63,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-black"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-black bg-gray-700"
             />
           </div>
           <div>
@@ -67,13 +75,13 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-black"
+              className="mt-3 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-black bg-gray-700"
             />
           </div>
           <div className="flex justify-center">
             <button
               type="submit"
-              className="max-w-xs flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+              className="mt-10 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:border-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
             >
               Login
             </button>
@@ -82,7 +90,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
         <div className="flex justify-center mt-4 space-x-4">
           <button
             onClick={handleRegisterClick}
-            className="max-w-xs flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="mt-2 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:border-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Register
           </button>

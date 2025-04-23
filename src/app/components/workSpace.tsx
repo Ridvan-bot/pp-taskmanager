@@ -12,11 +12,11 @@ const WorkSpace: React.FC = () => {
   const { data: session, status } = useSession() as { data: CustomSession | null; status: string };
   const [customersName, setCustomersName] = useState<string[]>([]);
   const [customerData, setCustomerData] = useState<Customer[]>([]);
-  // Ändra state: lagra tasks som en array istället för ett objekt
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState<boolean>(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedTask, setSelectedTask] = useState<Task | null>(null); 
   const [sortOrders, setSortOrders] = useState<{ [key: string]: 'asc' | 'desc' }>({
     NOT_STARTED: 'asc',
@@ -39,7 +39,6 @@ const WorkSpace: React.FC = () => {
   useEffect(() => {
     if (customersName.length > 0) {
       const fetchData = async () => {
-        // Förväntar oss nu en array med tasks
         const data = await fetchTasksForCustomers(customersName);
         setTasks(data);
       };
@@ -55,7 +54,6 @@ const WorkSpace: React.FC = () => {
 
   useEffect(() => {
     if (prevIsTaskModalOpen.current && !isTaskModalOpen) {
-      // Om du behöver någon logik när modal stängs
     }
     prevIsTaskModalOpen.current = isTaskModalOpen;
   }, [isTaskModalOpen]);
@@ -82,7 +80,6 @@ const WorkSpace: React.FC = () => {
     );
   }
 
-  // Nu grupperar vi tasks baserat på status direkt från arrayen
   const categorizeTasks = (tasks: Task[]) => {
     const categories = {
       NOT_STARTED: [] as Task[],
@@ -164,7 +161,6 @@ const WorkSpace: React.FC = () => {
     console.log('New project button clicked');
   };
 
-  // Uppdatera en task genom att bara "map:a" över arrayen
   const handleUpdateTask = (updatedTask: Task) => {
     setTasks(prev =>
       prev.map(task => task.id === updatedTask.id ? updatedTask : task)
