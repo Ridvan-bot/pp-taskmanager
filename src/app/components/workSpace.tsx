@@ -168,21 +168,18 @@ const WorkSpace: React.FC = () => {
   };
 
   return (
-    <div className={styles.workspaceContainer}>
-      <div className={`${styles.workspaceDiv} ${styles.borderRed}`}>
-        <p>Filtrerar på kund</p>
-        <select className={styles.customSelect}>
-          {customersName.map((customer, index) => (
-            <option key={index} value={customer}>{customer}</option>
-          ))}
-        </select>
-      </div>
-      <div className={`${styles.workspaceDiv} ${styles.borderGreen}`}>
-        <button className={styles.newTaskButton} onClick={handleNewTaskClick}>New Task</button>
-        <button className={styles.newProjectButton} onClick={handleNewProjectClick}>New Project</button>
-        {tasks.length > 0 ? tasks[0].title : 'No tasks available'}
-      </div>
-      <div className={`${styles.workspaceDiv} ${styles.borderBlue}`}>
+    <div className={styles.gradientWrapper}>
+    <div className={styles.gradientBorder}>
+      <div className={styles.workspaceContainer}>
+        <div className={styles.workspaceDiv}>
+          <select className={styles.customSelect}>
+            {customersName.map((customer, index) => (
+              <option key={index} value={customer}>{customer}</option>
+            ))}
+          </select>
+          <button className={styles.newTaskButton} onClick={handleNewTaskClick}>New Task</button>
+          <button className={styles.newProjectButton} onClick={handleNewProjectClick}>New Project</button>
+        </div>
         <div className={styles.taskTable}>
           {/* Rubriker med sorterings-knappar */}
           {['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'].map(category => (
@@ -205,13 +202,14 @@ const WorkSpace: React.FC = () => {
             </div>
           ))}
         </div>
+        <NewTaskModal
+          isOpen={isNewTaskModalOpen}
+          onRequestClose={() => setIsNewTaskModalOpen(false)}
+          onCreateTask={handleCreateTask}
+          customers={customerData}
+        />
       </div>
-      <NewTaskModal
-        isOpen={isNewTaskModalOpen}
-        onRequestClose={() => setIsNewTaskModalOpen(false)}
-        onCreateTask={handleCreateTask}
-        customers={customerData}
-      />
+    </div>
     </div>
   );
 };
