@@ -132,8 +132,8 @@
 
 /* Gradientborder wrapper */
 .gradientBorder {
-  padding: 3px;  /* Border tjocklek */
-  border-radius: 12px;
+  padding: 1px;  /* Border tjocklek */
+  border-radius: 6px;
   background: linear-gradient(45deg, #808080, rgba(2,58,241,0.7), #50e3c2);
   background-size: 200% 200%;
   animation: rotateGradient 8s linear infinite;
@@ -147,7 +147,7 @@
   gap: 16px;
   padding: 24px;
   background-color: #0e1217; /* Fast bakgrund */
-  border-radius: 9px; /* Något mindre än yttre wrapper för att visa gradienten */
+  border-radius: 6px; /* Något mindre än yttre wrapper för att visa gradienten */
 
 }
 
