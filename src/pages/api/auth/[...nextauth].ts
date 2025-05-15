@@ -96,5 +96,3 @@ export default NextAuth({
   
 });
 
-console.log('NextAuth configuration loaded');
-console.log(process.env.NEXTAUTH_SECRET);

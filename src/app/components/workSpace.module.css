@@ -122,3 +122,41 @@
 .newProjectButton:hover {
   box-shadow: 0 4px 8px rgba(2, 58, 241, 0.7), 0 0 15px rgba(2, 58, 241, 0.9); 
 }
+
+
+.wrapper {
+  background-color: #0e1217; /* Ett mörkt bakgrundsfärgval */
+  padding: 16px;
+  min-height: 100vh;
+}
+
+/* Gradientborder wrapper */
+.gradientBorder {
+  padding: 3px;  /* Border tjocklek */
+  border-radius: 12px;
+  background: linear-gradient(45deg, #808080, rgba(2,58,241,0.7), #50e3c2);
+  background-size: 200% 200%;
+  animation: rotateGradient 8s linear infinite;
+}
+
+
+/* Inre container med din workspace-innehåll */
+.workspaceContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background-color: #0e1217; /* Fast bakgrund */
+  border-radius: 9px; /* Något mindre än yttre wrapper för att visa gradienten */
+
+}
+
+/* Exempel på keyframes för en långsam gradientrotation */
+@keyframes rotateGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}

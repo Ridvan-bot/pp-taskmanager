@@ -168,7 +168,7 @@ const WorkSpace: React.FC = () => {
   };
 
   return (
-    <div className={styles.gradientWrapper}>
+    <div className={styles.wrapper}>
     <div className={styles.gradientBorder}>
       <div className={styles.workspaceContainer}>
         <div className={styles.workspaceDiv}>
