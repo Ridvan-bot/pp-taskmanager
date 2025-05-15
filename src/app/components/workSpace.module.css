@@ -139,39 +139,38 @@
 }
 
 
-/* Inre container med din workspace-innehåll */
+
 .workspaceContainer {
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 24px;
-  background-color: #0e1217; /* Fast bakgrund */
-  border-radius: 6px; /* Något mindre än yttre wrapper för att visa gradienten */
+  background-color: #0e1217; 
+  border-radius: 6px; 
 
 }
 
-/* Exempel på en knapp som är lika stor som en TaskCard */
 .newTaskCardButton {
-  width: 400px;             /* Justera så att den matchar din TaskCard bredd */
-  height: 40px;            /* Justera höjden också */
-  border: 2px dashed #444;   /* Exempelstil, kan anpassas */
+  width: 400px; 
+  height: 40px;    
+  border: 2px dashed #444; 
   border-radius: 8px;       
   background-color: transparent;
   color: #f0f0f075;
-  font-size: 30px;          /* Stor plus-symbol */
+  font-size: 30px;  
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: box-shadow 0.2s;
-  margin-top: 16px;         /* Om du vill ha lite extra space över knappen */
+  margin-top: 16px;    
 }
 
 .newTaskCardButton:hover {
   box-shadow: 0 4px 8px rgba(2,58,241,0.7);
 }
 
-/* Exempel på keyframes för en långsam gradientrotation */
+
 @keyframes rotateGradient {
   0% {
     background-position: 0% 50%;
