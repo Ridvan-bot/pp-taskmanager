@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './newTaskModal.module.css';
 import { Priority, Status } from '@prisma/client';
 import { NewTaskModalProps } from '@/types';
 
-const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, customers}) => {
+const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, customers, selectedCategory}) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [priority, setPriority] = useState<Priority | ''>('');
   const [status, setStatus] = useState('');
   const [projectId, setProjectId] = useState<number | ''>(''); 
   const [customerId, setCustomerId] = useState<number | ''>(''); 
+
+  useEffect(() => {
+    if (selectedCategory) {
+      setStatus(selectedCategory);
+    }
+  }, [selectedCategory]);
 
   const resetForm = () => {
     setTitle('');

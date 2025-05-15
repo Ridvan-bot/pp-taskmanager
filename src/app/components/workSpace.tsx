@@ -15,9 +15,10 @@ const WorkSpace: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState<boolean>(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null); 
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [sortOrders, setSortOrders] = useState<{ [key: string]: 'asc' | 'desc' }>({
     NOT_STARTED: 'asc',
     WIP: 'asc',
@@ -127,8 +128,10 @@ const WorkSpace: React.FC = () => {
     }));
   };
 
-  const handleNewTaskClick = () => {
+  const handleNewTaskClick = (category: string) => {
+    console.log("Creating new task in column:", category);
     setIsNewTaskModalOpen(true);
+    setSelectedCategory(category);
   };
 
   const handleCreateTask = async (title: string, content: string, priority: string, status: string, customerId: number, projectId: number) => {
@@ -169,47 +172,55 @@ const WorkSpace: React.FC = () => {
 
   return (
     <div className={styles.wrapper}>
-    <div className={styles.gradientBorder}>
-      <div className={styles.workspaceContainer}>
-        <div className={styles.workspaceDiv}>
-          <select className={styles.customSelect}>
-            {customersName.map((customer, index) => (
-              <option key={index} value={customer}>{customer}</option>
-            ))}
-          </select>
-          <button className={styles.newTaskButton} onClick={handleNewTaskClick}>New Task</button>
-          <button className={styles.newProjectButton} onClick={handleNewProjectClick}>New Project</button>
-        </div>
-        <div className={styles.taskTable}>
-          {/* Rubriker med sorterings-knappar */}
-          {['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'].map(category => (
-            <div key={category} className={styles.taskTableHeader}>
-              {category}
-              <button className={styles.sortButton} onClick={() => handleSortClick(category)}>▼</button>
-            </div>
-          ))}
-          {/* Rendera varje kategori */}
-          {(['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'] as const).map(category => (
-            <div key={category} className={styles.taskList}>
-              {sortTasksByPriority(categorizedTasks[category], sortOrders[category]).map((task, index) => (
-                <TaskCard
-                  key={index}
-                  task={task}
-                  onClick={() => handleTaskClick(task)}
-                  onUpdateTask={handleUpdateTask}
-                />
+      <div className={styles.gradientBorder}>
+        <div className={styles.workspaceContainer}>
+          <div className={styles.workspaceDiv}>
+            <select className={styles.customSelect}>
+              {customersName.map((customer, index) => (
+                <option key={index} value={customer}>{customer}</option>
               ))}
-            </div>
-          ))}
+            </select>
+            <button className={styles.newProjectButton} onClick={handleNewProjectClick}>New Project</button>
+          </div>
+          <div className={styles.taskTable}>
+            {/* Rubriker med sorterings-knappar */}
+            {['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'].map(category => (
+              <div key={category} className={styles.taskTableHeader}>
+                {category}
+                <button className={styles.sortButton} onClick={() => handleSortClick(category)}>▼</button>
+              </div>
+            ))}
+            {/* Rendera varje kategori */}
+            {(['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'] as const).map(category => (
+              <div key={category} className={styles.taskList}>
+                {sortTasksByPriority(categorizedTasks[category], sortOrders[category]).map((task, index) => (
+                  <TaskCard
+                    key={index}
+                    task={task}
+                    onClick={() => handleTaskClick(task)}
+                    onUpdateTask={handleUpdateTask}
+                  />
+                ))}
+                {/* Plus-knapp med samma funktionalitet som New Task */}
+                <button
+                  className={styles.newTaskCardButton}
+                  onClick={() => handleNewTaskClick(category)}
+                  aria-label={`Create new task in ${category}`}
+                >
+                  +
+                </button>
+              </div>
+            ))}
+          </div>
+          <NewTaskModal
+            isOpen={isNewTaskModalOpen}
+            onRequestClose={() => setIsNewTaskModalOpen(false)}
+            onCreateTask={handleCreateTask}
+            customers={customerData}
+            selectedCategory={selectedCategory}
+          />
         </div>
-        <NewTaskModal
-          isOpen={isNewTaskModalOpen}
-          onRequestClose={() => setIsNewTaskModalOpen(false)}
-          onCreateTask={handleCreateTask}
-          customers={customerData}
-        />
       </div>
-    </div>
     </div>
   );
 };

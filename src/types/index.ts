@@ -37,6 +37,7 @@ export type Task = {
     onRequestClose: () => void;
     onCreateTask: (title: string, content: string, priority: string, status: string, customerId: number, projectId: number) => void;
     customers: Customer[];
+    selectedCategory: string;
   }
 
   export type Customer = {

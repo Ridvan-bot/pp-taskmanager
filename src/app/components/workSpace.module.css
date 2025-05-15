@@ -125,14 +125,13 @@
 
 
 .wrapper {
-  background-color: #0e1217; /* Ett mörkt bakgrundsfärgval */
+  background-color: #0e1217; 
   padding: 16px;
   min-height: 100vh;
 }
 
-/* Gradientborder wrapper */
 .gradientBorder {
-  padding: 1px;  /* Border tjocklek */
+  padding: 1px; 
   border-radius: 6px;
   background: linear-gradient(45deg, #808080, rgba(2,58,241,0.7), #50e3c2);
   background-size: 200% 200%;
@@ -149,6 +148,27 @@
   background-color: #0e1217; /* Fast bakgrund */
   border-radius: 6px; /* Något mindre än yttre wrapper för att visa gradienten */
 
+}
+
+/* Exempel på en knapp som är lika stor som en TaskCard */
+.newTaskCardButton {
+  width: 400px;             /* Justera så att den matchar din TaskCard bredd */
+  height: 40px;            /* Justera höjden också */
+  border: 2px dashed #444;   /* Exempelstil, kan anpassas */
+  border-radius: 8px;       
+  background-color: transparent;
+  color: #f0f0f075;
+  font-size: 30px;          /* Stor plus-symbol */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  margin-top: 16px;         /* Om du vill ha lite extra space över knappen */
+}
+
+.newTaskCardButton:hover {
+  box-shadow: 0 4px 8px rgba(2,58,241,0.7);
 }
 
 /* Exempel på keyframes för en långsam gradientrotation */
