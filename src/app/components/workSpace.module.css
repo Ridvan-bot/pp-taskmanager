@@ -1,0 +1,181 @@
+.workspaceContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.workspaceDiv {
+  margin-bottom: 10%;
+}
+
+
+.borderRed {
+  border-color: red;
+}
+
+.borderGreen {
+  border-color: green;
+}
+
+.borderBlue {
+  border-color: blue;
+}
+
+.taskTable {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+.taskTableHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer; 
+  user-select: none; 
+  color: #ffffff5d;
+  border: #ffffff5d 1px solid;
+  border-radius: 8px;
+  padding: 0 8px;
+}
+
+.taskTableHeader:hover {
+  color: #ffffff;
+}
+
+.sortButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 8px;
+  font-size: 16px;
+  color: inherit;
+}
+
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.customSelect {
+  appearance: none;
+  background-color: #2c2c2c;
+  border: 2px solid #444;
+  border-radius: 8px;
+  color: #f0f0f0;
+  padding: 8px 12px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-right: 8px;
+}
+
+.customSelect:hover {
+  box-shadow: 0 4px 8px rgba(2, 58, 241, 0.7), 0 0 15px rgba(2, 58, 241, 0.9); 
+}
+
+.customSelect:focus {
+  outline: none;
+  border-color: rgba(2, 58, 241, 0.7);
+  box-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+}
+
+.customSelect option {
+  background-color: #192029;
+  color: #f0f0f0;
+  border-radius: 8px;
+}
+
+.newTaskButton {
+  background-color: #2c2c2c;
+  border: 2px solid #444;
+  border-radius: 8px;
+  color: #f0f0f0;
+  padding: 8px 16px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  margin-top: 16px;
+}
+
+.newTaskButton:hover {
+  box-shadow: 0 4px 8px rgba(2, 58, 241, 0.7), 0 0 15px rgba(2, 58, 241, 0.9); 
+}
+
+.newProjectButton {
+  background-color: #2c2c2c;
+  border: 2px solid #444;
+  border-radius: 8px;
+  color: #f0f0f0;
+  padding: 8px 16px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  margin-top: 16px;
+  margin-left: 6px;
+}
+
+.newProjectButton:hover {
+  box-shadow: 0 4px 8px rgba(2, 58, 241, 0.7), 0 0 15px rgba(2, 58, 241, 0.9); 
+}
+
+
+.wrapper {
+  background-color: #0e1217; 
+  padding: 16px;
+  min-height: 100vh;
+}
+
+.gradientBorder {
+  padding: 1px; 
+  border-radius: 6px;
+  background: linear-gradient(45deg, #808080, rgba(2,58,241,0.7), #50e3c2);
+  background-size: 200% 200%;
+  animation: rotateGradient 8s linear infinite;
+}
+
+
+
+.workspaceContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background-color: #0e1217; 
+  border-radius: 6px; 
+
+}
+
+.newTaskCardButton {
+  width: 400px; 
+  height: 40px;    
+  border: 2px dashed #444; 
+  border-radius: 8px;       
+  background-color: transparent;
+  color: #f0f0f075;
+  font-size: 30px;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  margin-top: 16px;    
+}
+
+.newTaskCardButton:hover {
+  box-shadow: 0 4px 8px rgba(2,58,241,0.7);
+}
+
+
+@keyframes rotateGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}

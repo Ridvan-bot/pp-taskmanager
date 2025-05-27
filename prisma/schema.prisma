@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Priority {
+  HIGH
+  MEDIUM
+  LOW
+  BC
+}
+
+enum Status {
+  NOT_STARTED
+  WIP
+  WAITING
+  CLOSED
+}
+
+model Customer {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  projects  Project[]
+  tasks     Task[]
+  users     User[]    @relation("UserCustomers")
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  title       String
+  content     String
+  status      Status
+  priority    Priority  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  customerId  Int
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  projectId   Int
+  project     Project   @relation(fields: [projectId], references: [id])
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String   @map("_password")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  customers Customer[] @relation("UserCustomers")
+}
+
+model Project {
+  id          Int       @id @default(autoincrement())
+  title       String
+  content     String
+  status      Status
+  priority    Priority  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  customerId  Int
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  tasks       Task[]
+}
