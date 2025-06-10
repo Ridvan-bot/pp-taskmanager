@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSession } from 'next-auth/react';
+import {signOut, useSession } from 'next-auth/react';
 import Sidebar from './sidebar';
 import TaskCard from './taskCard';
 import LoginModal from './modals/loginModal';
@@ -7,6 +7,7 @@ import NewTaskModal from './modals/newTaskModal';
 import { fetchTasksForCustomers } from '@/lib/getRequest';
 import { Task } from '@prisma/client';
 import { CustomSession, Customer } from '../../types';
+
 
 const WorkSpace: React.FC = () => {
    const { data: session, status } = useSession() as { data: CustomSession | null; status: string };
@@ -180,11 +181,12 @@ const WorkSpace: React.FC = () => {
       />
 
       <main className="flex-1 flex flex-col">
-        {/* Header (similar to Dashboard header) */}
+        {/* Header */}
         <header className="bg-slate-800 border-b border-slate-700 px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <h2 className="text-xl font-semibold text-white">Workspace</h2>
+            <h2 className="text-xl font-semibold text-white">Pohlman Protean Task Manager</h2>
             <p className="text-sm text-slate-400">Manage your tasks</p>
+ 
           </div>
           <div className="flex items-center space-x-4">
             <select className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs">
@@ -198,6 +200,7 @@ const WorkSpace: React.FC = () => {
             >
               New Project
             </button>
+            <button className="px-4 py-2 text-xs rounded-lg pohlman-button" onClick={() => signOut()}>Logout</button>
           </div>
         </header>
 

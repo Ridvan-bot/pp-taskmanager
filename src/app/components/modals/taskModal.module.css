@@ -11,8 +11,8 @@
 }
 
 .modalContent {
-  background-color: #2c2c2c;
-  border: 2px solid #444;
+  background-color: #3b83f62f;
+  border: 2px solid #3b82f6;
   border-radius: 8px;
   padding: 32px;
   color: #f0f0f0;
@@ -53,9 +53,9 @@
   padding: 8px;
   margin-top: 8px;
   margin-bottom: 16px;
-  border: 1px solid #444;
+  border: 1px solid #3b82f6;
   border-radius: 4px;
-  background-color: #3c3c3c;
+  background-color: #3b83f62f;
   color: #f0f0f0;
   font-size: 16px;
 }
@@ -73,9 +73,9 @@
   padding: 8px;
   margin-top: 8px;
   margin-bottom: 16px;
-  border: 1px solid #444;
+  border: 1px solid #3b82f6;
   border-radius: 4px;
-  background-color: #3c3c3c;
+  background-color: #3b83f62f;
   color: #f0f0f0;
   font-size: 16px;
 }
@@ -104,8 +104,8 @@
   width: 100%;
   padding: 8px;
   font-size: 14px;
-  border: 1px solid #444;
+  border: 1px solid #3b82f6;
   border-radius: 4px;
   margin-bottom: 12px;
-  background-color: #3c3c3c;
+  background-color: #3b83f62f;
 }

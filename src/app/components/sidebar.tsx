@@ -24,7 +24,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
       fixed lg:relative z-30 h-full lg:h-auto
     `}>
       {/* Logo */}
-      <div className="p-6 border-b border-slate-700">
+      <div className="p-6 border-slate-700">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
             <CheckSquare className="text-white text-lg" />

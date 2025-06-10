@@ -11,8 +11,8 @@
   }
   
   .modalContent {
-    background-color: #2c2c2c;
-    border: 2px solid #444;
+    background-color: #3b83f62f;
+    border: 1px solid #3b82f6;
     border-radius: 8px;
     padding: 16px;
     color: #f0f0f0;
@@ -45,19 +45,23 @@
   .formGroup textarea {
     width: 100%;
     padding: 8px;
-    border: 2px solid #444;
+    border: 1px solid #3b82f6;
     border-radius: 4px;
-    background-color: #1c1c1c;
+    background-color: #3b83f62f;
     color: #f0f0f0;
   }
   .formGroup select {
     width: 100%;
     padding: 8px;
-    border: 2px solid #444;
+    border: 1px solid #3b82f6;
     border-radius: 4px;
-    background-color: #1c1c1c;
+    background-color: #0f22412f;
     color: #f0f0f0;
   }
+  .formGroup select option {
+  background-color: #1e293b; /* t.ex. bg-slate-800 */
+  color: #f0f0f0;
+}
   
   .formGroup select {
     appearance: none;
@@ -68,10 +72,10 @@
   }
   
   .submitButton {
-    background-color: #2c2c2c;
-    border: 2px solid #444;
+    background-color: #3b83f62f;
+    border: 1px solid #3b82f6;
     border-radius: 8px;
-    color: #f0f0f0;
+     color: #f0f0f0;
     padding: 8px 16px;
     font-size: 16px;
     cursor: pointer;
@@ -79,6 +83,6 @@
   }
   
   .submitButton:hover {
-    background-color: #444;
-    border-color: #666;
+    background-color: #3b83f62f;
+    border: 1px solid #3b82f6;
   }
