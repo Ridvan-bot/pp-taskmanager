@@ -123,7 +123,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
           </select>
            
           {/* Customer ID */}
-          <label htmlFor="customerId"><strong>Kund ID:</strong></label>
+          <label htmlFor="customerId"><strong>Customer ID:</strong></label>
           <input
             type="text"
             id="customerId"

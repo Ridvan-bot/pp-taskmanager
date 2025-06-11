@@ -4,15 +4,16 @@ import Sidebar from './sidebar';
 import TaskCard from './taskCard';
 import LoginModal from './modals/loginModal';
 import NewTaskModal from './modals/newTaskModal';
-import { fetchTasksForCustomers } from '@/lib/getRequest';
 import { Task } from '@prisma/client';
 import { CustomSession, Customer } from '../../types';
+import { fetchTasksForCustomers } from '@/lib/getRequest';
 
 
 const WorkSpace: React.FC = () => {
    const { data: session, status } = useSession() as { data: CustomSession | null; status: string };
   const [customersName, setCustomersName] = useState<string[]>([]);
   const [customerData, setCustomerData] = useState<Customer[]>([]);
+  const [selectedCustomer, setSelectedCustomer] = useState<string>('');
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState<boolean>(false);
@@ -56,6 +57,20 @@ const WorkSpace: React.FC = () => {
   useEffect(() => {
     prevIsTaskModalOpen.current = isTaskModalOpen;
   }, [isTaskModalOpen]);
+
+    // Fetch tasks whenever selectedCustomer changes
+  useEffect(() => {
+    if (selectedCustomer) {
+      const fetchData = async () => {
+        const data = await fetch (`/api/filtertaskoncustomer?customer=${selectedCustomer}`);
+        const dataJson = await data.json();
+        console.log('Fetched data:', dataJson);
+        setTasks(dataJson.data);
+        console.log('Fetched tasks for customer:', selectedCustomer, data);
+      };
+      fetchData();
+    }
+  }, [selectedCustomer]);
 
   const fetchUserCustomers = async () => {
     if (!session || !session.user) {
@@ -189,9 +204,13 @@ const WorkSpace: React.FC = () => {
  
           </div>
           <div className="flex items-center space-x-4">
-            <select className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs">
-              {customersName.map((customer, index) => (
-                <option key={index} value={customer}>{customer}</option>
+            <select
+              value={selectedCustomer}
+              onChange={e => setSelectedCustomer(e.target.value)}
+              className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs"
+            >
+              {customerData.map(c => (
+                <option key={c.id} value={c.name}>{c.name}</option>
               ))}
             </select>
             <button 
