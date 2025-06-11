@@ -50,13 +50,13 @@ export type Task = {
   };
 
 
-  export type TaskModalProps = {
-    task: Task;
-    isOpen: boolean;
-    onRequestClose: () => void;
-    onUpdateTask: (updatedTask: Task) => void;
-    customersName?: string[];
-  }
+export type TaskModalProps = {
+  task: Task;
+  isOpen: boolean;
+  onRequestClose: () => void;
+  onUpdateTask: (updatedTask: Task) => void;
+  onDeleteTask: (deletedTaskId: string) => void;
+}
 
   export type TaskCardProps = {
     task: Task;

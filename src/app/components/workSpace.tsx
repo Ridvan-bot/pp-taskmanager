@@ -64,9 +64,7 @@ const WorkSpace: React.FC = () => {
       const fetchData = async () => {
         const data = await fetch (`/api/filtertaskoncustomer?customer=${selectedCustomer}`);
         const dataJson = await data.json();
-        console.log('Fetched data:', dataJson);
         setTasks(dataJson.data);
-        console.log('Fetched tasks for customer:', selectedCustomer, data);
       };
       fetchData();
     }
@@ -145,7 +143,6 @@ const WorkSpace: React.FC = () => {
   };
 
   const handleNewTaskClick = (category: string) => {
-    console.log("Creating new task in column:", category);
     setIsNewTaskModalOpen(true);
     setSelectedCategory(category);
   };

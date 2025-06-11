@@ -7,9 +7,10 @@ interface TaskModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   onUpdateTask: (updatedTask: Task) => void;
+  onDeleteTask: (deletedTaskId: string) => void
 }
 
-const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onUpdateTask}) => {
+const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onUpdateTask, onDeleteTask }) => {
   const [title, setTitle] = useState(task.title);
   const [content, setContent] = useState(task.content);
   const [priority, setPriority] = useState(task.priority);
@@ -79,6 +80,26 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
     }
   };
 
+  const handleDeleteClick = async () => {
+    try {
+      const response = await fetch(`/api/task/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: task.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete task');
+      }
+      onDeleteTask('jaha');
+      onRequestClose();
+    } catch (error) {
+      console.error('Failed to delete task:', error);
+    }
+  };
+
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
       <div className={styles.modalContent}>
@@ -121,7 +142,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
               <option key={value} value={value}>{value}</option>
             ))}
           </select>
-           
+
           {/* Customer ID */}
           <label htmlFor="customerId"><strong>Customer ID:</strong></label>
           <input
@@ -144,6 +165,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
         </div>
         <div className={styles.buttonContainer}>
           <button className={styles.updateButton} onClick={handleUpdateClick}>Update</button>
+          <button className={styles.deleteButton} onClick={handleDeleteClick}>Delete</button>
         </div>
       </div>
     </div>
