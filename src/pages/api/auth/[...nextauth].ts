@@ -53,6 +53,7 @@ export default NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+
     }),
   ],
   session: {
@@ -65,6 +66,7 @@ export default NextAuth({
     async signIn({ user, account }) {
       if (account?.provider === 'google') {
         const existingUser = await prisma.user.findUnique({
+
           where: { email: user.email || '' },
         });
 
@@ -75,6 +77,7 @@ export default NextAuth({
               name: user.name || '',
               email: user.email || '',
               password: hashedPassword,
+
             },
           });
         }
