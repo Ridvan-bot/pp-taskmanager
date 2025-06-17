@@ -1,11 +1,8 @@
 import NextAuth from 'next-auth';
 import { Session as NextAuthSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
-import LinkedInProvider from 'next-auth/providers/linkedin';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -28,6 +25,7 @@ export default NextAuth({
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
+      
       authorize: async (credentials) => {
         if (!credentials) {
           throw new Error('Credentials are required');
@@ -50,14 +48,6 @@ export default NextAuth({
         return { id: user.id.toString(), name: user.name, email: user.email };
       },
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-    }),
-    LinkedInProvider({
-      clientId: process.env.LINKEDIN_CLIENT_ID || '',
-      clientSecret: process.env.LINKEDIN_CLIENT_SECRET || '',
-    }),
   ],
   session: {
     strategy: 'jwt',
@@ -66,26 +56,6 @@ export default NextAuth({
     secret: process.env.NEXTAUTH_SECRET,
   },
   callbacks: {
-    async signIn({ user, account }) {
-      if (account && (account.provider === 'google' || account.provider === 'linkedin')) {
-        if (!user.email) return false;
-        const existing = await prisma.user.findUnique({ where: { email: user.email } });
-        if (!existing) {
-          const hashedPassword = await bcrypt.hash(crypto.randomBytes(16).toString('hex'), 10);
-          const newUser = await prisma.user.create({
-            data: {
-              name: user.name || '',
-              email: user.email,
-              password: hashedPassword,
-            },
-          });
-          (user as any).id = newUser.id;
-        } else {
-          (user as any).id = existing.id;
-        }
-      }
-      return true;
-    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
