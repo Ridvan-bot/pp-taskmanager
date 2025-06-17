@@ -8,9 +8,10 @@ interface TaskCardProps {
   task: Task;
   onClick?: () => void;
   onUpdateTask: (updatedTask: Task) => void;
+  onDeleteTask?: (deletedTaskId: string) => void;
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDeleteTask }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const truncateContent = (content: string, length: number) => {
@@ -43,6 +44,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask }) => {
         isOpen={isModalOpen} 
         onRequestClose={handleCloseModal}
         onUpdateTask={onUpdateTask}
+        onDeleteTask={(deletedTaskId: string) => {
+          setIsModalOpen(false);
+          if (onDeleteTask) {
+            onDeleteTask(deletedTaskId);
+          }
+        }}
       /> 
     </>
   );

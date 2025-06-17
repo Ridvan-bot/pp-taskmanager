@@ -29,6 +29,11 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+
+## Authentication
+
+Authentication is handled by [NextAuth.js](https://next-auth.js.org/). Users can sign in using credentials or their Google account. To enable OAuth logins create a `.env` file based on `.env.example` and provide your provider credentials.
+=======
 ## Environment Variables
 
 Authentication requires the following variables to be available in your environment:
@@ -39,5 +44,4 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 NEXTAUTH_SECRET=some-random-string
 ```
 
-Ensure these are set when running the application so Google sign in can work correctly.
 

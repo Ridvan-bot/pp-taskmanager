@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getAllTasks, createTask, getAllUsersTasks, updateTask } from '../../lib/prisma';
+import { getAllTasks, createTask, getAllUsersTasks, updateTask, deleteTask } from '../../lib/prisma';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
@@ -22,35 +22,50 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(500).json({ error: 'Failed to fetch tasks' });
       }
       break;
-      case 'POST':
-        try {
-          const { title, content, priority, status, customerId, projectId } = req.body;
-          if (!title || !content || !priority || !status || !customerId || !projectId) {
-            throw new Error('Missing required fields');
-          }
-          const newTask = await createTask({ title, content, priority, status, customerId, projectId });
-          res.status(201).json(newTask);
-        } catch (error) {
-          console.error('Failed to create task:', error);
-          res.status(500).json({ error: 'Failed to create task' });
+    case 'POST':
+      try {
+        const { title, content, priority, status, customerId, projectId } = req.body;
+        if (!title || !content || !priority || !status || !customerId || !projectId) {
+          throw new Error('Missing required fields');
         }
-        break;
-        case 'PUT':
-          try {
-            const { id, title, content, priority, status, customerId, projectId } = req.body;
-            if (!id || !title || !content || !priority || !status || !customerId || !projectId) {
-              throw new Error('Missing required fields');
-            }
-            const updatedTask = await updateTask(id, { title, content, priority, status, customerId, projectId });
-            res.status(200).json(updatedTask);
-          } catch (error) {
-            console.error('Failed to update task:', error);
-            res.status(500).json({ error: 'Failed to update task' });
-          }
-          break;
-        default:
-          res.setHeader('Allow', ['GET', 'POST', 'PUT']);
-          res.status(405).end(`Method ${req.method} Not Allowed`);
-          break;
+        const newTask = await createTask({ title, content, priority, status, customerId, projectId });
+        res.status(201).json(newTask);
+      } catch (error) {
+        console.error('Failed to create task:', error);
+        res.status(500).json({ error: 'Failed to create task' });
       }
+      break;
+    case 'PUT':
+      try {
+        const { id, title, content, priority, status, customerId, projectId } = req.body;
+        if (!id || !title || !content || !priority || !status || !customerId || !projectId) {
+          throw new Error('Missing required fields');
+        }
+        const updatedTask = await updateTask(id, { title, content, priority, status, customerId, projectId });
+        res.status(200).json(updatedTask);
+      } catch (error) {
+        console.error('Failed to update task:', error);
+        res.status(500).json({ error: 'Failed to update task' });
+      }
+      break;
+    case 'DELETE': {
+      const { id } = req.body;
+      try {
+        const taskId = parseInt(id, 10);
+        const deletedTask = await deleteTask(taskId);
+        if (!deletedTask) {
+          return res.status(404).json({ error: 'Task not found' });
+        }
+        res.status(200).json(deletedTask);
+      } catch (error) {
+        console.error('Failed to delete task:', error);
+        res.status(500).json({ error: 'Failed to delete task' });
+      }
+      break;
     }
+    default:
+      res.setHeader('Allow', ['GET', 'POST', 'PUT']);
+      res.status(405).end(`Method ${req.method} Not Allowed`);
+      break;
+  }
+}

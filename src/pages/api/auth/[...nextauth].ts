@@ -4,6 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { randomBytes } from 'crypto';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -26,6 +27,7 @@ export default NextAuth({
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
+      
       authorize: async (credentials) => {
         if (!credentials) {
           throw new Error('Credentials are required');
@@ -49,8 +51,9 @@ export default NextAuth({
       },
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+
     }),
   ],
   session: {
@@ -63,15 +66,18 @@ export default NextAuth({
     async signIn({ user, account }) {
       if (account?.provider === 'google') {
         const existingUser = await prisma.user.findUnique({
-          where: { email: user.email ?? '' },
+
+          where: { email: user.email || '' },
         });
-        if (!existingUser && user.email) {
-          const hashed = await bcrypt.hash(Math.random().toString(36), 10);
+
+        if (!existingUser) {
+          const hashedPassword = await bcrypt.hash(randomBytes(16).toString('hex'), 10);
           await prisma.user.create({
             data: {
-              name: user.name ?? '',
-              email: user.email,
-              password: hashed,
+              name: user.name || '',
+              email: user.email || '',
+              password: hashedPassword,
+
             },
           });
         }
