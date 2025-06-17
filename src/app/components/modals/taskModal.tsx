@@ -80,25 +80,28 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
     }
   };
 
-  const handleDeleteClick = async () => {
-    try {
-      const response = await fetch(`/api/task/`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: task.id }),
-      });
+const handleDeleteClick = async () => {
+  const confirmed = window.confirm('Are you sure you want to delete this task?');
+  if (!confirmed) return;
 
-      if (!response.ok) {
-        throw new Error('Failed to delete task');
-      }
-      onDeleteTask('jaha');
-      onRequestClose();
-    } catch (error) {
-      console.error('Failed to delete task:', error);
+  try {
+    const response = await fetch(`/api/task/`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: task.id }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete task');
     }
-  };
+    onDeleteTask(String(task.id));
+    onRequestClose();
+  } catch (error) {
+    console.error('Failed to delete task:', error);
+  }
+};
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>

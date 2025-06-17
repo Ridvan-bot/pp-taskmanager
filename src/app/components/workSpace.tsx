@@ -166,6 +166,11 @@ const WorkSpace: React.FC = () => {
     }
   };
 
+  const handleDeleteTask = (deletedTaskId: string) => {
+  setTasks(prev => prev.filter(task => String(task.id) !== String(deletedTaskId)));
+};
+
+
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task);
     setIsTaskModalOpen(true);
@@ -247,6 +252,7 @@ const WorkSpace: React.FC = () => {
                     task={task}
                     onClick={() => handleTaskClick(task)}
                     onUpdateTask={handleUpdateTask}
+                    onDeleteTask={handleDeleteTask}
                   />
                 ))}
                 <button
