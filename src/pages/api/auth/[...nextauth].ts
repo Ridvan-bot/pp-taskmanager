@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import { Session as NextAuthSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
@@ -47,6 +48,10 @@ export default NextAuth({
         return { id: user.id.toString(), name: user.name, email: user.email };
       },
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
   ],
   session: {
     strategy: 'jwt',
@@ -55,6 +60,24 @@ export default NextAuth({
     secret: process.env.NEXTAUTH_SECRET,
   },
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === 'google') {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email ?? '' },
+        });
+        if (!existingUser && user.email) {
+          const hashed = await bcrypt.hash(Math.random().toString(36), 10);
+          await prisma.user.create({
+            data: {
+              name: user.name ?? '',
+              email: user.email,
+              password: hashed,
+            },
+          });
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
