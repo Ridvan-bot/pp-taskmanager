@@ -31,5 +31,5 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Authentication
 
-Authentication is handled by [NextAuth.js](https://next-auth.js.org/). Users can sign in using credentials as well as Google or LinkedIn accounts. To enable OAuth logins create a `.env` file based on `.env.example` and provide your provider credentials.
+Authentication is handled by [NextAuth.js](https://next-auth.js.org/). Users can sign in using credentials or their Google account. To enable OAuth logins create a `.env` file based on `.env.example` and provide your provider credentials.
 

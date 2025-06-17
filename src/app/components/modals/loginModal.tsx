@@ -85,13 +85,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
           >
             Google
           </button>
-          <button
-            type="button"
-            onClick={() => signIn('linkedin')}
-            className="w-full max-w-md flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 focus:outline-none"
-          >
-            LinkedIn
-          </button>
         </div>
       </form>
       <div className="flex justify-center mt-4">
