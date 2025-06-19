@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import {signOut, useSession } from 'next-auth/react';
 import Sidebar from './sidebar';
@@ -29,6 +30,7 @@ const WorkSpace: React.FC = () => {
   });
 
   const prevIsTaskModalOpen = useRef(isTaskModalOpen);
+
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -178,10 +180,6 @@ const WorkSpace: React.FC = () => {
 
   const categorizedTasks = categorizeTasks(tasks);
 
-  const handleNewProjectClick = () => {
-    console.log('New project button clicked');
-  };
-
   const handleUpdateTask = (updatedTask: Task) => {
     setTasks(prev =>
       prev.map(task => task.id === updatedTask.id ? updatedTask : task)
@@ -201,7 +199,7 @@ const WorkSpace: React.FC = () => {
         {/* Header */}
         <header className="bg-slate-800 border-b border-slate-700 px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <h2 className="text-xl font-semibold text-white">Pohlman Protean Task Manager</h2>
+            <h2 className="text-xl font-semibold text-white">Task Manager</h2>
             <p className="text-sm text-slate-400">Manage your tasks</p>
  
           </div>
@@ -215,12 +213,6 @@ const WorkSpace: React.FC = () => {
                 <option key={c.id} value={c.name}>{c.name}</option>
               ))}
             </select>
-            <button 
-              className="bg-blue-500 hover:bg-blue-600 text-white rounded-md px-4 py-2 text-xs"
-              onClick={handleNewProjectClick}
-            >
-              New Project
-            </button>
             <button className="px-4 py-2 text-xs rounded-lg pohlman-button" onClick={() => signOut()}>Logout</button>
           </div>
         </header>
