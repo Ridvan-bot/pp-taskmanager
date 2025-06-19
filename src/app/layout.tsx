@@ -17,17 +17,11 @@ export const metadata: Metadata = {
   description: "A task manager crafted with care by Robin Pohlman @ Pohlman Protean",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-      <div id="__next">{children}</div>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <div id="__next">{children}</div>
       </body>
     </html>
   );
