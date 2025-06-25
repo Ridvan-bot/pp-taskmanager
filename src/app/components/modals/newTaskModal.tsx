@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './newTaskModal.module.css';
-import { Priority, Status } from '@prisma/client';
+import { Priority, Status, Project } from '@prisma/client';
 import { NewTaskModalProps } from '@/types';
 
 const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, customers, selectedCategory}) => {
@@ -10,12 +10,27 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
   const [status, setStatus] = useState('');
   const [projectId, setProjectId] = useState<number | ''>(''); 
   const [customerId, setCustomerId] = useState<number | ''>(''); 
+  const [availableProjects, setAvailableProjects] = useState<Project[]>([]);
 
   useEffect(() => {
     if (selectedCategory) {
       setStatus(selectedCategory);
     }
   }, [selectedCategory]);
+
+  // Update available projects when customer changes
+  useEffect(() => {
+    if (customerId) {
+      const selectedCustomer = customers.find(c => c.id === customerId);
+      if (selectedCustomer) {
+        setAvailableProjects(selectedCustomer.projects);
+        setProjectId(''); // Reset project selection when customer changes
+      }
+    } else {
+      setAvailableProjects([]);
+      setProjectId('');
+    }
+  }, [customerId, customers]);
 
   const resetForm = () => {
     setTitle('');
@@ -24,13 +39,13 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
     setStatus('');
     setProjectId('');
     setCustomerId('');
+    setAvailableProjects([]);
   };
 
   const handleClose = () => {
     resetForm();
     onRequestClose();
   };
-
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,20 +112,6 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
             </select>
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="project">Project</label>
-            <select
-              id="project"
-              value={projectId}
-              onChange={e => setProjectId(Number(e.target.value))}
-              required
-            >
-              <option value="" disabled>Select Project</option>
-              {customers.flatMap(customer => customer.projects).map((project) => (
-                <option key={project.id} value={project.id}>{project.title}</option>
-              ))}
-            </select>
-          </div>
-          <div className={styles.formGroup}>
             <label htmlFor="customer">Customer</label>
             <select
               id="customer"
@@ -121,6 +122,23 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
               <option value="" disabled>Select customer</option>
               {customers.map((customer) => (
                 <option key={customer.id} value={customer.id}>{customer.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="project">Project</label>
+            <select
+              id="project"
+              value={projectId}
+              onChange={e => setProjectId(Number(e.target.value))}
+              disabled={!customerId}
+              required
+            >
+              <option value="" disabled>
+                {customerId ? 'Select Project' : 'Select Customer First'}
+              </option>
+              {availableProjects.map((project) => (
+                <option key={project.id} value={project.id}>{project.title}</option>
               ))}
             </select>
           </div>
