@@ -67,7 +67,6 @@ export async function getTasksByUserId(userId: string) {
   return user.customers.flatMap(customer => customer.tasks);
 }
 
-
 export async function createTask(data: { title: string; content: string; priority: Priority; status: Status; customerId: number; projectId: number }) {
   return await prisma.task.create({
     data: {
@@ -118,5 +117,44 @@ export async function updateTask(taskId: number, data: { title?: string; content
 export async function deleteTask(taskId: number) {
   return await prisma.task.delete({
     where: { id: taskId },
+  });
+}
+
+export async function getTasksByCustomerAndProject(customerName: string, projectTitle?: string) {
+  const customer = await prisma.customer.findFirst({
+    where: {
+      name: customerName,
+    },
+    include: {
+      projects: true,
+    },
+  });
+
+  if (!customer) {
+    throw new Error('Customer not found');
+  }
+
+  // If no project is specified, return all tasks for the customer
+  if (!projectTitle) {
+    return await prisma.task.findMany({
+      where: {
+        customerId: customer.id,
+      },
+    });
+  }
+
+  // Find the specific project within the customer
+  const project = customer.projects.find(p => p.title === projectTitle);
+  
+  if (!project) {
+    throw new Error('Project not found for this customer');
+  }
+
+  // Return tasks that belong to both the customer and the specific project
+  return await prisma.task.findMany({
+    where: {
+      customerId: customer.id,
+      projectId: project.id,
+    },
   });
 }

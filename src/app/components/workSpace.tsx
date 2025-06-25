@@ -5,7 +5,7 @@ import Sidebar from './sidebar';
 import TaskCard from './taskCard';
 import LoginModal from './modals/loginModal';
 import NewTaskModal from './modals/newTaskModal';
-import { Task } from '@prisma/client';
+import { Task, Project } from '@prisma/client';
 import { CustomSession, Customer } from '../../types';
 import { fetchTasksForCustomers } from '@/lib/getRequest';
 
@@ -15,6 +15,8 @@ const WorkSpace: React.FC = () => {
   const [customersName, setCustomersName] = useState<string[]>([]);
   const [customerData, setCustomerData] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<string>('');
+  const [selectedProject, setSelectedProject] = useState<string>('');
+  const [projects, setProjects] = useState<Project[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState<boolean>(false);
@@ -60,17 +62,35 @@ const WorkSpace: React.FC = () => {
     prevIsTaskModalOpen.current = isTaskModalOpen;
   }, [isTaskModalOpen]);
 
-    // Fetch tasks whenever selectedCustomer changes
+  // Update projects when selectedCustomer changes
+  useEffect(() => {
+    if (selectedCustomer) {
+      const customer = customerData.find(c => c.name === selectedCustomer);
+      if (customer) {
+        setProjects(customer.projects);
+        setSelectedProject(''); // Reset project selection
+      }
+    } else {
+      setProjects([]);
+      setSelectedProject('');
+    }
+  }, [selectedCustomer, customerData]);
+
+  // Fetch tasks whenever selectedCustomer or selectedProject changes
   useEffect(() => {
     if (selectedCustomer) {
       const fetchData = async () => {
-        const data = await fetch (`/api/filtertaskoncustomer?customer=${selectedCustomer}`);
+        let url = `/api/filtertaskoncustomer?customer=${selectedCustomer}`;
+        if (selectedProject) {
+          url += `&project=${selectedProject}`;
+        }
+        const data = await fetch(url);
         const dataJson = await data.json();
         setTasks(dataJson.data);
       };
       fetchData();
     }
-  }, [selectedCustomer]);
+  }, [selectedCustomer, selectedProject]);
 
   const fetchUserCustomers = async () => {
     if (!session || !session.user) {
@@ -209,8 +229,20 @@ const WorkSpace: React.FC = () => {
               onChange={e => setSelectedCustomer(e.target.value)}
               className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs"
             >
+              <option value="">Select Customer</option>
               {customerData.map(c => (
                 <option key={c.id} value={c.name}>{c.name}</option>
+              ))}
+            </select>
+            <select
+              value={selectedProject}
+              onChange={e => setSelectedProject(e.target.value)}
+              className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs"
+              disabled={!selectedCustomer}
+            >
+              <option value="">Select Project</option>
+              {projects.map(project => (
+                <option key={project.id} value={project.title}>{project.title}</option>
               ))}
             </select>
             <button className="px-4 py-2 text-xs rounded-lg pohlman-button" onClick={() => signOut()}>Logout</button>

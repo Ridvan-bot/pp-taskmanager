@@ -1,16 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getTasksByCustomerName } from '../../lib/prisma';
+import { getTasksByCustomerAndProject } from '../../lib/prisma';
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     switch (req.method) {
         case 'GET':
-            const { customer } = req.query;
+            const { customer, project } = req.query;
             try {
-                const data = await getTasksByCustomerName(customer as string);
+                const data = await getTasksByCustomerAndProject(customer as string, project as string);
                 res.status(200).json({ data });
             } catch (error) {
                 console.error(`Failed to fetch tasks for customer:`, error);
+                res.status(500).json({ error: 'Failed to fetch tasks' });
             }
             break;
         default:
