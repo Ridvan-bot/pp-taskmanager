@@ -30,7 +30,7 @@ export default function Sidebar({ isOpen, onChatClick, activeMenu }: SidebarProp
       <div className="p-6 border-slate-700 rounded-2xl bg-slate-900/80 shadow-md mx-4 mt-4 mb-2 flex items-center space-x-3">
         <Image src="/pohlmanproteanab.png" alt="Logo" width={40} height={40} className="rounded-xl" />
         <div>
-          <h1 className="text-xl font-bold text-white">TaskFlow</h1>
+          <h1 className="text-xl font-bold text-white">Pohlman Protean</h1>
           <p className="text-sm text-slate-400">Project Management</p>
         </div>
       </div>
