@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { useDrag } from 'react-dnd';
 import { Task } from '@prisma/client';
 import styles from './taskCard.module.css';
 import TaskModal from './modals/taskModal';
-
 
 interface TaskCardProps {
   task: Task;
@@ -11,8 +11,16 @@ interface TaskCardProps {
   onDeleteTask?: (deletedTaskId: string) => void;
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDeleteTask }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDeleteTask, onClick }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: 'TASK',
+    item: { id: task.id, status: task.status },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }), [task]);
 
   const truncateContent = (content: string, length: number) => {
     if (content.length <= length) {
@@ -22,7 +30,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDelete
   };
 
   const handleCardClick = () => {
-    setIsModalOpen(true);
+    if (onClick) {
+      onClick();
+    } else {
+      setIsModalOpen(true);
+    }
   };
 
   const handleCloseModal = () => {
@@ -31,7 +43,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDelete
 
   return (
     <>
-      <div className={styles.taskCard} onClick={handleCardClick}>
+      <div
+        className={styles.taskCard}
+        onClick={handleCardClick}
+        ref={node => { if (node) drag(node); }}
+        style={{ opacity: isDragging ? 0.5 : 1 }}
+      >
         <strong>Title:</strong> {task.title}
         <br />
         <strong>Beskrivning:</strong> {truncateContent(task.content, 30)}

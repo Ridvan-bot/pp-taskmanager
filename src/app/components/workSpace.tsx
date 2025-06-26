@@ -8,7 +8,35 @@ import NewTaskModal from './modals/newTaskModal';
 import { Task, Project } from '@prisma/client';
 import { CustomSession, Customer } from '../../types';
 import { fetchTasksForCustomers } from '@/lib/getRequest';
+import { DndProvider, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
+
+const COLUMN_STATUSES = ['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'] as const;
+
+function TaskDropColumn({
+  category,
+  children,
+  onDropTask,
+}: {
+  category: string;
+  children: React.ReactNode;
+  onDropTask: (taskId: number, newStatus: string) => void;
+}) {
+  const [, drop] = useDrop({
+    accept: 'TASK',
+    drop: (item: { id: number; status: string }) => {
+      if (item.status !== category) {
+        onDropTask(item.id, category);
+      }
+    },
+  });
+  return (
+    <div ref={node => { if (node) drop(node); }} style={{ minHeight: 100 }}>
+      {children}
+    </div>
+  );
+}
 
 const WorkSpace: React.FC = () => {
    const { data: session, status } = useSession() as { data: CustomSession | null; status: string };
@@ -207,99 +235,119 @@ const WorkSpace: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-900">
-      {/* Optionally, include Sidebar if needed */}
-      <Sidebar 
-        onLogout={() => window.location.href = '/api/logout'}
-        isOpen={false}
-        onToggle={() => {}}
-      />
-
-      <main className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="bg-slate-800 border-b border-slate-700 px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <h2 className="text-xl font-semibold text-white">Task Manager</h2>
-            <p className="text-sm text-slate-400">Manage your tasks</p>
- 
-          </div>
-          <div className="flex items-center space-x-4">
-            <select
-              value={selectedCustomer}
-              onChange={e => setSelectedCustomer(e.target.value)}
-              className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs"
-            >
-              <option value="">Select Customer</option>
-              {customerData.map(c => (
-                <option key={c.id} value={c.name}>{c.name}</option>
-              ))}
-            </select>
-            <select
-              value={selectedProject}
-              onChange={e => setSelectedProject(e.target.value)}
-              className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs"
-              disabled={!selectedCustomer}
-            >
-              <option value="">Select Project</option>
-              {projects.map(project => (
-                <option key={project.id} value={project.title}>{project.title}</option>
-              ))}
-            </select>
-            <button className="px-4 py-2 text-xs rounded-lg pohlman-button" onClick={() => signOut()}>Logout</button>
-          </div>
-        </header>
-
-        {/* Content */}
-        <section className="flex-1 p-6 space-y-6 overflow-y-auto">
-          {/* Task Table Headers */}
-          <div className="grid grid-cols-5 gap-4">
-            {['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'].map(category => (
-              <div key={category} className="flex items-center justify-between font-bold text-white/60 border border-white/60 rounded-md px-2 hover:text-white">
-                <span>{category}</span>
-                <button 
-                  className="text-white text-sm"
-                  onClick={() => handleSortClick(category)}
-                >
-                  ▼
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Task Lists */}
-          <div className="grid grid-cols-5 gap-4">
-            {(['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'] as const).map(category => (
-              <div key={category} className="flex flex-col gap-4">
-                {sortTasksByPriority(categorizedTasks[category], sortOrders[category]).map((task, index) => (
-                  <TaskCard
-                    key={index}
-                    task={task}
-                    onClick={() => handleTaskClick(task)}
-                    onUpdateTask={handleUpdateTask}
-                    onDeleteTask={handleDeleteTask}
-                  />
-                ))}
-                <button
-                  className="w-full h-20 border-2 border-dashed border-slate-600 rounded-md bg-transparent text-white/75 text-3xl flex items-center justify-center hover:shadow-lg"
-                  onClick={() => handleNewTaskClick(category)}
-                  aria-label={`Create new task in ${category}`}
-                >
-                  +
-                </button>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <NewTaskModal
-          isOpen={isNewTaskModalOpen}
-          onRequestClose={() => setIsNewTaskModalOpen(false)}
-          onCreateTask={handleCreateTask}
-          customers={customerData}
-          selectedCategory={selectedCategory}
+    <DndProvider backend={HTML5Backend}>
+      <div className="flex min-h-screen bg-slate-900">
+        {/* Optionally, include Sidebar if needed */}
+        <Sidebar 
+          onLogout={() => window.location.href = '/api/logout'}
+          isOpen={false}
+          onToggle={() => {}}
         />
-      </main>
-    </div>
+
+        <main className="flex-1 flex flex-col">
+          {/* Header */}
+          <header className="bg-slate-800 border-b border-slate-700 px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <h2 className="text-xl font-semibold text-white">Task Manager</h2>
+              <p className="text-sm text-slate-400">Manage your tasks</p>
+   
+            </div>
+            <div className="flex items-center space-x-4">
+              <select
+                value={selectedCustomer}
+                onChange={e => setSelectedCustomer(e.target.value)}
+                className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs"
+              >
+                <option value="">Select Customer</option>
+                {customerData.map(c => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
+                ))}
+              </select>
+              <select
+                value={selectedProject}
+                onChange={e => setSelectedProject(e.target.value)}
+                className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs"
+                disabled={!selectedCustomer}
+              >
+                <option value="">Select Project</option>
+                {projects.map(project => (
+                  <option key={project.id} value={project.title}>{project.title}</option>
+                ))}
+              </select>
+              <button className="px-4 py-2 text-xs rounded-lg pohlman-button" onClick={() => signOut()}>Logout</button>
+            </div>
+          </header>
+
+          {/* Content */}
+          <section className="flex-1 p-6 space-y-6 overflow-y-auto">
+            {/* Task Table Headers */}
+            <div className="grid grid-cols-5 gap-4">
+              {COLUMN_STATUSES.map(category => (
+                <div key={category} className="flex items-center justify-between font-bold text-white/60 border border-white/60 rounded-md px-2 hover:text-white">
+                  <span>{category}</span>
+                  <button 
+                    className="text-white text-sm"
+                    onClick={() => handleSortClick(category)}
+                  >
+                    ▼
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Task Lists */}
+            <div className="grid grid-cols-5 gap-4">
+              {COLUMN_STATUSES.map(category => (
+                <TaskDropColumn
+                  key={category}
+                  category={category}
+                  onDropTask={(taskId, newStatus) => {
+                    const task = tasks.find(t => t.id === taskId);
+                    if (task && task.status !== newStatus) {
+                      const updatedTask = { ...task, status: newStatus as any };
+                      handleUpdateTask(updatedTask);
+                      // Optionally, persist to backend here
+                      fetch(`/api/task`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updatedTask),
+                      });
+                    }
+                  }}
+                >
+                  <div className="flex flex-col gap-4">
+                    {sortTasksByPriority(categorizedTasks[category], sortOrders[category]).map((task, index) => (
+                      <TaskCard
+                        key={index}
+                        task={task}
+                        onClick={() => handleTaskClick(task)}
+                        onUpdateTask={handleUpdateTask}
+                        onDeleteTask={handleDeleteTask}
+                      />
+                    ))}
+                    <button
+                      className="w-full h-20 border-2 border-dashed border-slate-600 rounded-md bg-transparent text-white/75 text-3xl flex items-center justify-center hover:shadow-lg"
+                      onClick={() => handleNewTaskClick(category)}
+                      aria-label={`Create new task in ${category}`}
+                    >
+                      +
+                    </button>
+                  </div>
+                </TaskDropColumn>
+              ))}
+            </div>
+          </section>
+
+          <NewTaskModal
+            isOpen={isNewTaskModalOpen}
+            onRequestClose={() => setIsNewTaskModalOpen(false)}
+            onCreateTask={handleCreateTask}
+            customers={customerData}
+            selectedCategory={selectedCategory}
+          />
+        </main>
+      </div>
+    </DndProvider>
   );
 };
 
