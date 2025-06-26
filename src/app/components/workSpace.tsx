@@ -23,16 +23,27 @@ function TaskDropColumn({
   children: React.ReactNode;
   onDropTask: (taskId: number, newStatus: string) => void;
 }) {
-  const [, drop] = useDrop({
+  const [{ isOver }, drop] = useDrop({
     accept: 'TASK',
     drop: (item: { id: number; status: string }) => {
       if (item.status !== category) {
         onDropTask(item.id, category);
       }
     },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
   });
   return (
-    <div ref={node => { if (node) drop(node); }} style={{ minHeight: 100 }}>
+    <div
+      ref={node => { if (node) drop(node); }}
+      style={{
+        minHeight: 100,
+        background: isOver ? '#3b82f6' : 'transparent',
+        transition: 'background 0.2s',
+        borderRadius: 8,
+      }}
+    >
       {children}
     </div>
   );

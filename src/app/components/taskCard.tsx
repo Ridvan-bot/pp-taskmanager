@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useDrag } from 'react-dnd';
 import { Task } from '@prisma/client';
 import styles from './taskCard.module.css';
@@ -13,6 +13,7 @@ interface TaskCardProps {
 
 export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDeleteTask, onClick }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const mouseDownPos = useRef<{x: number, y: number} | null>(null);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'TASK',
@@ -29,12 +30,16 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDelete
     return content.substring(0, length) + '...';
   };
 
-  const handleCardClick = () => {
-    if (onClick) {
-      onClick();
-    } else {
-      setIsModalOpen(true);
-    }
+  const handleMouseDown = (e: React.MouseEvent) => {
+    mouseDownPos.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleMouseUp = () => {
+    mouseDownPos.current = null;
+  };
+
+  const handleDoubleClick = () => {
+    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
@@ -45,7 +50,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDelete
     <>
       <div
         className={styles.taskCard}
-        onClick={handleCardClick}
+        onDoubleClick={handleDoubleClick}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
         ref={node => { if (node) drag(node); }}
         style={{ opacity: isDragging ? 0.5 : 1 }}
       >
