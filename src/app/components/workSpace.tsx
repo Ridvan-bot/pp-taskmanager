@@ -97,6 +97,7 @@ const WorkSpace: React.FC = () => {
     OTHER: 'asc'
   });
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
 
   const prevIsTaskModalOpen = useRef(isTaskModalOpen);
 
@@ -184,7 +185,7 @@ const WorkSpace: React.FC = () => {
     );
   }
 
-  const categorizeTasks = (tasks: Task[]) => {
+  const categorizeTasks = (tasks: Task[] = []) => {
     const categories = {
       NOT_STARTED: [] as Task[],
       WIP: [] as Task[],
@@ -193,7 +194,7 @@ const WorkSpace: React.FC = () => {
       OTHER: [] as Task[]
     };
 
-    tasks.forEach(task => {
+    (tasks || []).forEach(task => {
       switch (task.status) {
         case 'NOT_STARTED':
           categories.NOT_STARTED.push(task);
@@ -275,6 +276,7 @@ const WorkSpace: React.FC = () => {
 
   // Fetch tasks from backend
   const fetchTasks = async () => {
+    if (!selectedCustomer) return; // Guard: do nothing if no customer selected
     let url = `/api/filtertaskoncustomer?customer=${selectedCustomer}`;
     if (selectedProject) {
       url += `&project=${selectedProject}`;
@@ -358,6 +360,11 @@ const WorkSpace: React.FC = () => {
                   key={category}
                   category={category}
                   onDropTask={async (taskId, newStatus) => {
+                    if (!selectedCustomer) {
+                      setToast('Vänligen välj en kund innan du flyttar en task.');
+                      setTimeout(() => setToast(null), 3000);
+                      return;
+                    }
                     const task = tasks.find(t => t.id === taskId);
                     if (task && task.status !== newStatus) {
                       const updatedTask = { ...task, status: newStatus as Status };
@@ -367,7 +374,6 @@ const WorkSpace: React.FC = () => {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(updatedTask),
                       });
-                      // Hämta om tasks från backend efter uppdatering
                       fetchTasks();
                     }
                   }}
@@ -406,6 +412,12 @@ const WorkSpace: React.FC = () => {
         {/* ChatSidebar on the right */}
         {isChatOpen && (
           <ChatSidebar onClose={() => setIsChatOpen(false)} />
+        )}
+        {/* Toast display */}
+        {toast && (
+          <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg text-base font-semibold animate-fade-in-out">
+            {toast}
+          </div>
         )}
       </div>
     </DndProvider>
