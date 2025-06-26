@@ -10,6 +10,7 @@ import { CustomSession, Customer } from '../../types';
 import { fetchTasksForCustomers } from '@/lib/getRequest';
 import { DndProvider, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import ChatSidebar from './chatSidebar';
 
 
 const COLUMN_STATUSES = ['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'] as const;
@@ -69,6 +70,7 @@ const WorkSpace: React.FC = () => {
     CLOSED: 'asc',
     OTHER: 'asc'
   });
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const prevIsTaskModalOpen = useRef(isTaskModalOpen);
 
@@ -247,14 +249,16 @@ const WorkSpace: React.FC = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="flex min-h-screen bg-slate-900">
-        {/* Optionally, include Sidebar if needed */}
+      <div className="flex min-h-screen bg-slate-900 relative">
+        {/* Sidebar with chat open handler */}
         <Sidebar 
           onLogout={() => window.location.href = '/api/logout'}
           isOpen={false}
           onToggle={() => {}}
+          onChatClick={() => setIsChatOpen(true)}
+          activeMenu={isChatOpen ? 'Chat' : 'Tasks'}
         />
-
+        {/* Main content */}
         <main className="flex-1 flex flex-col">
           {/* Header */}
           <header className="bg-slate-800 border-b border-slate-700 px-6 py-4 flex items-center justify-between">
@@ -357,6 +361,10 @@ const WorkSpace: React.FC = () => {
             selectedCategory={selectedCategory}
           />
         </main>
+        {/* ChatSidebar on the right */}
+        {isChatOpen && (
+          <ChatSidebar onClose={() => setIsChatOpen(false)} />
+        )}
       </div>
     </DndProvider>
   );

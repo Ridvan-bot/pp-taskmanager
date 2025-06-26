@@ -1,20 +1,21 @@
-import { CheckSquare, Users, ChartLine, Settings,  FolderOpen } from "lucide-react";
+import { CheckSquare, Users, ChartLine, Settings,  FolderOpen, MessageCircle } from "lucide-react";
 import Image from "next/image";
 
 
 interface SidebarProps {
-
   onLogout: () => void;
   isOpen: boolean;
   onToggle: () => void;
+  onChatClick?: () => void;
+  activeMenu?: string;
 }
 
-export default function Sidebar({ isOpen }: SidebarProps) {
+export default function Sidebar({ isOpen, onChatClick, activeMenu }: SidebarProps) {
   const navItems = [
-    { icon: CheckSquare, label: "Tasks", href: "#", active: true },
+    { icon: CheckSquare, label: "Tasks", href: "#", active: activeMenu === 'Tasks' },
     { icon: FolderOpen, label: "Projects", href: "#" },
     { icon: Users, label: "Customers", href: "#" },
-    { icon: ChartLine, label: "Reports", href: "#" },
+    { icon: MessageCircle, label: "Chat", href: "#chat", onClick: onChatClick, active: activeMenu === 'Chat' },
     { icon: Settings, label: "Settings", href: "#" },
   ];
 
@@ -29,7 +30,8 @@ export default function Sidebar({ isOpen }: SidebarProps) {
         <div className="flex items-center space-x-3">
           <Image src="/pohlmanproteanab.png" alt="Logo" width={40} height={40} />
           <div>
-            <p className="text-sm text-slate-400">Pohlman Protean</p>
+            <h1 className="text-xl font-bold text-white">TaskFlow</h1>
+            <p className="text-sm text-slate-400">Project Management</p>
           </div>
         </div>
       </div>
@@ -40,6 +42,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
           <a
             key={item.label}
             href={item.href}
+            onClick={item.label === 'Chat' && item.onClick ? (e) => { e.preventDefault(); item.onClick && item.onClick(); } : undefined}
             className={`
               flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
               ${item.active 

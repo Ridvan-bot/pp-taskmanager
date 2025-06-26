@@ -3,6 +3,7 @@ import { useDrag } from 'react-dnd';
 import { Task } from '@prisma/client';
 import styles from './taskCard.module.css';
 import TaskModal from './modals/taskModal';
+import { CheckSquare, Users, ChartLine, Settings, FolderOpen, MessageCircle } from "lucide-react";
 
 interface TaskCardProps {
   task: Task;
