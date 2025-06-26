@@ -11,6 +11,7 @@ import { fetchTasksForCustomers } from '@/lib/getRequest';
 import { DndProvider, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import ChatSidebar from './chatSidebar';
+import { ChevronsUpDown } from "lucide-react";
 
 
 const COLUMN_STATUSES = ['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'] as const;
@@ -48,6 +49,31 @@ function TaskDropColumn({
       {children}
     </div>
   );
+}
+
+// Helper to format status
+function formatStatus(status: string) {
+  return status
+    .toLowerCase()
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+// Helper to get color/gradient for each status
+function getStatusHeaderStyle(status: string) {
+  switch (status) {
+    case 'NOT_STARTED':
+      return 'bg-gradient-to-r from-blue-500/80 to-blue-400/80 text-white shadow-md';
+    case 'WIP':
+      return 'bg-gradient-to-r from-yellow-400/80 to-yellow-300/80 text-slate-900 shadow-md';
+    case 'WAITING':
+      return 'bg-gradient-to-r from-orange-400/80 to-orange-300/80 text-slate-900 shadow-md';
+    case 'CLOSED':
+      return 'bg-gradient-to-r from-green-500/80 to-green-400/80 text-white shadow-md';
+    default:
+      return 'bg-gradient-to-r from-slate-600/80 to-slate-500/80 text-white shadow-md';
+  }
 }
 
 const WorkSpace: React.FC = () => {
@@ -308,13 +334,18 @@ const WorkSpace: React.FC = () => {
             {/* Task Table Headers */}
             <div className="grid grid-cols-5 gap-4">
               {COLUMN_STATUSES.map(category => (
-                <div key={category} className="flex items-center justify-between font-bold text-white/60 border border-white/60 rounded-md px-2 hover:text-white">
-                  <span>{category}</span>
+                <div
+                  key={category}
+                  className={`flex items-center justify-between font-bold border border-white/10 rounded-2xl px-4 py-1.5 mb-2 text-lg ${getStatusHeaderStyle(category)} transition-all`}
+                  style={{ minHeight: 36 }}
+                >
+                  <span className="tracking-wide drop-shadow-sm">{formatStatus(category)}</span>
                   <button 
-                    className="text-white text-sm"
+                    className="text-white/70 hover:text-white text-xl px-1 py-1 rounded-full focus:outline-none focus:ring-2 focus:ring-white/40"
                     onClick={() => handleSortClick(category)}
+                    aria-label={`Sort ${formatStatus(category)}`}
                   >
-                    ▼
+                    <ChevronsUpDown className="w-5 h-5" />
                   </button>
                 </div>
               ))}
