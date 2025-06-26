@@ -3,7 +3,7 @@ import { useDrag } from 'react-dnd';
 import { Task } from '@prisma/client';
 import styles from './taskCard.module.css';
 import TaskModal from './modals/taskModal';
-import { CheckSquare, Users, ChartLine, Settings, FolderOpen, MessageCircle } from "lucide-react";
+
 
 interface TaskCardProps {
   task: Task;
@@ -12,7 +12,7 @@ interface TaskCardProps {
   onDeleteTask?: (deletedTaskId: string) => void;
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDeleteTask, onClick }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDeleteTask }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const mouseDownPos = useRef<{x: number, y: number} | null>(null);
 

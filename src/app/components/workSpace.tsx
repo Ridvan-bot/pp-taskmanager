@@ -5,7 +5,7 @@ import Sidebar from './sidebar';
 import TaskCard from './taskCard';
 import LoginModal from './modals/loginModal';
 import NewTaskModal from './modals/newTaskModal';
-import { Task, Project } from '@prisma/client';
+import { Task, Project, Status } from '@prisma/client';
 import { CustomSession, Customer } from '../../types';
 import { fetchTasksForCustomers } from '@/lib/getRequest';
 import { DndProvider, useDrop } from 'react-dnd';
@@ -247,6 +247,17 @@ const WorkSpace: React.FC = () => {
     );
   };
 
+  // Fetch tasks from backend
+  const fetchTasks = async () => {
+    let url = `/api/filtertaskoncustomer?customer=${selectedCustomer}`;
+    if (selectedProject) {
+      url += `&project=${selectedProject}`;
+    }
+    const data = await fetch(url);
+    const dataJson = await data.json();
+    setTasks(dataJson.data);
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="flex min-h-screen bg-slate-900 relative">
@@ -316,17 +327,18 @@ const WorkSpace: React.FC = () => {
                 <TaskDropColumn
                   key={category}
                   category={category}
-                  onDropTask={(taskId, newStatus) => {
+                  onDropTask={async (taskId, newStatus) => {
                     const task = tasks.find(t => t.id === taskId);
                     if (task && task.status !== newStatus) {
-                      const updatedTask = { ...task, status: newStatus as any };
+                      const updatedTask = { ...task, status: newStatus as Status };
                       handleUpdateTask(updatedTask);
-                      // Optionally, persist to backend here
-                      fetch(`/api/task`, {
+                      await fetch(`/api/task`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(updatedTask),
                       });
+                      // Hämta om tasks från backend efter uppdatering
+                      fetchTasks();
                     }
                   }}
                 >

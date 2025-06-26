@@ -1,4 +1,4 @@
-import { CheckSquare, Users, ChartLine, Settings,  FolderOpen, MessageCircle } from "lucide-react";
+import { CheckSquare, Users, Settings, FolderOpen, MessageCircle } from "lucide-react";
 import Image from "next/image";
 
 
@@ -42,7 +42,7 @@ export default function Sidebar({ isOpen, onChatClick, activeMenu }: SidebarProp
           <a
             key={item.label}
             href={item.href}
-            onClick={item.label === 'Chat' && item.onClick ? (e) => { e.preventDefault(); item.onClick && item.onClick(); } : undefined}
+            onClick={item.label === 'Chat' && item.onClick ? (e) => { e.preventDefault(); if (item.onClick) { item.onClick(); } } : undefined}
             className={`
               flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
               ${item.active 
