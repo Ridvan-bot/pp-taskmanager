@@ -272,11 +272,10 @@ const WorkSpace: React.FC = () => {
         {/* Main content */}
         <main className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="bg-slate-800 border-b border-slate-700 px-6 py-4 flex items-center justify-between">
+          <header className="bg-slate-800/90 border-b border-slate-700 px-8 py-6 flex items-center justify-between rounded-2xl shadow-xl m-6 mb-0">
             <div className="flex items-center space-x-4">
-              <h2 className="text-xl font-semibold text-white">Task Manager</h2>
+              <h2 className="text-2xl font-bold text-white">Task Manager</h2>
               <p className="text-sm text-slate-400">Manage your tasks</p>
-   
             </div>
             <div className="flex items-center space-x-4">
               <select

@@ -21,18 +21,17 @@ export default function Sidebar({ isOpen, onChatClick, activeMenu }: SidebarProp
 
   return (
     <aside className={`
-      w-64 bg-slate-800 border-r border-slate-700 flex flex-col transition-all duration-300
+      w-64 bg-slate-800/90 border-r border-slate-700 flex flex-col transition-all duration-300
       lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
       fixed lg:relative z-30 h-full lg:h-auto
+      rounded-2xl shadow-2xl m-4
     `}>
       {/* Logo */}
-      <div className="p-6 border-slate-700">
-        <div className="flex items-center space-x-3">
-          <Image src="/pohlmanproteanab.png" alt="Logo" width={40} height={40} />
-          <div>
-            <h1 className="text-xl font-bold text-white">TaskFlow</h1>
-            <p className="text-sm text-slate-400">Project Management</p>
-          </div>
+      <div className="p-6 border-slate-700 rounded-2xl bg-slate-900/80 shadow-md mx-4 mt-4 mb-2 flex items-center space-x-3">
+        <Image src="/pohlmanproteanab.png" alt="Logo" width={40} height={40} className="rounded-xl" />
+        <div>
+          <h1 className="text-xl font-bold text-white">TaskFlow</h1>
+          <p className="text-sm text-slate-400">Project Management</p>
         </div>
       </div>
       
@@ -44,9 +43,9 @@ export default function Sidebar({ isOpen, onChatClick, activeMenu }: SidebarProp
             href={item.href}
             onClick={item.label === 'Chat' && item.onClick ? (e) => { e.preventDefault(); if (item.onClick) { item.onClick(); } } : undefined}
             className={`
-              flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
+              flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors
               ${item.active 
-                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
+                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 shadow-md' 
                 : 'text-slate-300 hover:bg-slate-700'
               }
             `}
