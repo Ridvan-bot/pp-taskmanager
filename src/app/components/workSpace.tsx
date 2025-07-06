@@ -167,16 +167,42 @@ const WorkSpace: React.FC = () => {
     }
     try {
       const response = await fetch(`/api/customer?userId=${session.user.id}`);
+      
+      if (!response.ok) {
+        if (response.status === 500) {
+          // User not found in database, sign out
+          console.error('User not found in database, signing out');
+          signOut();
+          return;
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const customerData = await response.json();
       const customerArray = customerData.customers.map((customer: Customer) => customer.name);
       setCustomersName(customerArray);
       setCustomerData(customerData.customers);
     } catch (error) {
       console.error('Failed to fetch customers:', error);
+      // If there's an error fetching user data, sign out
+      signOut();
     }
   };
 
-  if (status !== 'authenticated') {
+  // Show loading spinner while session is being fetched
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-slate-900">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
+          <p className="text-white text-lg">Laddar...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login modal only when explicitly unauthenticated
+  if (status === 'unauthenticated') {
     return (
       <LoginModal 
         isOpen={isLoginModalOpen} 
@@ -291,7 +317,7 @@ const WorkSpace: React.FC = () => {
       <div className="flex min-h-screen bg-slate-900 relative">
         {/* Sidebar with chat open handler */}
         <Sidebar 
-          onLogout={() => window.location.href = '/api/logout'}
+          onLogout={() => signOut()}
           isOpen={false}
           onToggle={() => {}}
           onChatClick={() => setIsChatOpen(true)}
