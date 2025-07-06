@@ -98,9 +98,25 @@ const WorkSpace: React.FC = () => {
   });
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [showDelayedLoading, setShowDelayedLoading] = useState(false);
 
   const prevIsTaskModalOpen = useRef(isTaskModalOpen);
 
+  // Delayed loading state - show spinner only after 10 seconds
+  useEffect(() => {
+    if (status === 'loading') {
+      const timer = setTimeout(() => {
+        setShowDelayedLoading(true);
+      }, 10000); // 10 seconds
+
+      return () => {
+        clearTimeout(timer);
+        setShowDelayedLoading(false);
+      };
+    } else {
+      setShowDelayedLoading(false);
+    }
+  }, [status]);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -189,16 +205,25 @@ const WorkSpace: React.FC = () => {
     }
   };
 
-  // Show loading spinner while session is being fetched
+  // Show loading spinner only after delay while session is being fetched
   if (status === 'loading') {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-slate-900">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
-          <p className="text-white text-lg">Laddar...</p>
+    if (showDelayedLoading) {
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-slate-900">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
+            <p className="text-white text-lg">Laddar...</p>
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      // Show nothing while waiting for delayed loading or session to resolve
+      return (
+        <div className="min-h-screen bg-slate-900">
+          {/* Silent loading - no spinner yet */}
+        </div>
+      );
+    }
   }
 
   // Show login modal only when explicitly unauthenticated
