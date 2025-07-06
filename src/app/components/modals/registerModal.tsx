@@ -53,16 +53,16 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
     <Modal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
-      contentLabel="Register Modal"
-      className="modal"
-      overlayClassName="modal-overlay"
+              contentLabel="Registrerings Modal"
+      className="mx-auto mt-20 max-w-4xl bg-slate-800/50 border border-slate-700 rounded-xl shadow-lg p-6 backdrop-blur-sm outline-none"
+      overlayClassName="fixed inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center"
       shouldCloseOnOverlayClick={false}
     >
-      <h2 className="text-2xl font-bold mb-4">Register User</h2>
+      <h2 className="text-3xl font-bold mb-4 text-center text-white">Registrera användare</h2>
       <form className="space-y-4" onSubmit={handleSubmit}>
         {error && <p className="text-red-500">{error}</p>}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-white-700">Name:</label>
+          <label htmlFor="name" className="block text-sm font-medium text-slate-300">Namn:</label>
           <input
             type="text"
             id="name"
@@ -70,11 +70,11 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-black"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-white bg-blue-100/10"
           />
         </div>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-white-700">Email:</label>
+          <label htmlFor="email" className="block text-sm font-medium text-slate-300">E-post:</label>
           <input
             type="email"
             id="email"
@@ -82,11 +82,11 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-black"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-white bg-blue-100/10"
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-white-700">Password:</label>
+          <label htmlFor="password" className="block text-sm font-medium text-slate-300">Lösenord:</label>
           <input
             type="password"
             id="password"
@@ -94,31 +94,25 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-black"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-white bg-blue-100/10"
           />
         </div>
       <div className="flex justify-center">
         <button
           type="submit"
-          className="max-w-xs mt-4 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+          className="mt-6 w-full max-w-md flex justify-center py-3 px-6 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-green-400/20 to-emerald-400/20 backdrop-blur-md border border-green-300/30 shadow-xl hover:from-green-400/30 hover:to-emerald-400/30 hover:border-green-300/50 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-green-300/50 transition-all duration-300 ease-in-out transform hover:scale-[1.02]"
         >
-          Register
-        </button>
-        <button
-          type="button"
-          onClick={() => signIn('google')}
-          className="max-w-xs mt-4 ml-2 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-        >
-          Sign up with Google
+          Registrera
         </button>
       </div>
       </form>
-      <div className="flex justify-center mt-4">
+      <div className="flex flex-col items-center mt-6">
+        <p className="text-slate-300 text-sm mb-2">Har du redan ett konto?</p>
         <button
           onClick={handleLoginClick}
-          className="max-w-xs flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="w-full max-w-md flex justify-center py-3 px-6 rounded-xl text-sm font-semibold text-white bg-white/5 backdrop-blur-md border border-white/10 shadow-lg hover:bg-white/10 hover:border-white/20 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300 ease-in-out transform hover:scale-[1.02]"
         >
-          Login
+          Tillbaka till inloggning
         </button>
       </div>
     </Modal>

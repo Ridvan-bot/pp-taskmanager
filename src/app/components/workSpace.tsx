@@ -14,7 +14,7 @@ import ChatSidebar from './chatSidebar';
 import { ChevronsUpDown } from "lucide-react";
 
 
-const COLUMN_STATUSES = ['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'] as const;
+const COLUMN_STATUSES = ['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED'] as const;
 
 function TaskDropColumn({
   category,
@@ -93,8 +93,7 @@ const WorkSpace: React.FC = () => {
     NOT_STARTED: 'asc',
     WIP: 'asc',
     WAITING: 'asc',
-    CLOSED: 'asc',
-    OTHER: 'asc'
+    CLOSED: 'asc'
   });
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -244,11 +243,22 @@ const WorkSpace: React.FC = () => {
       NOT_STARTED: [] as Task[],
       WIP: [] as Task[],
       WAITING: [] as Task[],
-      CLOSED: [] as Task[],
-      OTHER: [] as Task[]
+      CLOSED: [] as Task[]
     };
 
+    // Calculate the date 14 days ago
+    const fourteenDaysAgo = new Date();
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+
     (tasks || []).forEach(task => {
+      // Skip CLOSED tasks that are older than 14 days
+      if (task.status === 'CLOSED') {
+        const taskUpdatedAt = new Date(task.updatedAt);
+        if (taskUpdatedAt < fourteenDaysAgo) {
+          return; // Skip this task - don't add it to any category
+        }
+      }
+
       switch (task.status) {
         case 'NOT_STARTED':
           categories.NOT_STARTED.push(task);
@@ -263,7 +273,7 @@ const WorkSpace: React.FC = () => {
           categories.CLOSED.push(task);
           break;
         default:
-          categories.OTHER.push(task);
+          // Skip tasks with unknown status
           break;
       }
     });
