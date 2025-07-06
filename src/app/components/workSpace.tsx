@@ -173,6 +173,9 @@ const WorkSpace: React.FC = () => {
         setTasks(dataJson.data);
       };
       fetchData();
+    } else {
+      // Clear tasks when no customer is selected
+      setTasks([]);
     }
   }, [selectedCustomer, selectedProject]);
 
@@ -269,11 +272,22 @@ const WorkSpace: React.FC = () => {
   };
 
   const sortTasksByPriority = (tasks: Task[], sortOrder: 'asc' | 'desc') => {
-    return tasks.sort((a, b) => 
-      sortOrder === 'asc' 
-        ? a.priority.localeCompare(b.priority) 
-        : b.priority.localeCompare(a.priority)
-    );
+    // Define priority order (HIGH is highest priority, BC is lowest)
+    const priorityOrder: { [key: string]: number } = {
+      'BC': 1,
+      'HIGH': 2,
+      'MEDIUM': 3,
+      'LOW': 4,
+    };
+
+    return tasks.sort((a, b) => {
+      const priorityA = priorityOrder[a.priority as string] || 999;
+      const priorityB = priorityOrder[b.priority as string] || 999;
+      
+      return sortOrder === 'asc' 
+        ? priorityA - priorityB  // HIGH first in ascending order
+        : priorityB - priorityA; // LOW first in descending order
+    });
   };
 
   const handleSortClick = (category: string) => {
