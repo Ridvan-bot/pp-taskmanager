@@ -6,7 +6,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 export default function Home() {
   return (
-    <SessionProvider session={null}>
+    <SessionProvider>
           <DndProvider backend={HTML5Backend}>
         <main className="
         flex flex-col 

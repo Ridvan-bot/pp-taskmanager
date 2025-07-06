@@ -14,7 +14,7 @@ import ChatSidebar from './chatSidebar';
 import { ChevronsUpDown } from "lucide-react";
 
 
-const COLUMN_STATUSES = ['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED', 'OTHER'] as const;
+const COLUMN_STATUSES = ['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED'] as const;
 
 function TaskDropColumn({
   category,
@@ -93,14 +93,29 @@ const WorkSpace: React.FC = () => {
     NOT_STARTED: 'asc',
     WIP: 'asc',
     WAITING: 'asc',
-    CLOSED: 'asc',
-    OTHER: 'asc'
+    CLOSED: 'asc'
   });
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [showDelayedLoading, setShowDelayedLoading] = useState(false);
 
   const prevIsTaskModalOpen = useRef(isTaskModalOpen);
 
+  // Delayed loading state - show spinner only after 10 seconds
+  useEffect(() => {
+    if (status === 'loading') {
+      const timer = setTimeout(() => {
+        setShowDelayedLoading(true);
+      }, 10000); // 10 seconds
+
+      return () => {
+        clearTimeout(timer);
+        setShowDelayedLoading(false);
+      };
+    } else {
+      setShowDelayedLoading(false);
+    }
+  }, [status]);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -157,6 +172,9 @@ const WorkSpace: React.FC = () => {
         setTasks(dataJson.data);
       };
       fetchData();
+    } else {
+      // Clear tasks when no customer is selected
+      setTasks([]);
     }
   }, [selectedCustomer, selectedProject]);
 
@@ -167,16 +185,51 @@ const WorkSpace: React.FC = () => {
     }
     try {
       const response = await fetch(`/api/customer?userId=${session.user.id}`);
+      
+      if (!response.ok) {
+        if (response.status === 500) {
+          // User not found in database, sign out
+          console.error('User not found in database, signing out');
+          signOut();
+          return;
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const customerData = await response.json();
       const customerArray = customerData.customers.map((customer: Customer) => customer.name);
       setCustomersName(customerArray);
       setCustomerData(customerData.customers);
     } catch (error) {
       console.error('Failed to fetch customers:', error);
+      // If there's an error fetching user data, sign out
+      signOut();
     }
   };
 
-  if (status !== 'authenticated') {
+  // Show loading spinner only after delay while session is being fetched
+  if (status === 'loading') {
+    if (showDelayedLoading) {
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-slate-900">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
+            <p className="text-white text-lg">Laddar...</p>
+          </div>
+        </div>
+      );
+    } else {
+      // Show nothing while waiting for delayed loading or session to resolve
+      return (
+        <div className="min-h-screen bg-slate-900">
+          {/* Silent loading - no spinner yet */}
+        </div>
+      );
+    }
+  }
+
+  // Show login modal only when explicitly unauthenticated
+  if (status === 'unauthenticated') {
     return (
       <LoginModal 
         isOpen={isLoginModalOpen} 
@@ -190,11 +243,22 @@ const WorkSpace: React.FC = () => {
       NOT_STARTED: [] as Task[],
       WIP: [] as Task[],
       WAITING: [] as Task[],
-      CLOSED: [] as Task[],
-      OTHER: [] as Task[]
+      CLOSED: [] as Task[]
     };
 
+    // Calculate the date 14 days ago
+    const fourteenDaysAgo = new Date();
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+
     (tasks || []).forEach(task => {
+      // Skip CLOSED tasks that are older than 14 days
+      if (task.status === 'CLOSED') {
+        const taskUpdatedAt = new Date(task.updatedAt);
+        if (taskUpdatedAt < fourteenDaysAgo) {
+          return; // Skip this task - don't add it to any category
+        }
+      }
+
       switch (task.status) {
         case 'NOT_STARTED':
           categories.NOT_STARTED.push(task);
@@ -209,7 +273,7 @@ const WorkSpace: React.FC = () => {
           categories.CLOSED.push(task);
           break;
         default:
-          categories.OTHER.push(task);
+          // Skip tasks with unknown status
           break;
       }
     });
@@ -218,11 +282,22 @@ const WorkSpace: React.FC = () => {
   };
 
   const sortTasksByPriority = (tasks: Task[], sortOrder: 'asc' | 'desc') => {
-    return tasks.sort((a, b) => 
-      sortOrder === 'asc' 
-        ? a.priority.localeCompare(b.priority) 
-        : b.priority.localeCompare(a.priority)
-    );
+    // Define priority order (HIGH is highest priority, BC is lowest)
+    const priorityOrder: { [key: string]: number } = {
+      'BC': 1,
+      'HIGH': 2,
+      'MEDIUM': 3,
+      'LOW': 4,
+    };
+
+    return tasks.sort((a, b) => {
+      const priorityA = priorityOrder[a.priority as string] || 999;
+      const priorityB = priorityOrder[b.priority as string] || 999;
+      
+      return sortOrder === 'asc' 
+        ? priorityA - priorityB  // HIGH first in ascending order
+        : priorityB - priorityA; // LOW first in descending order
+    });
   };
 
   const handleSortClick = (category: string) => {
@@ -291,7 +366,7 @@ const WorkSpace: React.FC = () => {
       <div className="flex min-h-screen bg-slate-900 relative">
         {/* Sidebar with chat open handler */}
         <Sidebar 
-          onLogout={() => window.location.href = '/api/logout'}
+          onLogout={() => signOut()}
           isOpen={false}
           onToggle={() => {}}
           onChatClick={() => setIsChatOpen(true)}

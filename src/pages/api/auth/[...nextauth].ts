@@ -91,8 +91,25 @@ export default NextAuth({
       return token;
     },
     async session({ session, token }) {
-      if (session.user) {
-        (session as Session).user.id = token.id as string;
+      if (session.user && token.id) {
+        // Validate that the user still exists in the database
+        try {
+          const user = await prisma.user.findUnique({
+            where: { id: token.id as string },
+          });
+          
+          if (!user) {
+            // User no longer exists in database, invalidate session
+            console.error('Session validation failed: User not found');
+            throw new Error('User not found');
+          }
+          
+          (session as Session).user.id = token.id as string;
+        } catch (error) {
+          // If user doesn't exist, throw error to invalidate session
+          console.error('Session validation failed:', error);
+          throw error;
+        }
       }
       return session;
     },
