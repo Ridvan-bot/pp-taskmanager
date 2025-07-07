@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           if (!title || !content || !priority || !status || !customerId || !projectId) {
             throw new Error('Missing required fields');
           }
-          const newTask = await createTask({ title, content, priority, status, customerId, projectId });
+          const newTask = await createTask({ title, content, priority, status, customerId, projectId, parentId: null });
           res.status(201).json(newTask);
         } catch (error) {
           console.error('Failed to create task:', error);

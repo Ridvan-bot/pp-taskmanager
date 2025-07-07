@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import Image from 'next/image';
-import { signIn } from 'next-auth/react';
 import { RegisterModalProps } from '@/types';
 
 Modal.setAppElement('#__next');
@@ -10,12 +9,20 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [honeypot, setHoneypot] = useState('');
   const [error, setError] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const [countdown, setCountdown] = useState(5);
 
   const handleCreateAccount = async (event: React.FormEvent) => {
     event.preventDefault();
+    
+    // Check honeypot field - if filled, it's likely a bot
+    if (honeypot) {
+      setError('Ogiltigt registreringsförsök upptäckt');
+      return;
+    }
+    
     try {
       const response = await fetch('/api/user', {
         method: 'POST',
@@ -148,6 +155,19 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm text-white bg-blue-100/10"
+              />
+            </div>
+            {/* Honeypot field - hidden from users but robots might fill it */}
+            <div style={{ display: 'none' }}>
+              <label htmlFor="website">Website (do not fill):</label>
+              <input
+                type="text"
+                id="website"
+                name="website"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
               />
             </div>
       <div className="flex justify-center">

@@ -1,6 +1,7 @@
+'use client';
 import React, { useState, useRef } from 'react';
 import { useDrag } from 'react-dnd';
-import { Task } from '@prisma/client';
+import { Task } from '../../types';
 import styles from './taskCard.module.css';
 import TaskModal from './modals/taskModal';
 
@@ -58,10 +59,19 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDelete
         style={{ opacity: isDragging ? 0.5 : 1 }}
       >
         <strong>Title:</strong> {task.title}
+        {task.parentId && (
+          <span className={styles.subtaskIndicator}> (Subtask)</span>
+        )}
         <br />
         <strong>Beskrivning:</strong> {truncateContent(task.content, 30)}
         <br />
         <strong>Prio:</strong> {task.priority}
+        {task.subtasks && task.subtasks.length > 0 && (
+          <>
+            <br />
+            <strong>Subtasks:</strong> {task.subtasks.length}
+          </>
+        )}
         <br />
       </div>
       <TaskModal 

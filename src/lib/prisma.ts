@@ -2,8 +2,17 @@ import { PrismaClient, Priority, Status} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+export { prisma };
+
 export async function getAllTasks() {
-  return await prisma.task.findMany();
+  return await prisma.task.findMany({
+    include: {
+      parent: true,
+      subtasks: true,
+      customer: { select: { name: true } },
+      project: { select: { title: true } }
+    }
+  });
 }
 
 export async function getTasksByCustomerName(customerName: string) {
@@ -21,6 +30,12 @@ export async function getTasksByCustomerName(customerName: string) {
     where: {
       customerId: customer.id,
     },
+    include: {
+      parent: true,
+      subtasks: true,
+      customer: { select: { name: true } },
+      project: { select: { title: true } }
+    }
   });
 }
 
@@ -32,6 +47,8 @@ export async function getAllUsersTasks(userId: string) {
         include: {
           tasks: {
             include: {
+              parent: true,
+              subtasks: true,
               customer: { select: { name: true } }, 
               project: { select: { title: true } } 
             }
@@ -67,7 +84,7 @@ export async function getTasksByUserId(userId: string) {
   return user.customers.flatMap(customer => customer.tasks);
 }
 
-export async function createTask(data: { title: string; content: string; priority: Priority; status: Status; customerId: number; projectId: number }) {
+export async function createTask(data: { title: string; content: string; priority: Priority; status: Status; customerId: number; projectId: number; parentId: number | null }) {
   return await prisma.task.create({
     data: {
       title: data.title,
@@ -76,7 +93,14 @@ export async function createTask(data: { title: string; content: string; priorit
       status: data.status,
       customer: { connect: { id: data.customerId } },
       project: { connect: { id: data.projectId } },
+      parent: data.parentId ? { connect: { id: data.parentId } } : undefined,
     },
+    include: {
+      parent: true,
+      subtasks: true,
+      customer: { select: { name: true } },
+      project: { select: { title: true } }
+    }
   });
 }
 
@@ -100,7 +124,7 @@ export async function getAllUsersCustomers(userId: string) {
   return user.customers;
 }
 
-export async function updateTask(taskId: number, data: { title?: string; content?: string; priority?: Priority; status?: Status; customerId?: number; projectId?: number }) {
+export async function updateTask(taskId: number, data: { title?: string; content?: string; priority?: Priority; status?: Status; customerId?: number; projectId?: number; parentId?: number | null }) {
   return await prisma.task.update({
     where: { id: taskId },
     data: {
@@ -110,7 +134,14 @@ export async function updateTask(taskId: number, data: { title?: string; content
       status: data.status,
       customer: data.customerId ? { connect: { id: data.customerId } } : undefined,
       project: data.projectId ? { connect: { id: data.projectId } } : undefined,
+      parent: data.parentId !== undefined ? (data.parentId ? { connect: { id: data.parentId } } : { disconnect: true }) : undefined,
     },
+    include: {
+      parent: true,
+      subtasks: true,
+      customer: { select: { name: true } },
+      project: { select: { title: true } }
+    }
   });
 }
 
@@ -140,6 +171,12 @@ export async function getTasksByCustomerAndProject(customerName: string, project
       where: {
         customerId: customer.id,
       },
+      include: {
+        parent: true,
+        subtasks: true,
+        customer: { select: { name: true } },
+        project: { select: { title: true } }
+      }
     });
   }
 
@@ -156,5 +193,11 @@ export async function getTasksByCustomerAndProject(customerName: string, project
       customerId: customer.id,
       projectId: project.id,
     },
+    include: {
+      parent: true,
+      subtasks: true,
+      customer: { select: { name: true } },
+      project: { select: { title: true } }
+    }
   });
 }

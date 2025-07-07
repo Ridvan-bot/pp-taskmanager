@@ -1,16 +1,20 @@
-
 import { Session } from 'next-auth';
-import { Project } from '@prisma/client';
+import { Project, Priority, Status } from '@prisma/client';
 
 
 export type Task = {
     id: number;
     title: string;
     content: string;
-    status: string;
-    priority: number;
-    createdAt: string;
-    updatedAt: string;
+    status: Status;
+    priority: Priority;
+    createdAt: Date;
+    updatedAt: Date;
+    customerId: number;
+    projectId: number;
+    parentId: number | null;  // Changed from optional to required null
+    parent?: Task | null;      // Parent task
+    subtasks?: Task[];         // Array of subtasks
   };
 
   export type LoginModalProps = {
@@ -35,9 +39,10 @@ export type Task = {
   export type NewTaskModalProps = {
     isOpen: boolean;
     onRequestClose: () => void;
-    onCreateTask: (title: string, content: string, priority: string, status: string, customerId: number, projectId: number) => void;
+    onCreateTask: (title: string, content: string, priority: string, status: string, customerId: number, projectId: number, parentId: number | null) => void;
     customers: Customer[];
     selectedCategory: string;
+    availableTasks?: Task[];  // Available tasks that can be parent tasks
   }
 
   export type Customer = {

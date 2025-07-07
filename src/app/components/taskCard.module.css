@@ -25,3 +25,9 @@
 .taskCard p {
   margin: 8px 0;
 }
+
+.subtaskIndicator {
+  color: #10b981;
+  font-size: 0.8em;
+  font-weight: 600;
+}

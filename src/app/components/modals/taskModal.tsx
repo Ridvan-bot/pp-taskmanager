@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Task, Priority, Status } from '@prisma/client';
+import { Priority, Status } from '@prisma/client';
+import { Task } from '@/types';
 import styles from './taskModal.module.css';
 
 interface TaskModalProps {
@@ -57,6 +58,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
       status,
       customerId: task.customerId,
       projectId: task.projectId,
+      parentId: task.parentId,
     };
 
     try {
@@ -145,26 +147,6 @@ const handleDeleteClick = async () => {
               <option key={value} value={value}>{value}</option>
             ))}
           </select>
-
-          {/* Customer ID */}
-          <label htmlFor="customerId"><strong>Customer ID:</strong></label>
-          <input
-            type="text"
-            id="customerId"
-            value={task.customerId}
-            readOnly
-            className={styles.modalInput}
-          />
-
-          {/* Project ID */}
-          <label htmlFor="projectId"><strong>Projekt ID:</strong></label>
-          <input
-            type="text"
-            id="projectId"
-            value={task.projectId}
-            readOnly
-            className={styles.modalInput}
-          />
         </div>
         <div className={styles.buttonContainer}>
           <button className={styles.updateButton} onClick={handleUpdateClick}>Update</button>

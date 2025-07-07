@@ -312,12 +312,12 @@ const WorkSpace: React.FC = () => {
     setSelectedCategory(category);
   };
 
-  const handleCreateTask = async (title: string, content: string, priority: string, status: string, customerId: number, projectId: number) => {
+  const handleCreateTask = async (title: string, content: string, priority: string, status: string, customerId: number, projectId: number, parentId: number | null) => {
     try {
       const response = await fetch('/api/task', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content, priority, status, customerId, projectId })
+        body: JSON.stringify({ title, content, priority, status, customerId, projectId, parentId })
       });
 
       if (!response.ok) {
@@ -482,6 +482,7 @@ const WorkSpace: React.FC = () => {
             onCreateTask={handleCreateTask}
             customers={customerData}
             selectedCategory={selectedCategory}
+            availableTasks={tasks}
           />
         </main>
         {/* ChatSidebar on the right */}

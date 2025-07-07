@@ -3,13 +3,14 @@ import styles from './newTaskModal.module.css';
 import { Priority, Status, Project } from '@prisma/client';
 import { NewTaskModalProps } from '@/types';
 
-const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, customers, selectedCategory}) => {
+const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, customers, selectedCategory, availableTasks = []}) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [priority, setPriority] = useState<Priority | ''>('');
   const [status, setStatus] = useState('');
   const [projectId, setProjectId] = useState<number | ''>(''); 
   const [customerId, setCustomerId] = useState<number | ''>(''); 
+  const [parentId, setParentId] = useState<number | null>(null);
   const [availableProjects, setAvailableProjects] = useState<Project[]>([]);
 
   useEffect(() => {
@@ -39,6 +40,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
     setStatus('');
     setProjectId('');
     setCustomerId('');
+    setParentId(null);
     setAvailableProjects([]);
   };
 
@@ -49,7 +51,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onCreateTask(title, content, priority, status, customerId as number, projectId as number);
+    onCreateTask(title, content, priority, status, customerId as number, projectId as number, parentId);
     resetForm();
     onRequestClose();
   };
@@ -140,6 +142,21 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
               {availableProjects.map((project) => (
                 <option key={project.id} value={project.id}>{project.title}</option>
               ))}
+            </select>
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="parent">Parent Task (Optional)</label>
+            <select
+              id="parent"
+              value={parentId || ''}
+              onChange={e => setParentId(Number(e.target.value) || null)}
+            >
+              <option value="">No parent task</option>
+              {availableTasks
+                .filter(task => task.customerId === customerId && task.projectId === projectId)
+                .map((task) => (
+                  <option key={task.id} value={task.id}>{task.title}</option>
+                ))}
             </select>
           </div>
           <button type="submit" className={styles.submitButton}>Create Task</button>

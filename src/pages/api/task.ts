@@ -24,11 +24,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       break;
     case 'POST':
       try {
-        const { title, content, priority, status, customerId, projectId } = req.body;
+        const { title, content, priority, status, customerId, projectId, parentId } = req.body;
         if (!title || !content || !priority || !status || !customerId || !projectId) {
           throw new Error('Missing required fields');
         }
-        const newTask = await createTask({ title, content, priority, status, customerId, projectId });
+        const newTask = await createTask({ title, content, priority, status, customerId, projectId, parentId });
         res.status(201).json(newTask);
       } catch (error) {
         console.error('Failed to create task:', error);
@@ -37,11 +37,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       break;
     case 'PUT':
       try {
-        const { id, title, content, priority, status, customerId, projectId } = req.body;
+        const { id, title, content, priority, status, customerId, projectId, parentId } = req.body;
         if (!id || !title || !content || !priority || !status || !customerId || !projectId) {
           throw new Error('Missing required fields');
         }
-        const updatedTask = await updateTask(id, { title, content, priority, status, customerId, projectId });
+        const updatedTask = await updateTask(id, { title, content, priority, status, customerId, projectId, parentId });
         res.status(200).json(updatedTask);
       } catch (error) {
         console.error('Failed to update task:', error);
