@@ -5,7 +5,7 @@ import Sidebar from './sidebar';
 import TaskCard from './taskCard';
 import LoginModal from './modals/loginModal';
 import NewTaskModal from './modals/newTaskModal';
-import { Task, Project, Status } from '@prisma/client';
+import { Task, Project, Status } from '@/types';
 import { CustomSession, Customer } from '../../types';
 import { fetchTasksForCustomers } from '@/lib/getRequest';
 import { DndProvider, useDrop } from 'react-dnd';
@@ -13,8 +13,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import ChatSidebar from './chatSidebar';
 import { ChevronsUpDown } from "lucide-react";
 
-
-const COLUMN_STATUSES = ['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED'] as const;
+const COLUMN_STATUSES: Status[] = ['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED'];
 
 function TaskDropColumn({
   category,
@@ -454,7 +453,7 @@ const WorkSpace: React.FC = () => {
                   }}
                 >
                   <div className="flex flex-col gap-4">
-                    {sortTasksByPriority(categorizedTasks[category], sortOrders[category]).map((task, index) => (
+                    {sortTasksByPriority(categorizedTasks[category as keyof typeof categorizedTasks], sortOrders[category]).map((task, index) => (
                       <TaskCard
                         key={index}
                         task={task}

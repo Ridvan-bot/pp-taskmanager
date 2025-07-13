@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getAllTasks, createTask, getAllUsersTasks, updateTask, deleteTask } from '../../lib/prisma';
+import { getAllTasks, createTask, getAllUsersTasks, updateTask, deleteTask } from '@/lib/supabaseTasks';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
@@ -10,7 +10,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           if (typeof userId !== 'string') {
             return res.status(400).json({ error: 'Invalid userId' });
           }
-          const tasks = await getAllUsersTasks(userId);
+          const userIdNum = Number(userId);
+          if (isNaN(userIdNum)) {
+            return res.status(400).json({ error: 'Invalid userId' });
+          }
+          const tasks = await getAllUsersTasks(userIdNum);
           res.status(200).json(tasks);
         } else {
           const tasks = await getAllTasks();

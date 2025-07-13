@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useRef } from 'react';
 import { useDrag } from 'react-dnd';
-import { Task } from '../../types';
+import { Task } from '@/types';
 import styles from './taskCard.module.css';
 import TaskModal from './modals/taskModal';
 

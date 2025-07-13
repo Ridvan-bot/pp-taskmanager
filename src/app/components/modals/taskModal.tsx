@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Priority, Status } from '@prisma/client';
+import { Priority, Status } from '@/types';
 import { Task } from '@/types';
 import styles from './taskModal.module.css';
 
@@ -132,7 +132,7 @@ const handleDeleteClick = async () => {
             onChange={handlePriorityChange}
             className={styles.modalSelect}
           >
-            {Object.values(Priority).map((value) => (
+            {["LOW", "MEDIUM", "HIGH"].map((value) => (
               <option key={value} value={value}>{value}</option>
             ))}
           </select>
@@ -143,7 +143,7 @@ const handleDeleteClick = async () => {
             onChange={handleStatusChange}
             className={styles.modalSelect}
           >
-            {Object.values(Status).map((value) => (
+            {["TODO", "IN_PROGRESS", "DONE"].map((value) => (
               <option key={value} value={value}>{value}</option>
             ))}
           </select>

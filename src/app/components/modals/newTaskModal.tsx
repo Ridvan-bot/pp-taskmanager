@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './newTaskModal.module.css';
-import { Priority, Status, Project } from '@prisma/client';
+import { Priority, Status, Project } from '@/types';
 import { NewTaskModalProps } from '@/types';
 
 const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, customers, selectedCategory, availableTasks = []}) => {
@@ -94,7 +94,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
               required
             >
               <option value="" disabled>Select priority</option>
-              {Object.values(Priority).map((value) => (
+              {["LOW", "MEDIUM", "HIGH"].map((value) => (
                 <option key={value} value={value}>{value}</option>
               ))}
             </select>
@@ -108,7 +108,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
               required
             >
               <option value="" disabled>Select status</option>
-              {Object.values(Status).map((value) => (
+              {["TODO", "IN_PROGRESS", "DONE"].map((value) => (
                 <option key={value} value={value}>{value}</option>
               ))}
             </select>

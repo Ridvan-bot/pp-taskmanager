@@ -1,59 +1,66 @@
 import { Session } from 'next-auth';
-import { Project, Priority, Status } from '@prisma/client';
 
+// Definiera enums som string unions om du vill ha typstöd
+export type Priority = 'LOW' | 'MEDIUM' | 'HIGH'; // Anpassa efter din Supabase-enum
+export type Status = 'NOT_STARTED' | 'WIP' | 'WAITING' | 'CLOSED' | 'TODO' | 'IN_PROGRESS' | 'DONE';
+
+export type Project = {
+  id: number;
+  title: string;
+  // Lägg till fler fält om du behöver
+};
 
 export type Task = {
-    id: number;
-    title: string;
-    content: string;
-    status: Status;
-    priority: Priority;
-    createdAt: Date;
-    updatedAt: Date;
-    customerId: number;
-    projectId: number;
-    parentId: number | null;  // Changed from optional to required null
-    parent?: Task | null;      // Parent task
-    subtasks?: Task[];         // Array of subtasks
+  id: number;
+  title: string;
+  content: string;
+  status: Status;
+  priority: Priority;
+  createdAt: Date;
+  updatedAt: Date;
+  customerId: number;
+  projectId: number;
+  parentId: number | null;
+  parent?: Task | null;
+  subtasks?: Task[];
+};
+
+export type LoginModalProps = {
+  isOpen: boolean;
+  onRequestClose: () => void;
+};
+
+export type RegisterModalProps = {
+  isOpen: boolean;
+  onRequestClose: () => void;
+};
+
+export interface CustomSession extends Session {
+  user: {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
   };
+}
 
-  export type LoginModalProps = {
-    isOpen: boolean;
-    onRequestClose: () => void;
-  };
+export type NewTaskModalProps = {
+  isOpen: boolean;
+  onRequestClose: () => void;
+  onCreateTask: (title: string, content: string, priority: string, status: string, customerId: number, projectId: number, parentId: number | null) => void;
+  customers: Customer[];
+  selectedCategory: string;
+  availableTasks?: Task[];  // Available tasks that can be parent tasks
+}
 
-  export type RegisterModalProps = {
-    isOpen: boolean;
-    onRequestClose: () => void;
-  };
-
-  export interface CustomSession extends Session {
-    user: {
-      id: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-    };
-  }
-
-  export type NewTaskModalProps = {
-    isOpen: boolean;
-    onRequestClose: () => void;
-    onCreateTask: (title: string, content: string, priority: string, status: string, customerId: number, projectId: number, parentId: number | null) => void;
-    customers: Customer[];
-    selectedCategory: string;
-    availableTasks?: Task[];  // Available tasks that can be parent tasks
-  }
-
-  export type Customer = {
-    id: number;
-    name: string;
-    createdAt: Date;
-    updatedAt: Date;
-    projects: Project[];
-    tasks: Task[];
-  };
-
+export type Customer = {
+  id: number;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  projects: Project[];
+  tasks: Task[];
+};
 
 export type TaskModalProps = {
   task: Task;
@@ -63,7 +70,7 @@ export type TaskModalProps = {
   onDeleteTask: (deletedTaskId: string) => void;
 }
 
-  export type TaskCardProps = {
-    task: Task;
-    onClick?: () => void;
-  }
+export type TaskCardProps = {
+  task: Task;
+  onClick?: () => void;
+}

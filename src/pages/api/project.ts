@@ -1,25 +1,23 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getAllTasks, createTask, getAllUsersTasks } from '../../lib/prisma';
+import { getAllTasks, createTask, getAllUsersTasks } from '@/lib/supabaseTasks';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'GET':
       const { userId } = req.query;
-      try {
-        if (userId) {
-          if (typeof userId !== 'string') {
-            return res.status(400).json({ error: 'Invalid userId' });
-          }
-          const tasks = await getAllUsersTasks(userId);
-          console.log('tasks:', tasks);
-          res.status(200).json(tasks);
-        } else {
-          const tasks = await getAllTasks();
-          res.status(200).json(tasks);
+      if (userId) {
+        if (typeof userId !== 'string') {
+          return res.status(400).json({ error: 'Invalid userId' });
         }
-      } catch (error) {
-        console.error('Failed to fetch tasks:', error);
-        res.status(500).json({ error: 'Failed to fetch tasks' });
+        const userIdNum = Number(userId);
+        if (isNaN(userIdNum)) {
+          return res.status(400).json({ error: 'Invalid userId' });
+        }
+        const tasks = await getAllUsersTasks(userIdNum);
+        return res.status(200).json({ tasks });
+      } else {
+        const tasks = await getAllTasks();
+        res.status(200).json(tasks);
       }
       break;
       case 'POST':

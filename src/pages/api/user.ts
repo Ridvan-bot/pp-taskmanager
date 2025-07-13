@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import bcrypt from 'bcryptjs';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supaBase';
 
 // Rate limiting storage (in production, use Redis or database)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -75,9 +75,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
+    const { data: existingUser } = await supabase
+      .from('User')
+      .select('id')
+      .eq('email', email)
+      .single();
 
     if (existingUser) {
       return res.status(400).json({ error: 'En användare med denna e-post finns redan' });
@@ -86,21 +88,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create user
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-      },
-    });
+    console.log('Creating user with:', { name, email, password: hashedPassword });
+    const { data: user, error: createUserError } = await supabase
+      .from('User')
+      .insert([{ name, email, password: hashedPassword, updatedAt: new Date().toISOString() }])
+      .select()
+      .single();
+    console.log('Supabase insert result:', user, createUserError);
+
+    if (createUserError) {
+      console.error('Supabase createUserError:', createUserError, user);
+      throw createUserError;
+    }
 
     res.status(201).json({ 
       message: 'Användare skapad framgångsrikt', 
       user: { id: user.id, name: user.name, email: user.email } 
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Registration error:', error);
-    res.status(500).json({ error: 'Något gick fel vid registrering' });
+    let errorMessage = 'Något gick fel vid registrering';
+    if (error && typeof error === 'object' && 'message' in error && typeof (error as { message?: string }).message === 'string') {
+      errorMessage = (error as { message: string }).message;
+    } else {
+      errorMessage = JSON.stringify(error);
+    }
+    res.status(500).json({ error: errorMessage });
   }
 }
