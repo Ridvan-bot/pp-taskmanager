@@ -136,17 +136,6 @@ const handleDeleteClick = async () => {
               <option key={value} value={value}>{value}</option>
             ))}
           </select>
-          <label htmlFor="status"><strong>Status:</strong></label>
-          <select
-            id="status"
-            value={status}
-            onChange={handleStatusChange}
-            className={styles.modalSelect}
-          >
-            {["TODO", "IN_PROGRESS", "DONE"].map((value) => (
-              <option key={value} value={value}>{value}</option>
-            ))}
-          </select>
         </div>
         <div className={styles.buttonContainer}>
           <button className={styles.updateButton} onClick={handleUpdateClick}>Update</button>
