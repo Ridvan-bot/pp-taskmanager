@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Priority, Status } from '@/types';
+import { Priority } from '@/types';
 import { Task } from '@/types';
 import styles from './taskModal.module.css';
 
@@ -15,7 +15,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
   const [title, setTitle] = useState(task.title);
   const [content, setContent] = useState(task.content);
   const [priority, setPriority] = useState(task.priority);
-  const [status, setStatus] = useState(task.status);
+  const [status] = useState(task.status);
 
 
   useEffect(() => {
@@ -45,9 +45,6 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
     setPriority(e.target.value as Priority);
   };
 
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setStatus(e.target.value as Status);
-  };
 
   const handleUpdateClick = async () => {
     const updatedTask = {
