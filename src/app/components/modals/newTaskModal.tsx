@@ -108,7 +108,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
               required
             >
               <option value="" disabled>Select status</option>
-              {["TODO", "IN_PROGRESS", "DONE"].map((value) => (
+              {["NOT_STARTED", "WIP", "WAITING", "CLOSED"].map((value) => (
                 <option key={value} value={value}>{value}</option>
               ))}
             </select>

@@ -71,7 +71,9 @@ export async function createTask(data: TaskInput): Promise<Task> {
       status: data.status,
       customerId: data.customerId,
       projectId: data.projectId,
-      parentId: data.parentId
+      parentId: data.parentId,
+      updatedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     }])
     .select()
     .single();
@@ -83,7 +85,7 @@ export async function createTask(data: TaskInput): Promise<Task> {
 export async function getAllUsersCustomers(userId: number): Promise<Customer[]> {
   const { data: customerUsers, error } = await supabase
     .from('CustomerUser')
-    .select('customer:customerId(*, Task(*), Project(*))')
+    .select('customer:customerId(*, projects:Project(*), Task(*))')
     .eq('userId', userId);
   if (error) throw error;
   const customers = (customerUsers as unknown as CustomerUserWithCustomer[])?.map(cu => cu.customer) ?? [];
