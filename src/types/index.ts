@@ -1,7 +1,7 @@
 import { Session } from 'next-auth';
 
-// Definiera enums som string unions om du vill ha typstöd
-export type Priority = 'LOW' | 'MEDIUM' | 'HIGH'; // Anpassa efter din Supabase-enum
+// Define enums as string unions if you want type support
+export type Priority = 'LOW' | 'MEDIUM' | 'HIGH'; // Adjust according to your Supabase enum
 export type Status = 'NOT_STARTED' | 'WIP' | 'WAITING' | 'CLOSED' | 'TODO' | 'IN_PROGRESS' | 'DONE';
 
 export type Project = {

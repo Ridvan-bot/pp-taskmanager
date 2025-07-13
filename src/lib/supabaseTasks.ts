@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supaBase';
 import { Task, Customer, Priority, Status } from '@/types';
 
-// Typdefinitioner
+// Type definitions
 export type TaskInput = {
   title: string;
   content: string;
@@ -12,12 +12,12 @@ export type TaskInput = {
   parentId: number | null;
 };
 
-// Hjälptyper för join-tabellen
+// Helper types for the join table
 
 type CustomerUserWithCustomer = { customer: Customer };
 type CustomerUserWithUser = { user: { id: number; name: string; email: string; password: string; createdAt: string; updatedAt: string } };
 
-// Hämta alla tasks med relationer
+// Fetch all tasks with relations
 export async function getAllTasks(): Promise<Task[]> {
   const { data, error } = await supabase
     .from('Task')
@@ -26,7 +26,7 @@ export async function getAllTasks(): Promise<Task[]> {
   return data as Task[];
 }
 
-// Hämta tasks för en viss kund
+// Fetch tasks for a specific customer
 export async function getTasksByCustomerName(customerName: string): Promise<Task[]> {
   const { data: customer, error: customerError } = await supabase
     .from('Customer')
@@ -43,7 +43,7 @@ export async function getTasksByCustomerName(customerName: string): Promise<Task
   return data as Task[];
 }
 
-// Hämta tasks för en användare, platt lista
+// Fetch tasks for a user, flat list
 export async function getTasksByUserId(userId: string): Promise<Task[]> {
   const { data: customers, error: customerError } = await supabase
     .from('Customer')
@@ -60,7 +60,7 @@ export async function getTasksByUserId(userId: string): Promise<Task[]> {
   return tasks as Task[];
 }
 
-// Skapa en task
+// Create a task
 export async function createTask(data: TaskInput): Promise<Task> {
   const { data: task, error } = await supabase
     .from('Task')
@@ -81,7 +81,7 @@ export async function createTask(data: TaskInput): Promise<Task> {
   return task as Task;
 }
 
-// Hämta alla customers för en användare via join-tabellen
+// Fetch all customers for a user via the join table
 export async function getAllUsersCustomers(userId: number): Promise<Customer[]> {
   const { data: customerUsers, error } = await supabase
     .from('CustomerUser')
@@ -92,7 +92,7 @@ export async function getAllUsersCustomers(userId: number): Promise<Customer[]> 
   return customers as Customer[];
 }
 
-// Uppdatera en task
+// Update a task
 export async function updateTask(taskId: number, data: Partial<TaskInput>): Promise<Task> {
   const { data: task, error } = await supabase
     .from('Task')
@@ -104,7 +104,7 @@ export async function updateTask(taskId: number, data: Partial<TaskInput>): Prom
   return task as Task;
 }
 
-// Ta bort en task
+// Delete a task
 export async function deleteTask(taskId: number): Promise<boolean> {
   const { error } = await supabase
     .from('Task')
@@ -114,7 +114,7 @@ export async function deleteTask(taskId: number): Promise<boolean> {
   return true;
 }
 
-// Hämta tasks för kund och projekt
+// Fetch tasks for customer and project
 export async function getTasksByCustomerAndProject(customerName: string, projectTitle?: string): Promise<Task[]> {
   const { data: customer, error: customerError } = await supabase
     .from('Customer')
@@ -145,7 +145,7 @@ export async function getTasksByCustomerAndProject(customerName: string, project
   return data as Task[];
 }
 
-// Lägg till en relation mellan user och customer
+// Add a relation between user and customer
 export async function addUserToCustomer(userId: number, customerId: number) {
   const { error } = await supabase
     .from('CustomerUser')
@@ -154,7 +154,7 @@ export async function addUserToCustomer(userId: number, customerId: number) {
   return true;
 }
 
-// (Valfritt) Hämta alla users för en customer
+// (Optional) Fetch all users for a customer
 export async function getUsersForCustomer(customerId: number) {
   const { data: customerUsers, error } = await supabase
     .from('CustomerUser')
@@ -164,7 +164,7 @@ export async function getUsersForCustomer(customerId: number) {
   return (customerUsers as unknown as CustomerUserWithUser[])?.map(cu => cu.user) ?? [];
 }
 
-// Hämta alla tasks för en användare (via customers via join-tabellen)
+// Fetch all tasks for a user (via customers via the join table)
 export async function getAllUsersTasks(userId: number): Promise<Task[]> {
   const { data: customerUsers, error: cuError } = await supabase
     .from('CustomerUser')
