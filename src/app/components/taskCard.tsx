@@ -25,13 +25,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDelete
     }),
   }), [task]);
 
-  const truncateContent = (content: string, length: number) => {
-    if (content.length <= length) {
-      return content;
-    }
-    return content.substring(0, length) + '...';
-  };
-
   const handleMouseDown = (e: React.MouseEvent) => {
     mouseDownPos.current = { x: e.clientX, y: e.clientY };
   };
@@ -62,8 +55,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDelete
         {task.parentId && (
           <span className={styles.subtaskIndicator}> (Subtask)</span>
         )}
-        <br />
-        <strong>Beskrivning:</strong> {truncateContent(task.content, 30)}
         <br />
         <strong>Prio:</strong> {task.priority}
         {task.subtasks && task.subtasks.length > 0 && (
