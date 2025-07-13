@@ -196,9 +196,11 @@ const WorkSpace: React.FC = () => {
       }
       
       const customerData = await response.json();
-      const customerArray = customerData.customers.map((customer: Customer) => customer.name);
+      const customerArray = Array.isArray(customerData.customers)
+        ? customerData.customers.map((customer: Customer) => customer.name)
+        : [];
       setCustomersName(customerArray);
-      setCustomerData(customerData.customers);
+      setCustomerData(Array.isArray(customerData.customers) ? customerData.customers : []);
     } catch (error) {
       console.error('Failed to fetch customers:', error);
       // If there's an error fetching user data, sign out
@@ -386,7 +388,7 @@ const WorkSpace: React.FC = () => {
                 className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs"
               >
                 <option value="">Select Customer</option>
-                {customerData.map(c => (
+                {Array.isArray(customerData) && customerData.map(c => (
                   <option key={c.id} value={c.name}>{c.name}</option>
                 ))}
               </select>
@@ -397,7 +399,7 @@ const WorkSpace: React.FC = () => {
                 disabled={!selectedCustomer}
               >
                 <option value="">Select Project</option>
-                {projects.map(project => (
+                {Array.isArray(projects) && projects.map(project => (
                   <option key={project.id} value={project.title}>{project.title}</option>
                 ))}
               </select>
@@ -453,7 +455,7 @@ const WorkSpace: React.FC = () => {
                   }}
                 >
                   <div className="flex flex-col gap-4">
-                    {sortTasksByPriority(categorizedTasks[category as keyof typeof categorizedTasks], sortOrders[category]).map((task, index) => (
+                    {(sortTasksByPriority(categorizedTasks[category as keyof typeof categorizedTasks], sortOrders[category]) ?? []).map((task, index) => (
                       <TaskCard
                         key={index}
                         task={task}

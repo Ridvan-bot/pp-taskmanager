@@ -21,7 +21,7 @@ type CustomerUserWithUser = { user: { id: number; name: string; email: string; p
 export async function getAllTasks(): Promise<Task[]> {
   const { data, error } = await supabase
     .from('Task')
-    .select(`*, parent:parentId(*), subtasks:subtasks(*), customer:customerId(name), project:projectId(title)`);
+    .select(`*, parent:parentId(*), subtasks:Task(*), customer:customerId(name), project:projectId(title)`);
   if (error) throw error;
   return data as Task[];
 }
@@ -37,7 +37,7 @@ export async function getTasksByCustomerName(customerName: string): Promise<Task
 
   const { data, error } = await supabase
     .from('Task')
-    .select(`*, parent:parentId(*), subtasks:subtasks(*), customer:customerId(name), project:projectId(title)`)
+    .select(`*, parent:parentId(*), subtasks:Task(*), customer:customerId(name), project:projectId(title)`)
     .eq('customerId', customer.id);
   if (error) throw error;
   return data as Task[];
@@ -135,7 +135,7 @@ export async function getTasksByCustomerAndProject(customerName: string, project
 
   let query = supabase
     .from('Task')
-    .select(`*, parent:parentId(*), subtasks:subtasks(*), customer:customerId(name), project:projectId(title)`)
+    .select(`*, parent:parentId(*), subtasks:Task(*), customer:customerId(name), project:projectId(title)`)
     .eq('customerId', customer.id);
   if (projectId) query = query.eq('projectId', projectId);
   const { data, error } = await query;
@@ -173,7 +173,7 @@ export async function getAllUsersTasks(userId: number): Promise<Task[]> {
   if (customerIds.length === 0) return [];
   const { data: tasks, error: taskError } = await supabase
     .from('Task')
-    .select(`*, parent:parentId(*), subtasks:subtasks(*), customer:customerId(name), project:projectId(title)`)
+    .select(`*, parent:parentId(*), subtasks:Task(*), customer:customerId(name), project:projectId(title)`)
     .in('customerId', customerIds);
   if (taskError) throw taskError;
   return tasks as Task[];
