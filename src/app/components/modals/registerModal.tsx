@@ -88,6 +88,23 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
       overlayClassName="fixed inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center"
       shouldCloseOnOverlayClick={false}
           >
+        <button
+          onClick={onRequestClose}
+          style={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            fontSize: 24,
+            color: '#f0f0f0',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            zIndex: 10
+          }}
+          aria-label="Close register modal"
+        >
+          ×
+        </button>
         <div className="flex flex-col items-center mb-6">
           <div className="mb-4 p-3 ">
             <Image 

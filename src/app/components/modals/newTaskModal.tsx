@@ -103,14 +103,6 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
             </select>
           </div>
           <div className={styles.formGroup}>
-            <label>Customer</label>
-            <div className={styles.readOnlyField}>{selectedCustomerObj ? selectedCustomerObj.name : 'No customer selected'}</div>
-          </div>
-          <div className={styles.formGroup}>
-            <label>Project</label>
-            <div className={styles.readOnlyField}>{selectedProjectObj ? selectedProjectObj.title : 'No project selected'}</div>
-          </div>
-          <div className={styles.formGroup}>
             <label htmlFor="parent">Parent Task (Optional)</label>
             <select
               id="parent"
@@ -124,6 +116,10 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
                   <option key={task.id} value={task.id}>{task.title}</option>
                 ))}
             </select>
+          </div>
+          <div className={styles.metaInfo}>
+            <div><strong>Customer:</strong> {selectedCustomerObj ? selectedCustomerObj.name : 'No customer selected'}</div>
+            <div><strong>Project:</strong> {selectedProjectObj ? selectedProjectObj.title : 'No project selected'}</div>
           </div>
           <button type="submit" className={styles.submitButton}>Create Task</button>
         </form>
