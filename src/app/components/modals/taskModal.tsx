@@ -8,7 +8,7 @@ interface TaskModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   onUpdateTask: (updatedTask: Task) => void;
-  onDeleteTask: (deletedTaskId: string) => void
+  onDeleteTask: (deletedTaskId: string) => void;
 }
 
 const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onUpdateTask, onDeleteTask }) => {
@@ -16,7 +16,6 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
   const [content, setContent] = useState(task.content);
   const [priority, setPriority] = useState(task.priority);
   const [status] = useState(task.status);
-
 
   useEffect(() => {
     if (!isOpen) {
@@ -44,7 +43,6 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
   const handlePriorityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setPriority(e.target.value as Priority);
   };
-
 
   const handleUpdateClick = async () => {
     const updatedTask = {
@@ -79,28 +77,28 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
     }
   };
 
-const handleDeleteClick = async () => {
-  const confirmed = window.confirm('Are you sure you want to delete this task?');
-  if (!confirmed) return;
+  const handleDeleteClick = async () => {
+    const confirmed = window.confirm('Are you sure you want to delete this task?');
+    if (!confirmed) return;
 
-  try {
-    const response = await fetch(`/api/task/`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id: task.id }),
-    });
+    try {
+      const response = await fetch(`/api/task/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: task.id }),
+      });
 
-    if (!response.ok) {
-      throw new Error('Failed to delete task');
+      if (!response.ok) {
+        throw new Error('Failed to delete task');
+      }
+      onDeleteTask(String(task.id));
+      onRequestClose();
+    } catch (error) {
+      console.error('Failed to delete task:', error);
     }
-    onDeleteTask(String(task.id));
-    onRequestClose();
-  } catch (error) {
-    console.error('Failed to delete task:', error);
-  }
-};
+  };
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>

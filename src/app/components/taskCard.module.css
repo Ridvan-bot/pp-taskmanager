@@ -44,3 +44,10 @@
   margin-right: 6px;
   vertical-align: middle;
 }
+
+.parentIndicator {
+  color: #FFD700;
+  font-size: 0.8em;
+  font-weight: 600;
+  margin-left: 4px;
+}

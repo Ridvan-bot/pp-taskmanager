@@ -50,13 +50,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateTask, onDelete
         onMouseUp={handleMouseUp}
         ref={node => { if (node) drag(node); }}
         style={{ opacity: isDragging ? 0.5 : 1 }}
-      >
-        {task.subtasks && task.subtasks.length > 0 && (
-          <span className={styles.parentBadge}>
-            <span role="img" aria-label="parent">👑</span> Parent
-          </span>
-        )}
+      >        
         <strong>Title:</strong> {task.title}
+        {task.subtasks && task.subtasks.length > 0 && (
+          <span className={styles.parentIndicator}>(Parent)</span>
+        )}
         {task.parentId && (
           <span className={styles.subtaskIndicator}> (Subtask)</span>
         )}
