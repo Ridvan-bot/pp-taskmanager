@@ -466,9 +466,9 @@ const WorkSpace: React.FC = () => {
                   }}
                 >
                   <div className="flex flex-col gap-4">
-                    {(sortTasks(categorizedTasks[category as keyof typeof categorizedTasks], sortOrders[category], category) ?? []).map((task, index) => (
+                    {(sortTasks(categorizedTasks[category as keyof typeof categorizedTasks], sortOrders[category], category) ?? []).map((task) => (
                       <TaskCard
-                        key={index}
+                        key={task.id}
                         task={task}
                         onClick={() => handleTaskClick(task)}
                         onUpdateTask={handleUpdateTask}
