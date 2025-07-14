@@ -529,6 +529,7 @@ const WorkSpace: React.FC = () => {
             onRequestClose={() => setIsTaskModalOpen(false)}
             onUpdateTask={handleUpdateTask}
             onDeleteTask={handleDeleteTask}
+            allTasks={tasks}
           />
         )}
       </div>

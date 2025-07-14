@@ -9,13 +9,16 @@ interface TaskModalProps {
   onRequestClose: () => void;
   onUpdateTask: (updatedTask: Task) => void;
   onDeleteTask: (deletedTaskId: string) => void;
+  allTasks?: Task[];
 }
 
-const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onUpdateTask, onDeleteTask }) => {
+const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onUpdateTask, onDeleteTask, allTasks = [] }) => {
   const [title, setTitle] = useState(task.title);
   const [content, setContent] = useState(task.content);
   const [priority, setPriority] = useState(task.priority);
   const [status] = useState(task.status);
+  const [showAddChildDropdown, setShowAddChildDropdown] = useState(false);
+  const [isAddingChild, setIsAddingChild] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
@@ -53,7 +56,6 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
       status,
       customerId: task.customerId,
       projectId: task.projectId,
-      parentId: task.parentId,
     };
 
     try {
@@ -131,6 +133,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
               <option key={value} value={value}>{value}</option>
             ))}
           </select>
+
           <div style={{ marginTop: 16, fontSize: '0.95em', color: '#666' }}>
             <div><strong>Created:</strong> {task.createdAt ? new Date(task.createdAt).toLocaleString('sv-SE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '-'}</div>
             <div><strong>Updated:</strong> {task.updatedAt ? new Date(task.updatedAt).toLocaleString('sv-SE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '-'}</div>
@@ -143,6 +146,29 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
               <div style={{ fontWeight: 'bold', color: '#3b82f6', marginBottom: 6, fontSize: '1.05em' }}>
                 Child Tasks:
               </div>
+              <button
+                  style={{
+                    background: '#3b82f6',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: 20,
+                    height: 20,
+                    fontSize: 16,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginLeft: 0,
+                    boxShadow: '0 2px 8px #0001',
+                    transition: 'background 0.2s',
+                    marginBottom: 16,
+                  }}
+                  title="Add child"
+                  onClick={() => setShowAddChildDropdown(v => !v)}
+                >
+                  +
+                </button>
               <ul style={{ paddingLeft: 0, margin: 0 }}>
                 {task.subtasks.map((subtask) => (
                   <li
