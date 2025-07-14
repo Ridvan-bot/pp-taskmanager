@@ -62,6 +62,8 @@ export async function getTasksByUserId(userId: string): Promise<Task[]> {
 
 // Create a task
 export async function createTask(data: TaskInput): Promise<Task> {
+  const now = new Date().toISOString();
+  const closedAt = data.status === 'CLOSED' ? now : null;
   const { data: task, error } = await supabase
     .from('Task')
     .insert([{
@@ -72,8 +74,9 @@ export async function createTask(data: TaskInput): Promise<Task> {
       customerId: data.customerId,
       projectId: data.projectId,
       parentId: data.parentId,
-      updatedAt: new Date().toISOString(),
-      createdAt: new Date().toISOString()
+      updatedAt: now,
+      createdAt: now,
+      closedAt: closedAt
     }])
     .select()
     .single();
@@ -93,10 +96,25 @@ export async function getAllUsersCustomers(userId: number): Promise<Customer[]> 
 }
 
 // Update a task
-export async function updateTask(taskId: number, data: Partial<TaskInput>): Promise<Task> {
+export async function updateTask(taskId: number, data: Partial<TaskInput> & { status?: Status }): Promise<Task> {
+  // Hämta nuvarande task för att jämföra status
+  const { data: currentTask, error: fetchError } = await supabase
+    .from('Task')
+    .select('status, closedAt')
+    .eq('id', taskId)
+    .single();
+  if (fetchError) throw fetchError;
+
+  let closedAt = currentTask.closedAt || null;
+  if (data.status === 'CLOSED' && currentTask.status !== 'CLOSED') {
+    closedAt = new Date().toISOString();
+  } else if (data.status && data.status !== 'CLOSED' && currentTask.status === 'CLOSED') {
+    closedAt = null;
+  }
+
   const { data: task, error } = await supabase
     .from('Task')
-    .update(data)
+    .update({ ...data, updatedAt: new Date().toISOString(), closedAt })
     .eq('id', taskId)
     .select()
     .single();

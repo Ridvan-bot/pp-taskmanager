@@ -18,6 +18,7 @@ export type Task = {
   priority: Priority;
   createdAt: Date;
   updatedAt: Date;
+  closedAt: Date | null;
   customerId: number;
   projectId: number;
   parentId: number | null;

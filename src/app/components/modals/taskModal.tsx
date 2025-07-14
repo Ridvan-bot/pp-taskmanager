@@ -133,6 +133,13 @@ const handleDeleteClick = async () => {
               <option key={value} value={value}>{value}</option>
             ))}
           </select>
+          <div style={{ marginTop: 16, fontSize: '0.95em', color: '#666' }}>
+            <div><strong>Created:</strong> {task.createdAt ? new Date(task.createdAt).toLocaleString('sv-SE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '-'}</div>
+            <div><strong>Updated:</strong> {task.updatedAt ? new Date(task.updatedAt).toLocaleString('sv-SE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '-'}</div>
+            {task.closedAt && (
+              <div><strong>Closed:</strong> {new Date(task.closedAt).toLocaleString('sv-SE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</div>
+            )}
+          </div>
         </div>
         <div className={styles.buttonContainer}>
           <button className={styles.updateButton} onClick={handleUpdateClick}>Update</button>

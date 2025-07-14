@@ -285,23 +285,31 @@ const WorkSpace: React.FC = () => {
     return categories;
   };
 
-  const sortTasksByPriority = (tasks: Task[], sortOrder: 'asc' | 'desc') => {
-    // Define priority order (HIGH is highest priority, BC is lowest)
-    const priorityOrder: { [key: string]: number } = {
-      'BC': 1,
-      'HIGH': 2,
-      'MEDIUM': 3,
-      'LOW': 4,
-    };
-
-    return tasks.sort((a, b) => {
-      const priorityA = priorityOrder[a.priority as string] || 999;
-      const priorityB = priorityOrder[b.priority as string] || 999;
-      
-      return sortOrder === 'asc' 
-        ? priorityA - priorityB  // HIGH first in ascending order
-        : priorityB - priorityA; // LOW first in descending order
-    });
+  // Sort tasks by priority (for most columns) or by updatedAt (for CLOSED)
+  const sortTasks = (tasks: Task[], sortOrder: 'asc' | 'desc', category: string) => {
+    if (category === 'CLOSED') {
+      // Sort by updatedAt (nyast först om desc, äldst först om asc)
+      return tasks.sort((a, b) => {
+        const dateA = new Date(a.updatedAt).getTime();
+        const dateB = new Date(b.updatedAt).getTime();
+        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+      });
+    } else {
+      // Sort by priority
+      const priorityOrder: { [key: string]: number } = {
+        'BC': 1,
+        'HIGH': 2,
+        'MEDIUM': 3,
+        'LOW': 4,
+      };
+      return tasks.sort((a, b) => {
+        const priorityA = priorityOrder[a.priority as string] || 999;
+        const priorityB = priorityOrder[b.priority as string] || 999;
+        return sortOrder === 'asc' 
+          ? priorityA - priorityB  // HIGH first in ascending order
+          : priorityB - priorityA; // LOW first in descending order
+      });
+    }
   };
 
   const handleSortClick = (category: string) => {
@@ -458,7 +466,7 @@ const WorkSpace: React.FC = () => {
                   }}
                 >
                   <div className="flex flex-col gap-4">
-                    {(sortTasksByPriority(categorizedTasks[category as keyof typeof categorizedTasks], sortOrders[category]) ?? []).map((task, index) => (
+                    {(sortTasks(categorizedTasks[category as keyof typeof categorizedTasks], sortOrders[category], category) ?? []).map((task, index) => (
                       <TaskCard
                         key={index}
                         task={task}
