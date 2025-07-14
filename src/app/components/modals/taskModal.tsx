@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Priority } from '@/types';
 import { Task } from '@/types';
 import styles from './taskModal.module.css';
+import { Link2Off, MinusCircle } from 'lucide-react';
 
 interface TaskModalProps {
   task: Task;
@@ -184,11 +185,47 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
                       fontSize: '1em',
                       cursor: 'pointer',
                       transition: 'background 0.2s, border-color 0.2s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
                     }}
                     onMouseOver={e => (e.currentTarget.style.background = '#3b82f6')}
                     onMouseOut={e => (e.currentTarget.style.background = '#3b83f62f')}
                   >
-                    {subtask.title}
+                    <span>{subtask.title}</span>
+                    <button
+                      style={{
+                        marginLeft: 12,
+                        background: 'transparent',
+                        border: 'none',
+                        color: '#ef4444',
+                        fontWeight: 'bold',
+                        fontSize: 18,
+                        cursor: 'pointer',
+                        padding: 0,
+                        lineHeight: 1,
+                      }}
+                      title="Unlink subtask"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          const updatedSubtask = { ...subtask, parentId: null };
+                          const response = await fetch(`/api/task`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(updatedSubtask),
+                          });
+                          if (!response.ok) throw new Error('Failed to unlink subtask');
+                          // Remove subtask from UI
+                          const newSubtasks = (task.subtasks || []).filter(st => st.id !== subtask.id);
+                          onUpdateTask({ ...task, subtasks: newSubtasks });
+                        } catch (error) {
+                          alert('Kunde inte koppla bort subtask!');
+                        }
+                      }}
+                    >
+                      <MinusCircle size={18} strokeWidth={2.2} />
+                    </button>
                   </li>
                 ))}
               </ul>
