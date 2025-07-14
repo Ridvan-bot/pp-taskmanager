@@ -140,6 +140,58 @@ const handleDeleteClick = async () => {
               <div><strong>Closed:</strong> {new Date(task.closedAt).toLocaleString('sv-SE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</div>
             )}
           </div>
+          {task.subtasks && task.subtasks.length > 0 && (
+            <div style={{ marginTop: 20 }}>
+              <div style={{ fontWeight: 'bold', color: '#3b82f6', marginBottom: 6, fontSize: '1.05em' }}>
+                Child Tasks:
+              </div>
+              <ul style={{ paddingLeft: 0, margin: 0 }}>
+                {task.subtasks.map((subtask) => (
+                  <li
+                    key={subtask.id}
+                    onClick={() => window.dispatchEvent(new CustomEvent('open-task-modal', { detail: subtask }))}
+                    style={{
+                      marginBottom: 6,
+                      color: '#f0f0f0',
+                      background: '#3b83f62f',
+                      border: '2px solid #3b82f6',
+                      borderRadius: 6,
+                      padding: '6px 12px',
+                      fontSize: '1em',
+                      cursor: 'pointer',
+                      transition: 'background 0.2s, border-color 0.2s',
+                    }}
+                    onMouseOver={e => (e.currentTarget.style.background = '#3b82f6')}
+                    onMouseOut={e => (e.currentTarget.style.background = '#3b83f62f')}
+                  >
+                    {subtask.title}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {task.parent && (
+            <button
+              style={{
+                background: '#3b83f62f',
+                border: '2px solid #3b82f6',
+                color: '#3b82f6',
+                borderRadius: 6,
+                padding: '6px 14px',
+                fontWeight: 'bold',
+                marginTop: 16,
+                cursor: 'pointer',
+                fontSize: '1em',
+                transition: 'background 0.2s, border-color 0.2s',
+                width: '100%'
+              }}
+              onClick={() => window.dispatchEvent(new CustomEvent('open-task-modal', { detail: task.parent }))}
+              onMouseOver={e => (e.currentTarget.style.background = '#3b82f6', e.currentTarget.style.color = '#fff')}
+              onMouseOut={e => (e.currentTarget.style.background = '#3b83f62f', e.currentTarget.style.color = '#3b82f6')}
+            >
+              ⬆ To Parent Task: {task.parent.title}
+            </button>
+          )}
         </div>
         <div className={styles.buttonContainer}>
           <button className={styles.updateButton} onClick={handleUpdateClick}>Update</button>

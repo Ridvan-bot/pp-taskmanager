@@ -12,6 +12,7 @@ import { DndProvider, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import ChatSidebar from './chatSidebar';
 import { ChevronsUpDown } from "lucide-react";
+import TaskModal from './modals/taskModal';
 
 const COLUMN_STATUSES: Status[] = ['NOT_STARTED', 'WIP', 'WAITING', 'CLOSED'];
 
@@ -87,7 +88,7 @@ const WorkSpace: React.FC = () => {
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
-  const [, setSelectedTask] = useState<Task | null>(null);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [sortOrders, setSortOrders] = useState<{ [key: string]: 'asc' | 'desc' }>({
     NOT_STARTED: 'asc',
     WIP: 'asc',
@@ -176,6 +177,20 @@ const WorkSpace: React.FC = () => {
       setTasks([]);
     }
   }, [selectedCustomer, selectedProject]);
+
+  useEffect(() => {
+    function handleOpenTaskModal(e: any) {
+      if (e.detail && e.detail.id) {
+        setIsTaskModalOpen(false);
+        setTimeout(() => {
+          setSelectedTask(e.detail);
+          setIsTaskModalOpen(true);
+        }, 150); // Delay för att hinna stänga först
+      }
+    }
+    window.addEventListener('open-task-modal', handleOpenTaskModal);
+    return () => window.removeEventListener('open-task-modal', handleOpenTaskModal);
+  }, []);
 
   const fetchUserCustomers = async () => {
     console.log('customerData', customerData);
@@ -506,6 +521,15 @@ const WorkSpace: React.FC = () => {
           <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg text-base font-semibold animate-fade-in-out">
             {toast}
           </div>
+        )}
+        {selectedTask && (
+          <TaskModal
+            task={selectedTask}
+            isOpen={isTaskModalOpen}
+            onRequestClose={() => setIsTaskModalOpen(false)}
+            onUpdateTask={handleUpdateTask}
+            onDeleteTask={handleDeleteTask}
+          />
         )}
       </div>
     </DndProvider>
