@@ -179,7 +179,7 @@ const WorkSpace: React.FC = () => {
   }, [selectedCustomer, selectedProject]);
 
   useEffect(() => {
-    function handleOpenTaskModal(e: any) {
+    function handleOpenTaskModal(e: CustomEvent<Task>) {
       if (e.detail && e.detail.id) {
         setIsTaskModalOpen(false);
         setTimeout(() => {
@@ -188,8 +188,8 @@ const WorkSpace: React.FC = () => {
         }, 150); // Delay för att hinna stänga först
       }
     }
-    window.addEventListener('open-task-modal', handleOpenTaskModal);
-    return () => window.removeEventListener('open-task-modal', handleOpenTaskModal);
+    window.addEventListener('open-task-modal', handleOpenTaskModal as EventListener);
+    return () => window.removeEventListener('open-task-modal', handleOpenTaskModal as EventListener);
   }, []);
 
   const fetchUserCustomers = async () => {
