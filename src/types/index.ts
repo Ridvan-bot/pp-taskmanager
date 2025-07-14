@@ -52,6 +52,8 @@ export type NewTaskModalProps = {
   customers: Customer[];
   selectedCategory: string;
   availableTasks?: Task[];  // Available tasks that can be parent tasks
+  selectedCustomerObj?: Customer | null;
+  selectedProjectObj?: Project | null;
 }
 
 export type Customer = {

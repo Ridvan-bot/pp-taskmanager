@@ -3,6 +3,7 @@ import { Priority } from '@/types';
 import { Task } from '@/types';
 import styles from './taskModal.module.css';
 import { Link2Off, MinusCircle } from 'lucide-react';
+import AddChildModal from './AddChildModal';
 
 interface TaskModalProps {
   task: Task;
@@ -18,8 +19,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
   const [content, setContent] = useState(task.content);
   const [priority, setPriority] = useState(task.priority);
   const [status] = useState(task.status);
-  const [showAddChildDropdown, setShowAddChildDropdown] = useState(false);
-  const [isAddingChild, setIsAddingChild] = useState(false);
+  const [showAddChildModal, setShowAddChildModal] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
@@ -143,33 +143,41 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
             )}
           </div>
           {task.subtasks && task.subtasks.length > 0 && (
-            <div style={{ marginTop: 20 }}>
+            <div style={{ marginTop: 20, position: 'relative' }}>
+              <button
+                style={{
+                  background: '#3b82f6',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: 20,
+                  height: 20,
+                  fontSize: 16,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 2px 8px #0001',
+                  transition: 'background 0.2s',
+                  marginBottom: 16,
+                }}
+                title="Add child"
+                onClick={() => setShowAddChildModal(true)}
+              >
+                +
+              </button>
+              <AddChildModal
+                isOpen={showAddChildModal}
+                onRequestClose={() => setShowAddChildModal(false)}
+                parentTask={task}
+                allTasks={allTasks}
+                onChildrenAdded={(newChildren) => {
+                  onUpdateTask({ ...task, subtasks: [...(task.subtasks || []), ...newChildren] });
+                }}
+              />
               <div style={{ fontWeight: 'bold', color: '#3b82f6', marginBottom: 6, fontSize: '1.05em' }}>
                 Child Tasks:
               </div>
-              <button
-                  style={{
-                    background: '#3b82f6',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: 20,
-                    height: 20,
-                    fontSize: 16,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginLeft: 0,
-                    boxShadow: '0 2px 8px #0001',
-                    transition: 'background 0.2s',
-                    marginBottom: 16,
-                  }}
-                  title="Add child"
-                  onClick={() => setShowAddChildDropdown(v => !v)}
-                >
-                  +
-                </button>
               <ul style={{ paddingLeft: 0, margin: 0 }}>
                 {task.subtasks.map((subtask) => (
                   <li

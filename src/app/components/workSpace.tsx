@@ -226,6 +226,20 @@ const WorkSpace: React.FC = () => {
     }
   };
 
+  // Auto-select first customer if none is selected and data is loaded
+  useEffect(() => {
+    if (!selectedCustomer && customerData.length > 0) {
+      setSelectedCustomer(customerData[0].name);
+    }
+  }, [customerData, selectedCustomer]);
+
+  // Auto-select first project if none is selected and projects are loaded
+  useEffect(() => {
+    if (!selectedProject && projects.length > 0) {
+      setSelectedProject(projects[0].title);
+    }
+  }, [projects, selectedProject]);
+
   // Show loading spinner only after delay while session is being fetched
   if (status === 'loading') {
     if (showDelayedLoading) {
@@ -508,6 +522,8 @@ const WorkSpace: React.FC = () => {
             onRequestClose={() => setIsNewTaskModalOpen(false)}
             onCreateTask={handleCreateTask}
             customers={customerData}
+            selectedCustomerObj={customerData.find(c => c.name === selectedCustomer) || null}
+            selectedProjectObj={projects.find(p => p.title === selectedProject) || null}
             selectedCategory={selectedCategory}
             availableTasks={tasks}
           />
