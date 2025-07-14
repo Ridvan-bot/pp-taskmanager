@@ -1,22 +1,18 @@
 import React, { useState } from 'react';
 import styles from './taskModal.module.css';
+import { Task } from '@/types';
 
 interface AddChildModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  parentTask: any;
-  allTasks: any[];
-  onChildrenAdded: (newChildren: any[]) => void;
+  parentTask: Task;
+  allTasks: Task[];
+  onChildrenAdded: (newChildren: Task[]) => void;
 }
 
 const AddChildModal: React.FC<AddChildModalProps> = ({ isOpen, onRequestClose, parentTask, allTasks, onChildrenAdded }) => {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [isSaving, setIsSaving] = useState(false);
-
-  // DEBUG: Uncomment to see what is passed in
-  // console.log('parentTask:', parentTask);
-  // console.log('allTasks:', allTasks);
-  // console.log('availableTasks:', availableTasks);
 
   if (!isOpen) return null;
 
@@ -34,7 +30,7 @@ const AddChildModal: React.FC<AddChildModalProps> = ({ isOpen, onRequestClose, p
   const handleLink = async () => {
     setIsSaving(true);
     try {
-      const newChildren: any[] = [];
+      const newChildren: Task[] = [];
       for (const id of selectedIds) {
         const childTask = allTasks.find(t => t.id === id);
         if (!childTask) continue;
@@ -45,13 +41,13 @@ const AddChildModal: React.FC<AddChildModalProps> = ({ isOpen, onRequestClose, p
           body: JSON.stringify(updatedChild),
         });
         if (response.ok) {
-          const result = await response.json();
+          const result: Task = await response.json();
           newChildren.push(result);
         }
       }
       onChildrenAdded(newChildren);
       onRequestClose();
-    } catch (error) {
+    } catch {
       alert('Något gick fel vid koppling!');
     } finally {
       setIsSaving(false);

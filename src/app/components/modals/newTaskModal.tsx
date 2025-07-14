@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styles from './newTaskModal.module.css';
-import { Priority, Status, Project } from '@/types';
+import { Priority, Status } from '@/types';
 import { NewTaskModalProps } from '@/types';
 
-const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, customers, selectedCategory, availableTasks = [], selectedCustomerObj, selectedProjectObj }) => {
+const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, selectedCategory, availableTasks = [], selectedCustomerObj, selectedProjectObj }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [priority, setPriority] = useState<Priority | ''>('');

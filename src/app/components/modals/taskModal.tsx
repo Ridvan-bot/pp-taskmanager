@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Priority } from '@/types';
 import { Task } from '@/types';
 import styles from './taskModal.module.css';
-import { Link2Off, MinusCircle } from 'lucide-react';
+import { MinusCircle } from 'lucide-react';
 import AddChildModal from './AddChildModal';
 
 interface TaskModalProps {
@@ -228,6 +228,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
                           const newSubtasks = (task.subtasks || []).filter(st => st.id !== subtask.id);
                           onUpdateTask({ ...task, subtasks: newSubtasks });
                         } catch (error) {
+                          console.error('Failed to unlink subtask:', error);
                           alert('Kunde inte koppla bort subtask!');
                         }
                       }}

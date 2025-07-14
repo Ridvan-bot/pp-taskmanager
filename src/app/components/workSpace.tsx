@@ -147,21 +147,20 @@ const WorkSpace: React.FC = () => {
 
   // Update projects when selectedCustomer changes
   useEffect(() => {
+    setSelectedProject(''); // Always reset project first
     if (selectedCustomer) {
       const customer = customerData.find(c => c.name === selectedCustomer);
       if (customer) {
         setProjects(customer.projects);
-        setSelectedProject(''); // Reset project selection
       }
     } else {
       setProjects([]);
-      setSelectedProject('');
     }
   }, [selectedCustomer, customerData]);
 
   // Fetch tasks whenever selectedCustomer or selectedProject changes
   useEffect(() => {
-    if (selectedCustomer) {
+    if (selectedCustomer && (selectedProject || projects.length === 0)) {
       const fetchData = async () => {
         let url = `/api/filtertaskoncustomer?customer=${selectedCustomer}`;
         if (selectedProject) {
@@ -173,10 +172,10 @@ const WorkSpace: React.FC = () => {
       };
       fetchData();
     } else {
-      // Clear tasks when no customer is selected
+      // Clear tasks when no customer is selected or no project is selected (if projects exist)
       setTasks([]);
     }
-  }, [selectedCustomer, selectedProject]);
+  }, [selectedCustomer, selectedProject, projects]);
 
   useEffect(() => {
     function handleOpenTaskModal(e: CustomEvent<Task>) {
@@ -239,6 +238,11 @@ const WorkSpace: React.FC = () => {
       setSelectedProject(projects[0].title);
     }
   }, [projects, selectedProject]);
+
+  // Always reset selectedProject when selectedCustomer changes
+  useEffect(() => {
+    setSelectedProject('');
+  }, [selectedCustomer]);
 
   // Show loading spinner only after delay while session is being fetched
   if (status === 'loading') {
