@@ -121,7 +121,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
             <div><strong>Customer:</strong> {selectedCustomerObj ? selectedCustomerObj.name : 'No customer selected'}</div>
             <div><strong>Project:</strong> {selectedProjectObj ? selectedProjectObj.title : 'No project selected'}</div>
           </div>
-          <button type="submit" className={styles.submitButton}>Create Task</button>
+          <button type="submit" className={styles.submitButton}>Create</button>
         </form>
       </div>
     </div>
