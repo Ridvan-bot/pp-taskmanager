@@ -1,33 +1,36 @@
-import React, { useState } from 'react';
-import Modal from 'react-modal';
-import Image from 'next/image';
-import { RegisterModalProps } from '@/types';
+import React, { useState } from "react";
+import Modal from "react-modal";
+import Image from "next/image";
+import { RegisterModalProps } from "@/types";
 
-Modal.setAppElement('#__next');
+Modal.setAppElement("#__next");
 
-const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [honeypot, setHoneypot] = useState('');
-  const [error, setError] = useState('');
+const RegisterModal: React.FC<RegisterModalProps> = ({
+  isOpen,
+  onRequestClose,
+}) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [error, setError] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [countdown, setCountdown] = useState(5);
 
   const handleCreateAccount = async (event: React.FormEvent) => {
     event.preventDefault();
-    
+
     // Check honeypot field - if filled, it's likely a bot
     if (honeypot) {
-      setError('Ogiltigt registreringsförsök upptäckt');
+      setError("Ogiltigt registreringsförsök upptäckt");
       return;
     }
-    
+
     try {
-      const response = await fetch('/api/user', {
-        method: 'POST',
+      const response = await fetch("/api/user", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ name, email, password }),
       });
@@ -36,25 +39,25 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
 
       if (response.ok) {
         // Handle successful registration
-        console.log('Account created successfully:', data);
+        console.log("Account created successfully:", data);
         setIsSuccess(true);
-        
+
         // Start countdown
         let timeLeft = 7;
         setCountdown(timeLeft);
-        
+
         const timer = setInterval(() => {
           timeLeft -= 1;
           setCountdown(timeLeft);
-          
+
           if (timeLeft <= 0) {
             clearInterval(timer);
             // Reset states and redirect to login
             setIsSuccess(false);
-            setName('');
-            setEmail('');
-            setPassword('');
-            setError('');
+            setName("");
+            setEmail("");
+            setPassword("");
+            setError("");
             onRequestClose();
             window.location.reload();
           }
@@ -64,8 +67,8 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
         setError(data.error);
       }
     } catch (error) {
-      console.error('Failed to create account:', error);
-      setError('An unexpected error occurred');
+      console.error("Failed to create account:", error);
+      setError("An unexpected error occurred");
     }
   };
 
@@ -90,26 +93,34 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
     >
       <div className="flex flex-col items-center mb-6">
         <div className="mb-4 p-3 ">
-          <Image 
-            src="/pohlmanproteanab.png" 
-            alt="Pohlman Protean AB Logo" 
-            width={80} 
+          <Image
+            src="/pohlmanproteanab.png"
+            alt="Pohlman Protean AB Logo"
+            width={80}
             height={80}
             className="object-contain"
           />
         </div>
-        <h2 className="text-3xl font-bold text-center text-white">Registrera användare</h2>
+        <h2 className="text-3xl font-bold text-center text-white">
+          Registrera användare
+        </h2>
       </div>
-      
+
       {isSuccess ? (
         // Success message
         <div className="flex flex-col items-center text-center space-y-6">
           <div className="space-y-3">
-            <h3 className="text-2xl font-bold text-green-400">Registrering lyckades!</h3>
-            <p className="text-slate-400">Du kommer att omdirigeras till inloggningssidan om <span className="text-white font-semibold">{countdown}</span> sekunder...</p>
+            <h3 className="text-2xl font-bold text-green-400">
+              Registrering lyckades!
+            </h3>
+            <p className="text-slate-400">
+              Du kommer att omdirigeras till inloggningssidan om{" "}
+              <span className="text-white font-semibold">{countdown}</span>{" "}
+              sekunder...
+            </p>
           </div>
           <div className="w-full max-w-md bg-gray-700 rounded-full h-2">
-            <div 
+            <div
               className="bg-green-500 h-2 rounded-full transition-all duration-1000 ease-linear"
               style={{ width: `${(countdown / 5) * 100}%` }}
             ></div>
@@ -122,7 +133,12 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
             <form className="space-y-4 w-full max-w-md" onSubmit={handleSubmit}>
               {error && <p className="text-red-500">{error}</p>}
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-slate-300">Namn:</label>
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-slate-300"
+                >
+                  Namn:
+                </label>
                 <input
                   type="text"
                   id="name"
@@ -134,7 +150,12 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-slate-300">E-post:</label>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-slate-300"
+                >
+                  E-post:
+                </label>
                 <input
                   type="email"
                   id="email"
@@ -146,7 +167,12 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
                 />
               </div>
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-slate-300">Lösenord:</label>
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-slate-300"
+                >
+                  Lösenord:
+                </label>
                 <input
                   type="password"
                   id="password"
@@ -158,7 +184,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
                 />
               </div>
               {/* Honeypot field - hidden from users but robots might fill it */}
-              <div style={{ display: 'none' }}>
+              <div style={{ display: "none" }}>
                 <label htmlFor="website">Website (do not fill):</label>
                 <input
                   type="text"
@@ -181,7 +207,9 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onRequestClose })
             </form>
           </div>
           <div className="flex flex-col items-center mt-6">
-            <p className="text-slate-300 text-sm mb-2">Har du redan ett konto?</p>
+            <p className="text-slate-300 text-sm mb-2">
+              Har du redan ett konto?
+            </p>
             <button
               onClick={handleLoginClick}
               className="w-full max-w-md flex justify-center py-3 px-6 rounded-xl text-sm font-semibold text-white bg-white/5 backdrop-blur-md border border-white/10 shadow-lg hover:bg-white/10 hover:border-white/20 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300 ease-in-out transform hover:scale-[1.02]"

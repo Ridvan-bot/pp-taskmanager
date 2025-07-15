@@ -1,15 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import styles from './newTaskModal.module.css';
-import { Priority, Status } from '@/types';
-import { NewTaskModalProps } from '@/types';
+import React, { useState, useEffect } from "react";
+import styles from "./newTaskModal.module.css";
+import { Priority, Status } from "@/types";
+import { NewTaskModalProps } from "@/types";
 
-const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, selectedCategory, availableTasks = [], selectedCustomerObj, selectedProjectObj }) => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [priority, setPriority] = useState<Priority | ''>('');
-  const [status, setStatus] = useState('');
-  const [projectId, setProjectId] = useState<number | ''>(selectedProjectObj?.id ?? '');
-  const [customerId, setCustomerId] = useState<number | ''>(selectedCustomerObj?.id ?? '');
+const NewTaskModal: React.FC<NewTaskModalProps> = ({
+  isOpen,
+  onRequestClose,
+  onCreateTask,
+  selectedCategory,
+  availableTasks = [],
+  selectedCustomerObj,
+  selectedProjectObj,
+}) => {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [priority, setPriority] = useState<Priority | "">("");
+  const [status, setStatus] = useState("");
+  const [projectId, setProjectId] = useState<number | "">(
+    selectedProjectObj?.id ?? "",
+  );
+  const [customerId, setCustomerId] = useState<number | "">(
+    selectedCustomerObj?.id ?? "",
+  );
   const [parentId, setParentId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -19,17 +31,17 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
   }, [selectedCategory]);
 
   useEffect(() => {
-    setCustomerId(selectedCustomerObj?.id ?? '');
-    setProjectId(selectedProjectObj?.id ?? '');
+    setCustomerId(selectedCustomerObj?.id ?? "");
+    setProjectId(selectedProjectObj?.id ?? "");
   }, [selectedCustomerObj, selectedProjectObj]);
 
   const resetForm = () => {
-    setTitle('');
-    setContent('');
-    setPriority('');
-    setStatus('');
-    setProjectId(selectedProjectObj?.id ?? '');
-    setCustomerId(selectedCustomerObj?.id ?? '');
+    setTitle("");
+    setContent("");
+    setPriority("");
+    setStatus("");
+    setProjectId(selectedProjectObj?.id ?? "");
+    setCustomerId(selectedCustomerObj?.id ?? "");
     setParentId(null);
   };
 
@@ -40,7 +52,15 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onCreateTask(title, content, priority, status, customerId as number, projectId as number, parentId);
+    onCreateTask(
+      title,
+      content,
+      priority,
+      status,
+      customerId as number,
+      projectId as number,
+      parentId,
+    );
     resetForm();
     onRequestClose();
   };
@@ -48,11 +68,13 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
   if (!isOpen) {
     return null;
   }
-  
+
   return (
     <div className={styles.modalOverlay} onClick={handleClose}>
-      <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-        <button className={styles.closeButton} onClick={handleClose}>X</button>
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <button className={styles.closeButton} onClick={handleClose}>
+          X
+        </button>
         <h2>New Task</h2>
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
@@ -61,7 +83,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
               type="text"
               id="title"
               value={title}
-              onChange={e => setTitle(e.target.value)}
+              onChange={(e) => setTitle(e.target.value)}
               required
             />
           </div>
@@ -70,7 +92,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
             <textarea
               id="content"
               value={content}
-              onChange={e => setContent(e.target.value)}
+              onChange={(e) => setContent(e.target.value)}
               required
             />
           </div>
@@ -79,12 +101,16 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
             <select
               id="priority"
               value={priority}
-              onChange={e => setPriority(e.target.value as Priority)}
+              onChange={(e) => setPriority(e.target.value as Priority)}
               required
             >
-              <option value="" disabled>Select priority</option>
+              <option value="" disabled>
+                Select priority
+              </option>
               {["LOW", "MEDIUM", "HIGH"].map((value) => (
-                <option key={value} value={value}>{value}</option>
+                <option key={value} value={value}>
+                  {value}
+                </option>
               ))}
             </select>
           </div>
@@ -93,12 +119,16 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
             <select
               id="status"
               value={status}
-              onChange={e => setStatus(e.target.value as Status)}
+              onChange={(e) => setStatus(e.target.value as Status)}
               required
             >
-              <option value="" disabled>Select status</option>
+              <option value="" disabled>
+                Select status
+              </option>
               {["NOT_STARTED", "WIP", "WAITING", "CLOSED"].map((value) => (
-                <option key={value} value={value}>{value}</option>
+                <option key={value} value={value}>
+                  {value}
+                </option>
               ))}
             </select>
           </div>
@@ -106,22 +136,40 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
             <label htmlFor="parent">Parent Task (Optional)</label>
             <select
               id="parent"
-              value={parentId || ''}
-              onChange={e => setParentId(Number(e.target.value) || null)}
+              value={parentId || ""}
+              onChange={(e) => setParentId(Number(e.target.value) || null)}
             >
               <option value="">No parent task</option>
               {availableTasks
-                .filter(task => task.customerId === customerId && task.projectId === projectId)
+                .filter(
+                  (task) =>
+                    task.customerId === customerId &&
+                    task.projectId === projectId,
+                )
                 .map((task) => (
-                  <option key={task.id} value={task.id}>{task.title}</option>
+                  <option key={task.id} value={task.id}>
+                    {task.title}
+                  </option>
                 ))}
             </select>
           </div>
           <div className={styles.metaInfo}>
-            <div><strong>Customer:</strong> {selectedCustomerObj ? selectedCustomerObj.name : 'No customer selected'}</div>
-            <div><strong>Project:</strong> {selectedProjectObj ? selectedProjectObj.title : 'No project selected'}</div>
+            <div>
+              <strong>Customer:</strong>{" "}
+              {selectedCustomerObj
+                ? selectedCustomerObj.name
+                : "No customer selected"}
+            </div>
+            <div>
+              <strong>Project:</strong>{" "}
+              {selectedProjectObj
+                ? selectedProjectObj.title
+                : "No project selected"}
+            </div>
           </div>
-          <button type="submit" className={styles.submitButton}>Create</button>
+          <button type="submit" className={styles.submitButton}>
+            Create
+          </button>
         </form>
       </div>
     </div>

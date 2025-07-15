@@ -6,19 +6,19 @@ on:
       branches:
         required: true
         type: string
-        description: 'Branches to trigger the release'
+        description: "Branches to trigger the release"
       slack_enabled:
         required: false
         type: boolean
         default: false
-        description: 'Enable semantic release'
+        description: "Enable semantic release"
     secrets:
       token:
         required: true
-        description: 'GitHub token'
+        description: "GitHub token"
       slack_webhook:
         required: false
-        description: 'Slack webhook URL'
+        description: "Slack webhook URL"
 jobs:
   # Early exit job to complete workflow if branches is not "main"
   No-release:

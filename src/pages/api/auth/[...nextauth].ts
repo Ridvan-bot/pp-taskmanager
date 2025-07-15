@@ -1,11 +1,11 @@
-import NextAuth from 'next-auth';
-import { Session as NextAuthSession } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
-import bcrypt from 'bcryptjs';
-import { randomBytes } from 'crypto';
-import dotenv from 'dotenv';
-import { supabase } from '@/lib/supaBase';
+import NextAuth from "next-auth";
+import { Session as NextAuthSession } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
+import dotenv from "dotenv";
+import { supabase } from "@/lib/supaBase";
 dotenv.config();
 
 interface Session extends NextAuthSession {
@@ -20,61 +20,73 @@ interface Session extends NextAuthSession {
 export default NextAuth({
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
-      
+
       authorize: async (credentials) => {
         if (!credentials) {
-          throw new Error('Credentials are required');
+          throw new Error("Credentials are required");
         }
 
         const { data: user } = await supabase
-          .from('User')
-          .select('*')
-          .eq('email', credentials.email)
+          .from("User")
+          .select("*")
+          .eq("email", credentials.email)
           .single();
 
         if (!user) {
-          throw new Error('Invalid email or password');
+          throw new Error("Invalid email or password");
         }
 
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password,
+        );
 
         if (!isPasswordValid) {
-          throw new Error('Invalid email or password');
+          throw new Error("Invalid email or password");
         }
 
         return { id: user.id.toString(), name: user.name, email: user.email };
       },
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
   ],
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
   },
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
   },
   callbacks: {
     async signIn({ user, account }) {
-      if (account?.provider === 'google') {
+      if (account?.provider === "google") {
         const { data: existingUser } = await supabase
-          .from('User')
-          .select('id')
-          .eq('email', user.email || '')
+          .from("User")
+          .select("id")
+          .eq("email", user.email || "")
           .single();
 
         if (!existingUser) {
-          const hashedPassword = await bcrypt.hash(randomBytes(16).toString('hex'), 10);
+          const hashedPassword = await bcrypt.hash(
+            randomBytes(16).toString("hex"),
+            10,
+          );
           await supabase
-            .from('User')
-            .insert([{ name: user.name || '', email: user.email || '', password: hashedPassword }]);
+            .from("User")
+            .insert([
+              {
+                name: user.name || "",
+                email: user.email || "",
+                password: hashedPassword,
+              },
+            ]);
         }
       }
       return true;
@@ -90,21 +102,21 @@ export default NextAuth({
         // Validate that the user still exists in the database
         try {
           const { data: user } = await supabase
-            .from('User')
-            .select('id')
-            .eq('id', token.id as string)
+            .from("User")
+            .select("id")
+            .eq("id", token.id as string)
             .single();
-          
+
           if (!user) {
             // User no longer exists in database, invalidate session
-            console.error('Session validation failed: User not found');
-            throw new Error('User not found');
+            console.error("Session validation failed: User not found");
+            throw new Error("User not found");
           }
-          
+
           (session as Session).user.id = token.id as string;
         } catch (error) {
           // If user doesn't exist, throw error to invalidate session
-          console.error('Session validation failed:', error);
+          console.error("Session validation failed:", error);
           throw error;
         }
       }
@@ -113,9 +125,10 @@ export default NextAuth({
   },
   cookies: {
     sessionToken: {
-      name: process.env.NODE_ENV === "production"
-        ? "__Secure-next-auth.session-token"
-        : "next-auth.session-token",
+      name:
+        process.env.NODE_ENV === "production"
+          ? "__Secure-next-auth.session-token"
+          : "next-auth.session-token",
       options: {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -124,9 +137,10 @@ export default NextAuth({
       },
     },
     callbackUrl: {
-      name: process.env.NODE_ENV === "production"
-        ? "__Secure-next-auth.callback-url"
-        : "next-auth.callback-url",
+      name:
+        process.env.NODE_ENV === "production"
+          ? "__Secure-next-auth.callback-url"
+          : "next-auth.callback-url",
       options: {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -136,6 +150,4 @@ export default NextAuth({
     },
   },
   debug: true,
-  
 });
-

@@ -1,28 +1,31 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { getAllUsersCustomers } from '@/lib/supabaseTasks';
+import type { NextApiRequest, NextApiResponse } from "next";
+import { getAllUsersCustomers } from "@/lib/supabaseTasks";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   switch (req.method) {
-    case 'GET':
+    case "GET":
       const { userId } = req.query;
-      if (typeof userId !== 'string') {
-        return res.status(400).json({ error: 'Invalid userId' });
+      if (typeof userId !== "string") {
+        return res.status(400).json({ error: "Invalid userId" });
       }
       const userIdNum = Number(userId);
       if (isNaN(userIdNum)) {
-        return res.status(400).json({ error: 'Invalid userId' });
+        return res.status(400).json({ error: "Invalid userId" });
       }
       try {
         const customers = await getAllUsersCustomers(userIdNum);
-        res.status(200).json({customers});
+        res.status(200).json({ customers });
       } catch (error) {
-        console.error('Failed to fetch tasks:', error);
-        res.status(500).json({ error: 'Failed to fetch tasks' });
+        console.error("Failed to fetch tasks:", error);
+        res.status(500).json({ error: "Failed to fetch tasks" });
       }
       break;
     default:
-      res.setHeader('Allow', ['GET']);
-      res.status(405).json({ error: 'Method not allowed' });
+      res.setHeader("Allow", ["GET"]);
+      res.status(405).json({ error: "Method not allowed" });
       break;
   }
 }

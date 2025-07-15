@@ -1,8 +1,15 @@
-import { Session } from 'next-auth';
+import { Session } from "next-auth";
 
 // Define enums as string unions if you want type support
-export type Priority = 'LOW' | 'MEDIUM' | 'HIGH'; // Adjust according to your Supabase enum
-export type Status = 'NOT_STARTED' | 'WIP' | 'WAITING' | 'CLOSED' | 'TODO' | 'IN_PROGRESS' | 'DONE';
+export type Priority = "LOW" | "MEDIUM" | "HIGH"; // Adjust according to your Supabase enum
+export type Status =
+  | "NOT_STARTED"
+  | "WIP"
+  | "WAITING"
+  | "CLOSED"
+  | "TODO"
+  | "IN_PROGRESS"
+  | "DONE";
 
 export type Project = {
   id: number;
@@ -49,13 +56,21 @@ export interface CustomSession extends Session {
 export type NewTaskModalProps = {
   isOpen: boolean;
   onRequestClose: () => void;
-  onCreateTask: (title: string, content: string, priority: string, status: string, customerId: number, projectId: number, parentId: number | null) => void;
+  onCreateTask: (
+    title: string,
+    content: string,
+    priority: string,
+    status: string,
+    customerId: number,
+    projectId: number,
+    parentId: number | null,
+  ) => void;
   customers: Customer[];
   selectedCategory: string;
-  availableTasks?: Task[];  // Available tasks that can be parent tasks
+  availableTasks?: Task[]; // Available tasks that can be parent tasks
   selectedCustomerObj?: Customer | null;
   selectedProjectObj?: Project | null;
-}
+};
 
 export type Customer = {
   id: number;
@@ -72,9 +87,9 @@ export type TaskModalProps = {
   onRequestClose: () => void;
   onUpdateTask: (updatedTask: Task) => void;
   onDeleteTask: (deletedTaskId: string) => void;
-}
+};
 
 export type TaskCardProps = {
   task: Task;
   onClick?: () => void;
-}
+};

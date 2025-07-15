@@ -14,17 +14,22 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Pohlman Protean Task Manager",
-  description: "A task manager crafted with care by Robin Pohlman @ Pohlman Protean",
+  description:
+    "A task manager crafted with care by Robin Pohlman @ Pohlman Protean",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <div id="__next">{children}</div>
       </body>
     </html>
   );
 }
-
-

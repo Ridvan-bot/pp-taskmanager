@@ -43,8 +43,8 @@ header {
 }
 
 .select-customer select:focus {
-  outline: none; 
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6); 
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
 }
 
 .select-customer option {
@@ -58,7 +58,10 @@ header {
   background: rgba(66, 153, 225, 0.6);
   padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s, transform 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    transform 0.3s;
 }
 
 footer {
@@ -80,11 +83,11 @@ footer {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 80%; 
-  max-width: 600px; 
-  height: auto; 
+  width: 80%;
+  max-width: 600px;
+  height: auto;
   max-height: 90vh;
-  overflow-y: auto; 
+  overflow-y: auto;
 }
 
 .modal-overlay {
