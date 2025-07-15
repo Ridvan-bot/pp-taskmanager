@@ -24,6 +24,7 @@ export type Task = {
   parentId: number | null;
   parent?: Task | null;
   subtasks?: Task[];
+  solution?: string;
 };
 
 export type LoginModalProps = {

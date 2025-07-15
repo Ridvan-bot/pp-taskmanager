@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const data = await getTasksByCustomerAndProject(customer as string, project as string);
                 res.status(200).json({ data });
             } catch (error) {
-                console.error(`Failed to fetch tasks for customer:`, error);
+                console.error(`Failed to fetch tasks for customer:`);
                 res.status(500).json({ error: 'Failed to fetch tasks' });
             }
             break;

@@ -20,6 +20,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
   const [priority, setPriority] = useState(task.priority);
   const [status] = useState(task.status);
   const [showAddChildModal, setShowAddChildModal] = useState(false);
+  const [solution, setSolution] = useState(task.solution || '');
 
   useEffect(() => {
     if (!isOpen) {
@@ -44,6 +45,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
     setContent(e.target.value);
   };
 
+  const handleSolutionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setSolution(e.target.value);
+  };
+
   const handlePriorityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setPriority(e.target.value as Priority);
   };
@@ -57,6 +62,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
       status,
       customerId: task.customerId,
       projectId: task.projectId,
+      solution,
     };
 
     try {
@@ -122,6 +128,14 @@ const TaskModal: React.FC<TaskModalProps> = ({ task, isOpen, onRequestClose, onU
             value={content}
             onChange={handleContentChange}
             className={styles.modalTextarea}
+          />
+          <label htmlFor="solution"><strong>Solution:</strong></label>
+          <textarea
+            id="solution"
+            value={solution}
+            onChange={handleSolutionChange}
+            className={styles.modalTextarea}
+            placeholder="Describe how you solved or implemented this task..."
           />
           <label htmlFor="priority"><strong>Prio:</strong></label>
           <select
