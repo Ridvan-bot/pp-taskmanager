@@ -461,7 +461,27 @@ const WorkSpace: React.FC = () => {
                   className={`flex items-center justify-between font-bold border border-white/10 rounded-2xl px-4 py-1.5 mb-2 text-lg ${getStatusHeaderStyle(category)} transition-all`}
                   style={{ minHeight: 36 }}
                 >
-                  <span className="tracking-wide drop-shadow-sm">{formatStatus(category)}</span>
+                  <span className="tracking-wide drop-shadow-sm flex items-center">
+                    {formatStatus(category)}
+                    {category === 'CLOSED' && (
+                      <span
+                        style={{
+                          color: '#0f172a',
+                          fontSize: '0.95em',
+                          marginLeft: 8,
+                          verticalAlign: 'middle',
+                          cursor: 'help',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          fontWeight: 500
+                        }}
+                        title="Sorted by last updated, not priority"
+                      >
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" style={{marginRight: 4}}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        (Sorted by updated)
+                      </span>
+                    )}
+                  </span>
                   <button 
                     className="text-white/70 hover:text-white text-xl px-1 py-1 rounded-full focus:outline-none focus:ring-2 focus:ring-white/40"
                     onClick={() => handleSortClick(category)}
