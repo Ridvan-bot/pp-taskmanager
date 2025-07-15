@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getTasksByCustomerAndProject } from '../../lib/prisma';
+import { getTasksByCustomerAndProject } from '@/lib/supabaseTasks';
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

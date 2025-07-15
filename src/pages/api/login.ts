@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-
-const prisma = new PrismaClient();
+import { supabase } from '@/lib/supaBase';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -12,12 +10,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { email, password } = req.body;
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+    const { data: user } = await supabase
+      .from('User')
+      .select('*')
+      .eq('email', email)
+      .single();
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    if (!user.verified) {
+      return res.status(403).json({ error: 'Please verify your email before logging in.' });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);

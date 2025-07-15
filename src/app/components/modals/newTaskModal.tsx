@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import styles from './newTaskModal.module.css';
-import { Priority, Status, Project } from '@prisma/client';
+import { Priority, Status } from '@/types';
 import { NewTaskModalProps } from '@/types';
 
-const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, customers, selectedCategory, availableTasks = []}) => {
+const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onCreateTask, selectedCategory, availableTasks = [], selectedCustomerObj, selectedProjectObj }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [priority, setPriority] = useState<Priority | ''>('');
   const [status, setStatus] = useState('');
-  const [projectId, setProjectId] = useState<number | ''>(''); 
-  const [customerId, setCustomerId] = useState<number | ''>(''); 
+  const [projectId, setProjectId] = useState<number | ''>(selectedProjectObj?.id ?? '');
+  const [customerId, setCustomerId] = useState<number | ''>(selectedCustomerObj?.id ?? '');
   const [parentId, setParentId] = useState<number | null>(null);
-  const [availableProjects, setAvailableProjects] = useState<Project[]>([]);
 
   useEffect(() => {
     if (selectedCategory) {
@@ -19,29 +18,19 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
     }
   }, [selectedCategory]);
 
-  // Update available projects when customer changes
   useEffect(() => {
-    if (customerId) {
-      const selectedCustomer = customers.find(c => c.id === customerId);
-      if (selectedCustomer) {
-        setAvailableProjects(selectedCustomer.projects);
-        setProjectId(''); // Reset project selection when customer changes
-      }
-    } else {
-      setAvailableProjects([]);
-      setProjectId('');
-    }
-  }, [customerId, customers]);
+    setCustomerId(selectedCustomerObj?.id ?? '');
+    setProjectId(selectedProjectObj?.id ?? '');
+  }, [selectedCustomerObj, selectedProjectObj]);
 
   const resetForm = () => {
     setTitle('');
     setContent('');
     setPriority('');
     setStatus('');
-    setProjectId('');
-    setCustomerId('');
+    setProjectId(selectedProjectObj?.id ?? '');
+    setCustomerId(selectedCustomerObj?.id ?? '');
     setParentId(null);
-    setAvailableProjects([]);
   };
 
   const handleClose = () => {
@@ -94,7 +83,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
               required
             >
               <option value="" disabled>Select priority</option>
-              {Object.values(Priority).map((value) => (
+              {["LOW", "MEDIUM", "HIGH"].map((value) => (
                 <option key={value} value={value}>{value}</option>
               ))}
             </select>
@@ -108,39 +97,8 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
               required
             >
               <option value="" disabled>Select status</option>
-              {Object.values(Status).map((value) => (
+              {["NOT_STARTED", "WIP", "WAITING", "CLOSED"].map((value) => (
                 <option key={value} value={value}>{value}</option>
-              ))}
-            </select>
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="customer">Customer</label>
-            <select
-              id="customer"
-              value={customerId}
-              onChange={e => setCustomerId(Number(e.target.value))}
-              required
-            >
-              <option value="" disabled>Select customer</option>
-              {customers.map((customer) => (
-                <option key={customer.id} value={customer.id}>{customer.name}</option>
-              ))}
-            </select>
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="project">Project</label>
-            <select
-              id="project"
-              value={projectId}
-              onChange={e => setProjectId(Number(e.target.value))}
-              disabled={!customerId}
-              required
-            >
-              <option value="" disabled>
-                {customerId ? 'Select Project' : 'Select Customer First'}
-              </option>
-              {availableProjects.map((project) => (
-                <option key={project.id} value={project.id}>{project.title}</option>
               ))}
             </select>
           </div>
@@ -158,6 +116,10 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({ isOpen, onRequestClose, onC
                   <option key={task.id} value={task.id}>{task.title}</option>
                 ))}
             </select>
+          </div>
+          <div className={styles.metaInfo}>
+            <div><strong>Customer:</strong> {selectedCustomerObj ? selectedCustomerObj.name : 'No customer selected'}</div>
+            <div><strong>Project:</strong> {selectedProjectObj ? selectedProjectObj.title : 'No project selected'}</div>
           </div>
           <button type="submit" className={styles.submitButton}>Create Task</button>
         </form>
