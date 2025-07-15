@@ -1,6 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/lib/supaBase';
+import { rateLimit } from '@/lib/rateLimit';
+import crypto from 'crypto';
+import { sendVerificationEmail } from '@/lib/sendMail';
 
 // Rate limiting storage (in production, use Redis or database)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -43,6 +46,12 @@ function checkRateLimit(ip: string): boolean {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    await rateLimit(req.socket.remoteAddress || '', 5);
+  } catch {
+    return res.status(429).json({ error: 'För många registreringsförsök. Försök igen om en minut.' });
   }
 
   // Get client IP
@@ -89,9 +98,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const hashedPassword = await bcrypt.hash(password, 12);
 
     console.log('Creating user with:', { name, email, password: hashedPassword });
+    const verifyToken = crypto.randomBytes(32).toString('hex');
     const { data: user, error: createUserError } = await supabase
       .from('User')
-      .insert([{ name, email, password: hashedPassword, updatedAt: new Date().toISOString() }])
+      .insert([{ name, email, password: hashedPassword, updatedAt: new Date().toISOString(), verified: false, verifyToken }])
       .select()
       .single();
     console.log('Supabase insert result:', user, createUserError);
@@ -100,6 +110,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.error('Supabase createUserError:', createUserError, user);
       throw createUserError;
     }
+
+    await sendVerificationEmail(email, verifyToken);
 
     res.status(201).json({ 
       message: 'Användare skapad framgångsrikt', 
