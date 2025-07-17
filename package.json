@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "next build && npm run build:mcp-server",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "build:mcp-server": "tsc src/utils/mcp/server.ts --outDir src/utils/mcp/"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.15.1",
     "@supabase/supabase-js": "^2.50.5",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.2",

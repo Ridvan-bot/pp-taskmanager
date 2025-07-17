@@ -93,3 +93,8 @@ export type TaskCardProps = {
   task: Task;
   onClick?: () => void;
 };
+
+export type ChatMessage = {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+};

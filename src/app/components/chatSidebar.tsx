@@ -1,10 +1,38 @@
-import React from "react";
+import React, { useState } from 'react';
+import { ChatMessage } from '@/types';
 
 interface ChatSidebarProps {
   onClose: () => void;
 }
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose }) => {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSend = async () => {
+    if (!input.trim()) return;
+    const userMessage: ChatMessage = { role: 'user', content: input };
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+    setInput('');
+    setLoading(true);
+    try {
+      const response = await fetch('/api/chat-mcp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: newMessages }),
+      });
+      const data = await response.json();
+      const botContent = data.choices?.[0]?.message?.content || data.generated_text || 'No response';
+      setMessages(prev => [...prev, { role: 'assistant', content: botContent }]);
+    } catch (error) {
+      console.error('Error from MCP client:', error);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Error from MCP client.' }]);
+    }
+    setLoading(false);
+  };
+
   return (
     <aside
       style={{
@@ -70,23 +98,27 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose }) => {
           overflowY: "auto",
           display: "flex",
           flexDirection: "column",
-          gap: 16,
+          gap: 8,
         }}
       >
-        <div
-          style={{
-            background: "rgba(59,130,246,0.10)",
-            borderRadius: 16,
-            padding: "16px 20px",
-            color: "#fff",
-            fontSize: 15,
-            maxWidth: "80%",
-            alignSelf: "flex-start",
-            boxShadow: "0 2px 8px 0 rgba(59,130,246,0.08)",
-          }}
-        >
-          Här kan du implementera din chatt!
-        </div>
+        {messages.map((msg, i) => (
+          <div
+            key={i}
+            style={{
+              alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
+              background: msg.role === "user" ? "#3b82f6" : "rgba(59,130,246,0.10)",
+              color: "#fff",
+              borderRadius: 16,
+              padding: "10px 16px",
+              marginBottom: 4,
+              maxWidth: "80%",
+              fontSize: 15,
+            }}
+          >
+            {msg.content}
+          </div>
+        ))}
+        {loading && <div style={{ color: "#fff" }}>...</div>}
       </div>
       <div
         style={{
@@ -108,6 +140,11 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose }) => {
           <input
             type="text"
             placeholder="Skriv ett meddelande..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSend();
+            }}
             style={{
               width: "100%",
               padding: "10px 12px",
@@ -120,6 +157,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose }) => {
             }}
           />
           <button
+            onClick={handleSend}
             style={{
               marginLeft: 8,
               background: "linear-gradient(90deg,#3b82f6 0%,#60a5fa 100%)",
