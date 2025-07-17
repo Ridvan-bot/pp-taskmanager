@@ -3,37 +3,22 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import { ChatMessage } from '@/types';
 import dotenv from 'dotenv';
 import path from 'path';
+import { InferenceClient } from '@huggingface/inference';
 
 dotenv.config();
 
-export const createChatCompletion = async (
-    messages: ChatMessage[],
-  ): Promise<unknown> => {
+const hfClient = new InferenceClient(process.env.HF_TOKEN);
 
-    const model = 'meta-llama/Llama-3-8b-chat-hf';
-    const url = `https://api-inference.huggingface.co/models/${model}`;
-  
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        inputs: messages,
-        parameters: {
-          max_new_tokens: 2000,
-          temperature: 0.7,
-        },
-      }),
-    });
-  
-    if (!res.ok) {
-      throw new Error(`Hugging Face API error: ${res.status} ${await res.text()}`);
-    }
-  
-    return res.json();
-  };
+export const createChatCompletion = async (
+  messages: ChatMessage[],
+): Promise<unknown> => {
+  const chatCompletion = await hfClient.chatCompletion({
+    provider: 'together',
+    model: 'moonshotai/Kimi-K2-Instruct',
+    messages,
+  });
+  return chatCompletion;
+};
 
 // Robust path to server.js
 const serverPath = path.resolve(process.cwd(), 'src/utils/mcp/server.js');

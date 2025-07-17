@@ -38,12 +38,83 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mcp_js_1 = require("@modelcontextprotocol/sdk/server/mcp.js");
 var stdio_js_1 = require("@modelcontextprotocol/sdk/server/stdio.js");
+var zod_1 = require("zod");
+var supaBase_1 = require("@/lib/supaBase");
 var server = new mcp_js_1.McpServer({
     name: 'Database-Server',
     description: 'Server to manage tasks, projects and customers etc..',
     version: '1.0.0',
 });
-// Register all tools
+// Register tool: Get Task by Customer Name
+server.tool('Get_Task_By_CustomerID', 'Returns all tasks connected to a customer. Parametrar: { customer: Name of the customer }', { customer: zod_1.z.string() }, function (_a) { return __awaiter(void 0, [_a], void 0, function (_b) {
+    var _c, customerData, customerError, _d, data, error;
+    var customer = _b.customer;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
+            case 0: return [4 /*yield*/, supaBase_1.supabase
+                    .from('Customer')
+                    .select('id')
+                    .eq('name', customer)
+                    .single()];
+            case 1:
+                _c = _e.sent(), customerData = _c.data, customerError = _c.error;
+                if (customerError || !customer)
+                    throw new Error('Customer not found');
+                return [4 /*yield*/, supaBase_1.supabase
+                        .from('Task')
+                        .select("*, parent:parentId(*), subtasks:Task(*), customer:customerId(name), project:projectId(title)")
+                        .eq('customerId', customerData.id)];
+            case 2:
+                _d = _e.sent(), data = _d.data, error = _d.error;
+                if (error)
+                    throw error;
+                return [2 /*return*/, {
+                        content: [
+                            { type: 'text', text: JSON.stringify(data) },
+                            {
+                                type: 'resource',
+                                resource: {
+                                    uri: '',
+                                    text: JSON.stringify(data),
+                                    mimeType: 'application/json',
+                                },
+                            },
+                        ],
+                    }];
+        }
+    });
+}); });
+server.tool('Get_Task_By_ProjectID', 'Returns all tasks connected to a project. Parametrar: { project: Name of the project }', { project: zod_1.z.string() }, function (_a) { return __awaiter(void 0, [_a], void 0, function (_b) {
+    var _c, projectData, projectError, _d, data, error;
+    var project = _b.project;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
+            case 0: return [4 /*yield*/, supaBase_1.supabase
+                    .from('Project')
+                    .select('id')
+                    .eq('title', project)
+                    .single()];
+            case 1:
+                _c = _e.sent(), projectData = _c.data, projectError = _c.error;
+                if (projectError || !projectData)
+                    throw new Error('Project not found');
+                return [4 /*yield*/, supaBase_1.supabase
+                        .from('Task')
+                        .select("*, parent:parentId(*), subtasks:Task(*), customer:customerId(name), project:projectId(title)")
+                        .eq('projectId', projectData.id)];
+            case 2:
+                _d = _e.sent(), data = _d.data, error = _d.error;
+                if (error)
+                    throw error;
+                return [2 /*return*/, {
+                        content: [
+                            { type: 'text', text: JSON.stringify(data) },
+                            { type: 'resource', resource: { uri: '', text: JSON.stringify(data), mimeType: 'application/json' } },
+                        ],
+                    }];
+        }
+    });
+}); });
 var transport = new stdio_js_1.StdioServerTransport();
 (function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
