@@ -3,6 +3,8 @@ import { ChatMessage } from '@/types';
 
 interface ChatSidebarProps {
   onClose: () => void;
+  selectedCustomer?: string;
+  selectedProject?: string;
 }
 
 interface Tool {
@@ -11,7 +13,7 @@ interface Tool {
   parameters?: unknown;
 }
 
-const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose }) => {
+const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose, selectedCustomer, selectedProject }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -53,7 +55,28 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose }) => {
   const handleSend = async () => {
     if (!input.trim()) return;
     const userMessage: ChatMessage = { role: 'user', content: input };
+    
+    // Skapa kontext-meddelande med vald kund och projekt
+    const contextMessages: ChatMessage[] = [];
+    if (selectedCustomer || selectedProject) {
+      let contextContent = "KONTEXT: ";
+      if (selectedCustomer) {
+        contextContent += `Användaren har valt kund: "${selectedCustomer}". `;
+      }
+      if (selectedProject) {
+        contextContent += `Användaren har valt projekt: "${selectedProject}". `;
+      }
+      contextContent += "Om användaren vill skapa tasks eller arbeta med data för denna kund/projekt, använd dessa värden automatiskt om de inte specificerar annat.";
+      
+      contextMessages.push({ 
+        role: 'system', 
+        content: contextContent 
+      });
+    }
+    
     const newMessages = [...messages, userMessage];
+    const messagesWithContext = [...contextMessages, ...newMessages];
+    
     setMessages(newMessages);
     setInput('');
     setLoading(true);
@@ -62,16 +85,40 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          messages: newMessages,
+          messages: messagesWithContext,
           functions: tools,
         }),
       });
+      
+      if (!response.ok) {
+        // Hantera HTTP-fel (4xx, 5xx)
+        const errorText = await response.text();
+        let errorMessage = '🚫 **Anslutningsfel**\n\nKunde inte nå AI-tjänsten. Kontrollera din internetanslutning och försök igen.';
+        
+        if (response.status === 429) {
+          errorMessage = '⏱️ **För många förfrågningar**\n\nVänta en stund innan du försöker igen.';
+        } else if (response.status >= 500) {
+          errorMessage = '🔧 **Serverfel**\n\nServern har tekniska problem. Försök igen om en stund.';
+        }
+        
+        setMessages(prev => [...prev, { role: 'assistant', content: errorMessage }]);
+        return;
+      }
+      
       const data = await response.json();
-      const botContent = data.choices?.[0]?.message?.content || data.generated_text || 'No response';
+      const botContent = data.choices?.[0]?.message?.content || data.generated_text || 'Inget svar mottaget från AI-tjänsten.';
       setMessages(prev => [...prev, { role: 'assistant', content: botContent }]);
     } catch (error) {
       console.error('Error from MCP client:', error);
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Error from MCP client.' }]);
+      
+      // Hantera nätverksfel och andra exceptions
+      let errorMessage = '🌐 **Anslutningsfel**\n\nKunde inte ansluta till AI-tjänsten. Kontrollera din internetanslutning.';
+      
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        errorMessage = '📡 **Nätverksfel**\n\nKontrollera din internetanslutning och försök igen.';
+      }
+      
+      setMessages(prev => [...prev, { role: 'assistant', content: errorMessage }]);
     }
     setLoading(false);
   };
@@ -105,16 +152,26 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose }) => {
           background: "rgba(30,41,59,0.98)",
         }}
       >
-        <span
-          style={{
-            color: "#fff",
-            fontWeight: 700,
-            fontSize: 20,
-            letterSpacing: 0.5,
-          }}
-        >
-          💬 Chat
-        </span>
+        <div>
+          <span
+            style={{
+              color: "#fff",
+              fontWeight: 700,
+              fontSize: 20,
+              letterSpacing: 0.5,
+              display: "block",
+            }}
+          >
+            💬 Chat
+          </span>
+          {(selectedCustomer || selectedProject) && (
+            <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>
+              {selectedCustomer && <span>Kund: {selectedCustomer}</span>}
+              {selectedCustomer && selectedProject && <span> • </span>}
+              {selectedProject && <span>Projekt: {selectedProject}</span>}
+            </div>
+          )}
+        </div>
         <button
           onClick={onClose}
           style={{
