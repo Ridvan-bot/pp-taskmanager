@@ -27,14 +27,6 @@ export default async function handler(
       try {
         const { title, content, priority, status, customerId, projectId } =
           req.body;
-        console.log("Incoming data:", {
-          title,
-          content,
-          priority,
-          status,
-          customerId,
-          projectId,
-        });
         if (
           !title ||
           !content ||

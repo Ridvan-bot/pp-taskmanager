@@ -11,18 +11,32 @@ const hfClient = new InferenceClient(process.env.HF_TOKEN);
 
 export const createChatCompletion = async (
   messages: ChatMessage[],
+  tools?: unknown[],
 ): Promise<unknown> => {
+  console.log('🤖 Sending to LLM:', {
+    messages: messages.length,
+    tools: tools?.length || 0,
+    toolNames: tools?.map((t: unknown) => {
+      const toolObj = t as { function?: { name?: string }; name?: string };
+      return toolObj.function?.name || toolObj.name || 'unknown';
+    }) || []
+  });
+
   const chatCompletion = await hfClient.chatCompletion({
     provider: 'together',
     model: 'moonshotai/Kimi-K2-Instruct',
     messages,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    tools: (tools || []) as any,
   });
+  
+  console.log('✅ LLM Response received');
   return chatCompletion;
 };
 
 // Robust path to server.ts
 const serverPath = path.resolve(process.cwd(), 'src/utils/mcp/server.ts');
-console.log('🔍 Starting MCP server at:', serverPath);
+console.log('🔍 Starting MCP server');
 
 const transport = new StdioClientTransport({
   command: 'ts-node',
@@ -64,7 +78,6 @@ export const getToolsviaMcp = async () => {
       description: tool.description,
       parameters: tool.inputSchema,
     }));
-    console.log('✅ Available MCP tools:', functions.map(f => f.name));
     return { functions, response };
   } catch (error) {
     console.error('❌ Error listing MCP tools:', error);
@@ -77,12 +90,10 @@ export const callToolsViaMcp = async (
   functionArgument: { [key: string]: unknown },
 ): Promise<unknown> => {
   try {
-    console.log('🔧 Calling MCP tool:', name, 'with args:', functionArgument);
     const response = await client.callTool({
       name: name,
       arguments: functionArgument,
     });
-    console.log('✅ MCP tool response received');
     return response;
   } catch (error) {
     console.error('❌ Error calling MCP tool:', error);

@@ -39,7 +39,6 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
 
       if (response.ok) {
         // Handle successful registration
-        console.log("Account created successfully:", data);
         setIsSuccess(true);
 
         // Start countdown

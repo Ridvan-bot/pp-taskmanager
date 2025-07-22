@@ -206,13 +206,11 @@ const WorkSpace: React.FC = () => {
   }, []);
 
   const fetchUserCustomers = async () => {
-    console.log("customerData", customerData);
 
     if (!session || !session.user) {
       console.error("User ID is not available");
       return;
     }
-    console.log("session.user.id", session.user.id);
     try {
       const response = await fetch(`/api/customer?userId=${session.user.id}`);
 

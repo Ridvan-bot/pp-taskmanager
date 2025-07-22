@@ -111,12 +111,6 @@ export default async function handler(
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
-
-    console.log("Creating user with:", {
-      name,
-      email,
-      password: hashedPassword,
-    });
     const verifyToken = crypto.randomBytes(32).toString("hex");
     const { data: user, error: createUserError } = await supabase
       .from("User")
@@ -132,7 +126,6 @@ export default async function handler(
       ])
       .select()
       .single();
-    console.log("Supabase insert result:", user, createUserError);
 
     if (createUserError) {
       console.error("Supabase createUserError:", createUserError, user);

@@ -72,6 +72,38 @@ server.tool(
   }
 );
 
+// Register tool: Get All Customers
+server.tool(
+  'Get_All_Customers',
+  'Returns all customers from the database. No parameters required.',
+  {},
+  async () => {
+    if (!supabase) {
+      throw new Error('Database not available. Please configure Supabase environment variables.');
+    }
+    const { data, error } = await supabase
+      .from('Customer')
+      .select('*')
+      .order('name', { ascending: true });
+      
+    if (error) throw error;
+    
+    return {
+      content: [
+        { type: 'text', text: JSON.stringify(data) },
+        {
+          type: 'resource',
+          resource: {
+            uri: '',
+            text: JSON.stringify(data),
+            mimeType: 'application/json',
+          },
+        },
+      ],
+    };
+  }
+);
+
 server.tool(
   'Get_Task_By_ProjectID',
   'Returns all tasks connected to a project. Parametrar: { project: Name of the project }',
@@ -79,8 +111,7 @@ server.tool(
   async ({ project }: { project: string }) => {
     if (!supabase) {
       throw new Error('Database not available. Please configure Supabase environment variables.');
-    }
-    
+    } 
     const { data: projectData, error: projectError } = await supabase
       .from('Project')
       .select('id')

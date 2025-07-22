@@ -1,14 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChatMessage } from '@/types';
 
 interface ChatSidebarProps {
   onClose: () => void;
 }
 
+interface Tool {
+  name: string;
+  description?: string;
+  parameters?: unknown;
+}
+
 const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [tools, setTools] = useState<Tool[]>([]);
+    // On mount: preload available AI/MCP tools/functions
+    useEffect(() => {
+      const preloadTools = async () => {
+        try {
+          const response = await fetch('/api/tools', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          
+          const contentType = response.headers.get('content-type');
+          if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            console.error('Expected JSON but got:', text.substring(0, 200));
+            throw new Error('Response is not JSON');
+          }
+          
+          const data = await response.json();
+          // Spara hela tool-objekten istället för bara namnen
+          const allTools = data.tools?.functions || [];
+          console.log('🔧 Loaded tools for LLM:', allTools);
+          setTools(allTools);
+        } catch (error) {
+          console.error('Error preloading tools:', error);
+          // Set empty tools array as fallback
+          setTools([]);
+        }
+      };
+  
+      preloadTools();
+    }, []);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -21,7 +62,10 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose }) => {
       const response = await fetch('/api/chat-mcp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({ 
+          messages: newMessages,
+          functions: tools,
+        }),
       });
       const data = await response.json();
       const botContent = data.choices?.[0]?.message?.content || data.generated_text || 'No response';
