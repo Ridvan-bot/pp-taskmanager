@@ -92,7 +92,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose, selectedCustomer, se
       
       if (!response.ok) {
         // Hantera HTTP-fel (4xx, 5xx)
-        const errorText = await response.text();
+        await response.text();
         let errorMessage = '🚫 **Anslutningsfel**\n\nKunde inte nå AI-tjänsten. Kontrollera din internetanslutning och försök igen.';
         
         if (response.status === 429) {
@@ -166,9 +166,9 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose, selectedCustomer, se
           </span>
           {(selectedCustomer || selectedProject) && (
             <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>
-              {selectedCustomer && <span>Kund: {selectedCustomer}</span>}
+              {selectedCustomer && <span>Customer: {selectedCustomer}</span>}
               {selectedCustomer && selectedProject && <span> • </span>}
-              {selectedProject && <span>Projekt: {selectedProject}</span>}
+              {selectedProject && <span>Project: {selectedProject}</span>}
             </div>
           )}
         </div>
