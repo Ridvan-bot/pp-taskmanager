@@ -13,15 +13,6 @@ export const createChatCompletion = async (
   messages: ChatMessage[],
   tools?: unknown[],
 ): Promise<unknown> => {
-  console.log('🤖 Sending to LLM:', {
-    messages: messages.length,
-    tools: tools?.length || 0,
-    toolNames: tools?.map((t: unknown) => {
-      const toolObj = t as { function?: { name?: string }; name?: string };
-      return toolObj.function?.name || toolObj.name || 'unknown';
-    }) || []
-  });
-
   const chatCompletion = await hfClient.chatCompletion({
     provider: 'together',
     model: 'moonshotai/Kimi-K2-Instruct',
@@ -30,13 +21,11 @@ export const createChatCompletion = async (
     tools: (tools || []) as any,
   });
   
-  console.log('✅ LLM Response received');
   return chatCompletion;
 };
 
 // Robust path to server.ts
 const serverPath = path.resolve(process.cwd(), 'src/utils/mcp/server.ts');
-console.log('🔍 Starting MCP server');
 
 const transport = new StdioClientTransport({
   command: 'ts-node',
@@ -104,9 +93,7 @@ export const callToolsViaMcp = async (
 // Initialize connection with better error handling
 (async () => {
   try {
-    console.log('🚀 Connecting to MCP server...');
     await client.connect(transport);
-    console.log('✅ MCP client connected successfully');
   } catch (error) {
     console.error('❌ Failed to connect to MCP server:', error);
   }
@@ -116,7 +103,6 @@ export const callToolsViaMcp = async (
 export const closeConnection = async (): Promise<void> => {
   try {
     await client.close();
-    console.log('✅ MCP connection closed');
   } catch (error) {
     console.error('❌ Error closing MCP connection:', error);
   }

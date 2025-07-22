@@ -18,7 +18,6 @@ let supabase: SupabaseClient | null = null;
 if (supabaseUrl && supabaseAnonKey) {
   try {
     supabase = createClient(supabaseUrl, supabaseAnonKey);
-    console.log('✅ Supabase initialized successfully');
   } catch (error) {
     console.error('❌ Failed to initialize Supabase:', error);
   }
@@ -36,39 +35,58 @@ const server = new McpServer({
 // Register tool: Get Task by Customer Name
 server.tool(
   'Get_Task_By_CustomerID',
-  'Returns all tasks connected to a customer. Parametrar: { customer: Name of the customer }',
+  'Returns task titles for a specific customer. Parameter: { customer: Name of the customer }',
   { customer: z.string() },
   async ({ customer }: { customer: string }) => {
     if (!supabase) {
       throw new Error('Database not available. Please configure Supabase environment variables.');
     }
     
-    const { data: customerData, error: customerError } = await supabase
-      .from('Customer')
-      .select('id')
+    try {
+      // STEG 1: Hitta customer ID baserat på customer name
+      const { data: customerData, error: customerError } = await supabase
+        .from('Customer')
+        .select('id, name')
         .eq('name', customer)
-      .single();
-    if (customerError || !customer) throw new Error('Customer not found');
-    const { data, error } = await supabase
-      .from('Task')
-      .select(
-        `*, parent:parentId(*), subtasks:Task(*), customer:customerId(name), project:projectId(title)`
-      )
-      .eq('customerId', customerData.id);
-    if (error) throw error;
-    return {
-      content: [
-        { type: 'text', text: JSON.stringify(data) },
-        {
-          type: 'resource',
-          resource: {
-            uri: '',
-            text: JSON.stringify(data),
-            mimeType: 'application/json',
+        .single();
+        
+      if (customerError) {
+        console.error('Customer lookup error:', customerError);
+        throw new Error(`Customer '${customer}' not found`);
+      }
+      
+      if (!customerData) {
+        throw new Error(`Customer '${customer}' not found`);
+      }
+
+      // STEG 2: Hämta alla tasks som har customerId = det ID vi just hittade
+      const { data: tasks, error: tasksError } = await supabase
+        .from('Task')
+        .select('title')
+        .eq('customerId', customerData.id);
+        
+      if (tasksError) {
+        console.error('Tasks lookup error:', tasksError);
+        throw new Error('Failed to fetch tasks');
+      }
+      
+      // STEG 3: Extrahera bara titlarna
+      const taskTitles = tasks?.map(task => task.title) || [];
+      
+      return {
+        content: [
+          { 
+            type: 'text', 
+            text: taskTitles.length > 0 
+              ? `Customer "${customerData.name}" (ID: ${customerData.id}) has ${taskTitles.length} tasks: ${taskTitles.join(', ')}`
+              : `Customer "${customerData.name}" (ID: ${customerData.id}) has no tasks`
           },
-        },
-      ],
-    };
+        ],
+      };
+    } catch (error) {
+      console.error('Error in Get_Task_By_CustomerID:', error);
+      throw error;
+    }
   }
 );
 
@@ -138,7 +156,6 @@ const transport = new StdioServerTransport();
 (async () => {
   try {
     await server.connect(transport);
-    console.log('🚀 MCP Server started successfully');
   } catch (error) {
     console.error('❌ Failed to start MCP Server:', error);
     process.exit(1);

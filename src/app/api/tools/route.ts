@@ -31,10 +31,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   try {
-    console.log('🔍 Fetching MCP tools via API...');
     const { functions } = await getToolsviaMcp();
-    console.log('✅ Available MCP tools:', functions.map((f: { name: string }) => f.name));
-    
     return NextResponse.json({ 
       tools: { 
         functions 

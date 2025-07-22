@@ -39,7 +39,6 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose }) => {
           const data = await response.json();
           // Spara hela tool-objekten istället för bara namnen
           const allTools = data.tools?.functions || [];
-          console.log('🔧 Loaded tools for LLM:', allTools);
           setTools(allTools);
         } catch (error) {
           console.error('Error preloading tools:', error);

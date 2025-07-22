@@ -20,12 +20,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method !== 'POST') return res.status(405).end();
   try {
     const { messages } = req.body;
-    console.log('🔧 Received request with', messages.length, 'messages');
-    
     // Hämta tillgängliga MCP tools
     const { functions: mcpTools } = await getToolsviaMcp();
-    console.log('🛠️ Available MCP tools:', mcpTools.map(t => t.name));
-    
     // Konvertera MCP tools till format som LLM förstår
     const toolsForLLM = mcpTools.map(tool => ({
       type: 'function',
@@ -43,13 +39,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const responseMessage = result?.choices?.[0]?.message;
     
     if (responseMessage?.tool_calls) {
-      console.log('🔧 LLM wants to use tools:', responseMessage.tool_calls);
       
       // Exekvera tool calls
       const toolResults = [];
       for (const toolCall of responseMessage.tool_calls) {
         try {
-          console.log(`🔧 Calling tool: ${toolCall.function.name}`);
           const toolResult = await callToolsViaMcp(
             toolCall.function.name,
             JSON.parse(toolCall.function.arguments)
