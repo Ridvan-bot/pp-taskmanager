@@ -7,6 +7,12 @@ import { InferenceClient } from '@huggingface/inference';
 
 dotenv.config();
 
+// Check if HF_TOKEN is available
+if (!process.env.HF_TOKEN) {
+  console.warn('⚠️  HF_TOKEN environment variable not found. Hugging Face inference will not work.');
+  console.warn('   Set HF_TOKEN in your .env.local file to enable AI chat functionality.');
+}
+
 const hfClient = new InferenceClient(process.env.HF_TOKEN);
 
 export const createChatCompletion = async (
