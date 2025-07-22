@@ -5,7 +5,7 @@ import {
   getAllUsersTasks,
   updateTask,
   deleteTask,
-} from "@/lib/supabaseTasks";
+} from "../../lib/supabaseTasks";
 
 export default async function handler(
   req: NextApiRequest,

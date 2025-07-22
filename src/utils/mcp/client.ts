@@ -20,11 +20,18 @@ export const createChatCompletion = async (
   return chatCompletion;
 };
 
-// Robust path to server.js
-const serverPath = path.resolve(process.cwd(), 'src/utils/mcp/server.js');
+// Robust path to server.ts
+const serverPath = path.resolve(process.cwd(), 'src/utils/mcp/server.ts');
+console.log('🔍 Starting MCP server at:', serverPath);
+
 const transport = new StdioClientTransport({
-  command: 'node',
+  command: 'ts-node',
   args: [serverPath],
+  env: {
+    ...process.env,
+    // Ensure environment variables are passed to the server process
+    NODE_ENV: process.env.NODE_ENV || 'development',
+  }
 });
 
 const client = new Client(
@@ -50,30 +57,56 @@ interface Tool {
 
 // Listing tools in MCP server
 export const getToolsviaMcp = async () => {
-  const response = await client.listTools();
-  const functions = response.tools.map((tool: Tool) => ({
-    name: tool.name,
-    description: tool.description,
-    parameters: tool.inputSchema,
-  }));
-  return { functions, response };
+  try {
+    const response = await client.listTools();
+    const functions = response.tools.map((tool: Tool) => ({
+      name: tool.name,
+      description: tool.description,
+      parameters: tool.inputSchema,
+    }));
+    console.log('✅ Available MCP tools:', functions.map(f => f.name));
+    return { functions, response };
+  } catch (error) {
+    console.error('❌ Error listing MCP tools:', error);
+    throw error;
+  }
 };
 
 export const callToolsViaMcp = async (
   name: string,
   functionArgument: { [key: string]: unknown },
 ): Promise<unknown> => {
-  const response = await client.callTool({
-    name: name,
-    arguments: functionArgument,
-  });
-  return response;
+  try {
+    console.log('🔧 Calling MCP tool:', name, 'with args:', functionArgument);
+    const response = await client.callTool({
+      name: name,
+      arguments: functionArgument,
+    });
+    console.log('✅ MCP tool response received');
+    return response;
+  } catch (error) {
+    console.error('❌ Error calling MCP tool:', error);
+    throw error;
+  }
 };
 
-// Starta anslutning utan att använda variabel
-void client.connect(transport);
+// Initialize connection with better error handling
+(async () => {
+  try {
+    console.log('🚀 Connecting to MCP server...');
+    await client.connect(transport);
+    console.log('✅ MCP client connected successfully');
+  } catch (error) {
+    console.error('❌ Failed to connect to MCP server:', error);
+  }
+})();
 
 // export a function to close the connection
 export const closeConnection = async (): Promise<void> => {
-  await client.close();
+  try {
+    await client.close();
+    console.log('✅ MCP connection closed');
+  } catch (error) {
+    console.error('❌ Error closing MCP connection:', error);
+  }
 };

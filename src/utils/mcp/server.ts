@@ -1,8 +1,31 @@
-
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { supabase } from "@/lib/supaBase";
+import dotenv from 'dotenv';
+import path from 'path';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
+// Load environment variables from multiple possible locations
+dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+
+// Check if Supabase environment variables are available
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+let supabase: SupabaseClient | null = null;
+
+if (supabaseUrl && supabaseAnonKey) {
+  try {
+    supabase = createClient(supabaseUrl, supabaseAnonKey);
+    console.log('✅ Supabase initialized successfully');
+  } catch (error) {
+    console.error('❌ Failed to initialize Supabase:', error);
+  }
+} else {
+  console.warn('⚠️  Supabase environment variables not found. Database tools will be disabled.');
+  console.warn('   Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to enable database features.');
+}
 
 const server = new McpServer({
   name: 'Database-Server',
@@ -16,6 +39,10 @@ server.tool(
   'Returns all tasks connected to a customer. Parametrar: { customer: Name of the customer }',
   { customer: z.string() },
   async ({ customer }: { customer: string }) => {
+    if (!supabase) {
+      throw new Error('Database not available. Please configure Supabase environment variables.');
+    }
+    
     const { data: customerData, error: customerError } = await supabase
       .from('Customer')
       .select('id')
@@ -50,6 +77,10 @@ server.tool(
   'Returns all tasks connected to a project. Parametrar: { project: Name of the project }',
   { project: z.string() },
   async ({ project }: { project: string }) => {
+    if (!supabase) {
+      throw new Error('Database not available. Please configure Supabase environment variables.');
+    }
+    
     const { data: projectData, error: projectError } = await supabase
       .from('Project')
       .select('id')
@@ -74,5 +105,11 @@ server.tool(
 
 const transport = new StdioServerTransport();
 (async () => {
-  await server.connect(transport);
+  try {
+    await server.connect(transport);
+    console.log('🚀 MCP Server started successfully');
+  } catch (error) {
+    console.error('❌ Failed to start MCP Server:', error);
+    process.exit(1);
+  }
 })();

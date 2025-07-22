@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getAllUsersCustomers } from "@/lib/supabaseTasks";
+import { getAllUsersCustomers } from "../../lib/supabaseTasks";
 
 export default async function handler(
   req: NextApiRequest,

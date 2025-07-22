@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
-import { supabase } from "@/lib/supaBase";
+import { supabase } from "../../lib/supaBase";
 
 export default async function handler(
   req: NextApiRequest,

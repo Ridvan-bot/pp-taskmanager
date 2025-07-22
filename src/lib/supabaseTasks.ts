@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supaBase";
+import { supabase } from "../lib/supaBase";
 import { Task, Customer, Priority, Status } from "@/types";
 
 // Type definitions

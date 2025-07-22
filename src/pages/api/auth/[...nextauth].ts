@@ -5,7 +5,7 @@ import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { randomBytes } from "crypto";
 import dotenv from "dotenv";
-import { supabase } from "@/lib/supaBase";
+import { supabase } from "../../../lib/supaBase";
 dotenv.config();
 
 interface Session extends NextAuthSession {

@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
-import { supabase } from "@/lib/supaBase";
-import { rateLimit } from "@/lib/rateLimit";
+import { supabase } from "../../lib/supaBase";
+import { rateLimit } from "../../lib/rateLimit";
 import crypto from "crypto";
-import { sendVerificationEmail } from "@/lib/sendMail";
+import { sendVerificationEmail } from "../../lib/sendMail";
 
 // Rate limiting storage (in production, use Redis or database)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
