@@ -81,7 +81,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose, selectedCustomer, se
     setInput('');
     setLoading(true);
     try {
-      const response = await fetch('/api/chat-mcp', {
+      const response = await fetch('/api/chat-mcp-vercel', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
