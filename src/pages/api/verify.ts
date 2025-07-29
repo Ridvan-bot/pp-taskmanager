@@ -6,7 +6,7 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const { token } = req.query;
-  if (!token) return res.status(400).send("Ingen token");
+  if (!token) return res.status(400).send("No token");
 
   const { data: user } = await supabase
     .from("users")
@@ -14,12 +14,12 @@ export default async function handler(
     .eq("verifyToken", token)
     .single();
 
-  if (!user) return res.status(400).send("Ogiltig eller förbrukad länk");
+  if (!user) return res.status(400).send("Invalid or used link");
 
   await supabase
     .from("users")
     .update({ verified: true, verifyToken: null })
     .eq("id", user.id);
 
-  res.send("Din e-post är nu verifierad! Du kan logga in.");
+  res.send("Your email is now verified! You can login.");
 }

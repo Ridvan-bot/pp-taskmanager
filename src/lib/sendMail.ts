@@ -9,13 +9,13 @@ export async function sendVerificationEmail(to: string, token: string) {
     },
   });
 
-  const verifyUrl = `http://localhost:3000/api/verify?token=${token}`; // byt till din domän i produktion
+  const verifyUrl = `http://localhost:3000/api/verify?token=${token}`; 
 
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to,
-    subject: "Bekräfta din e-post",
-    html: `<p>Klicka på länken för att bekräfta din e-post:<br>
+    subject: "Verify your email",
+    html: `<p>Click the link to verify your email:<br>
       <a href="${verifyUrl}">${verifyUrl}</a></p>`,
   });
 }
