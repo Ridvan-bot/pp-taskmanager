@@ -2,7 +2,7 @@
   background-color: #3b83f62f;
   border: 3px solid rgba(68, 68, 68, 0.9);
   border-radius: 8px;
-  padding: 16px;
+  padding: 12px;
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.5),
     0 0 10px #3b82f6;
@@ -12,9 +12,18 @@
     box-shadow 0.2s,
     background-color 0.2s,
     border-color 0.2s;
-  min-height: 100px;
+  min-height: 80px;
   max-height: 150px;
   overflow: hidden;
+  font-size: 14px;
+}
+
+@media (min-width: 640px) {
+  .taskCard {
+    padding: 16px;
+    min-height: 100px;
+    font-size: 16px;
+  }
 }
 
 .taskCard:hover {

@@ -43,7 +43,7 @@ export default function Sidebar({
     <aside
       className={`
       w-64 bg-slate-800/90 border-r border-slate-700 flex flex-col transition-all duration-300
-      lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"} 
+      lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} 
       fixed lg:relative z-30 h-full lg:h-auto
       rounded-2xl shadow-2xl m-4
     `}

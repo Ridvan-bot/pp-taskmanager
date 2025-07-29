@@ -125,47 +125,19 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose, selectedCustomer, se
 
   return (
     <aside
-      style={{
-        position: "fixed",
-        top: 0,
-        right: 0,
-        height: "100vh",
-        width: 370,
-        background: "rgba(30,41,59,0.98)",
-        borderLeft: "none",
-        zIndex: 50,
-        display: "flex",
-        flexDirection: "column",
-        boxShadow: "-8px 0 24px 0 rgba(59,130,246,0.10)",
-        borderTopLeftRadius: 24,
-        borderBottomLeftRadius: 24,
-        overflow: "hidden",
-      }}
+      className="fixed top-0 right-0 h-full z-50 flex flex-col overflow-hidden 
+                 w-full sm:w-96 lg:w-[370px]
+                 bg-slate-800/98 
+                 sm:rounded-tl-3xl sm:rounded-bl-3xl
+                 sm:shadow-[-8px_0_24px_0_rgba(59,130,246,0.10)]"
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 20,
-          borderBottom: "1px solid #334155",
-          background: "rgba(30,41,59,0.98)",
-        }}
-      >
+      <div className="flex justify-between items-center p-4 sm:p-5 border-b border-slate-600 bg-slate-800/98">
         <div>
-          <span
-            style={{
-              color: "#fff",
-              fontWeight: 700,
-              fontSize: 20,
-              letterSpacing: 0.5,
-              display: "block",
-            }}
-          >
+          <span className="text-white font-bold text-lg sm:text-xl tracking-wide block">
             💬 Chat
           </span>
           {(selectedCustomer || selectedProject) && (
-            <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>
+            <div className="text-xs text-slate-400 mt-1">
               {selectedCustomer && <span>Customer: {selectedCustomer}</span>}
               {selectedCustomer && selectedProject && <span> • </span>}
               {selectedProject && <span>Project: {selectedProject}</span>}
@@ -174,69 +146,31 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose, selectedCustomer, se
         </div>
         <button
           onClick={onClose}
-          style={{
-            background: "none",
-            border: "none",
-            color: "#fff",
-            fontSize: 28,
-            cursor: "pointer",
-            borderRadius: 8,
-            transition: "background 0.2s",
-          }}
+          className="text-white text-2xl sm:text-3xl cursor-pointer rounded-lg p-1 sm:p-2 
+                     hover:bg-slate-600 transition-colors duration-200 
+                     focus:outline-none focus:ring-2 focus:ring-blue-400"
           aria-label="Close chat"
-          onMouseOver={(e) => (e.currentTarget.style.background = "#334155")}
-          onMouseOut={(e) => (e.currentTarget.style.background = "none")}
         >
           ×
         </button>
       </div>
-      <div
-        style={{
-          flex: 1,
-          padding: 20,
-          color: "#fff",
-          overflowY: "auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-        }}
-      >
+      <div className="flex-1 p-4 sm:p-5 text-white overflow-y-auto flex flex-col gap-2">
         {messages.map((msg, i) => (
           <div
             key={i}
-            style={{
-              alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
-              background: msg.role === "user" ? "#3b82f6" : "rgba(59,130,246,0.10)",
-              color: "#fff",
-              borderRadius: 16,
-              padding: "10px 16px",
-              marginBottom: 4,
-              maxWidth: "80%",
-              fontSize: 15,
-            }}
+            className={`
+              ${msg.role === "user" ? "self-end bg-blue-500" : "self-start bg-blue-500/10"}
+              text-white rounded-2xl p-3 sm:p-4 mb-1 max-w-[85%] sm:max-w-[80%] text-sm sm:text-base
+              break-words
+            `}
           >
             {msg.content}
           </div>
         ))}
-        {loading && <div style={{ color: "#fff" }}>...</div>}
+        {loading && <div className="text-white text-center py-2">...</div>}
       </div>
-      <div
-        style={{
-          padding: 20,
-          borderTop: "1px solid #334155",
-          background: "rgba(30,41,59,0.98)",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            background: "#1e293b",
-            borderRadius: 16,
-            boxShadow: "0 2px 8px 0 rgba(59,130,246,0.04)",
-            padding: "6px 12px",
-          }}
-        >
+      <div className="p-4 sm:p-5 border-t border-slate-600 bg-slate-800/98">
+        <div className="flex items-center bg-slate-700 rounded-2xl shadow-sm p-2 sm:p-3">
           <input
             type="text"
             placeholder="Skriv ett meddelande..."
@@ -245,32 +179,15 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onClose, selectedCustomer, se
             onKeyDown={(e) => {
               if (e.key === "Enter") handleSend();
             }}
-            style={{
-              width: "100%",
-              padding: "10px 12px",
-              border: "none",
-              outline: "none",
-              background: "transparent",
-              color: "#fff",
-              fontSize: 15,
-              borderRadius: 12,
-            }}
+            className="flex-1 p-2 sm:p-3 border-none outline-none bg-transparent text-white 
+                       text-sm sm:text-base rounded-xl placeholder-slate-400"
           />
           <button
             onClick={handleSend}
-            style={{
-              marginLeft: 8,
-              background: "linear-gradient(90deg,#3b82f6 0%,#60a5fa 100%)",
-              border: "none",
-              color: "#fff",
-              borderRadius: 12,
-              padding: "8px 16px",
-              fontWeight: 600,
-              fontSize: 15,
-              cursor: "pointer",
-              boxShadow: "0 2px 8px 0 rgba(59,130,246,0.10)",
-              transition: "background 0.2s",
-            }}
+            className="ml-2 bg-gradient-to-r from-blue-500 to-blue-400 border-none text-white 
+                       rounded-xl px-3 py-2 sm:px-4 sm:py-2 font-semibold text-sm sm:text-base 
+                       cursor-pointer shadow-sm hover:from-blue-600 hover:to-blue-500 
+                       transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             Skicka
           </button>

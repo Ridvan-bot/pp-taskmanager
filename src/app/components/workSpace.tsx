@@ -103,6 +103,7 @@ const WorkSpace: React.FC = () => {
     CLOSED: "asc",
   });
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [showDelayedLoading, setShowDelayedLoading] = useState(false);
 
@@ -447,24 +448,56 @@ const WorkSpace: React.FC = () => {
         {/* Sidebar with chat open handler */}
         <Sidebar
           onLogout={() => signOut()}
-          isOpen={false}
-          onToggle={() => {}}
+          isOpen={isSidebarOpen}
+          onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
           onChatClick={() => setIsChatOpen(true)}
           activeMenu={isChatOpen ? "Chat" : "Tasks"}
         />
+        
+        {/* Mobile sidebar overlay */}
+        {isSidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black/50 z-20 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
         {/* Main content */}
         <main className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="bg-slate-800/90 border-b border-slate-700 px-8 py-6 flex items-center justify-between rounded-2xl shadow-xl m-6 mb-0">
-            <div className="flex items-center space-x-4">
-              <h2 className="text-2xl font-bold text-white">Task Manager</h2>
-              <p className="text-sm text-slate-400">Manage your tasks</p>
+          <header className="bg-slate-800/90 border-b border-slate-700 px-4 md:px-8 py-4 md:py-6 flex flex-col md:flex-row items-start md:items-center justify-between rounded-2xl shadow-xl m-4 md:m-6 mb-0 space-y-4 md:space-y-0">
+            <div className="flex items-center justify-between w-full md:w-auto">
+              <div className="flex items-center space-x-4">
+                {/* Mobile menu button */}
+                <button
+                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                  className="lg:hidden text-white p-2 rounded-lg hover:bg-slate-700 transition-colors"
+                  aria-label="Toggle menu"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                </button>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-white">Task Manager</h2>
+                  <p className="text-xs md:text-sm text-slate-400 hidden sm:block">Manage your tasks</p>
+                </div>
+              </div>
+              {/* Mobile chat button */}
+              <button
+                onClick={() => setIsChatOpen(true)}
+                className="lg:hidden text-white p-2 rounded-lg hover:bg-slate-700 transition-colors"
+                aria-label="Open chat"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </button>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full md:w-auto">
               <select
                 value={selectedCustomer}
                 onChange={(e) => setSelectedCustomer(e.target.value)}
-                className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs"
+                className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs w-full sm:w-auto min-w-[120px]"
               >
                 <option value="">Select Customer</option>
                 {Array.isArray(customerData) &&
@@ -477,7 +510,7 @@ const WorkSpace: React.FC = () => {
               <select
                 value={selectedProject}
                 onChange={(e) => setSelectedProject(e.target.value)}
-                className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs"
+                className="bg-slate-700 text-white border border-slate-600 rounded-lg px-3 py-2 text-xs w-full sm:w-auto min-w-[120px]"
                 disabled={!selectedCustomer}
               >
                 <option value="">Select Project</option>
@@ -489,7 +522,7 @@ const WorkSpace: React.FC = () => {
                   ))}
               </select>
               <button
-                className="px-4 py-2 text-xs rounded-lg pohlman-button"
+                className="px-4 py-2 text-xs rounded-lg pohlman-button hidden sm:block"
                 onClick={() => signOut()}
               >
                 Logout
@@ -498,9 +531,9 @@ const WorkSpace: React.FC = () => {
           </header>
 
           {/* Content */}
-          <section className="flex-1 p-6 space-y-6 overflow-y-auto">
+          <section className="flex-1 p-4 md:p-6 space-y-4 md:space-y-6 overflow-y-auto">
             {/* Task Table Headers */}
-            <div className="grid grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {COLUMN_STATUSES.map((category) => (
                 <div
                   key={category}
@@ -554,7 +587,7 @@ const WorkSpace: React.FC = () => {
             </div>
 
             {/* Task Lists */}
-            <div className="grid grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {COLUMN_STATUSES.map((category) => (
                 <TaskDropColumn
                   key={category}
@@ -602,7 +635,7 @@ const WorkSpace: React.FC = () => {
                       />
                     ))}
                     <button
-                      className="w-full h-20 border-2 border-dashed border-slate-600 rounded-md bg-transparent text-white/75 text-3xl flex items-center justify-center hover:shadow-lg"
+                      className="w-full h-16 sm:h-20 border-2 border-dashed border-slate-600 rounded-md bg-transparent text-white/75 text-2xl sm:text-3xl flex items-center justify-center hover:shadow-lg transition-all duration-200 hover:border-slate-500 hover:text-white"
                       onClick={() => handleNewTaskClick(category)}
                       aria-label={`Create new task in ${category}`}
                     >
@@ -639,7 +672,7 @@ const WorkSpace: React.FC = () => {
         )}
         {/* Toast display */}
         {toast && (
-          <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg text-base font-semibold animate-fade-in-out">
+          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-blue-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl shadow-lg text-sm sm:text-base font-semibold animate-fade-in-out max-w-[90%] text-center">
             {toast}
           </div>
         )}
