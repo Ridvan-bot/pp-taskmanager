@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import styles from './taskModal.module.css';
-import { Task } from '@/types';
+import React, { useState } from "react";
+import styles from "./taskModal.module.css";
+import { Task } from "@/types";
 
 interface AddChildModalProps {
   isOpen: boolean;
@@ -10,7 +10,13 @@ interface AddChildModalProps {
   onChildrenAdded: (newChildren: Task[]) => void;
 }
 
-const AddChildModal: React.FC<AddChildModalProps> = ({ isOpen, onRequestClose, parentTask, allTasks, onChildrenAdded }) => {
+const AddChildModal: React.FC<AddChildModalProps> = ({
+  isOpen,
+  onRequestClose,
+  parentTask,
+  allTasks,
+  onChildrenAdded,
+}) => {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -18,13 +24,16 @@ const AddChildModal: React.FC<AddChildModalProps> = ({ isOpen, onRequestClose, p
 
   // Exclude parent itself and already linked subtasks
   const availableTasks = allTasks.filter(
-    t => t.id !== parentTask.id &&
-         t.customerId === parentTask.customerId &&
-         t.projectId === parentTask.projectId
+    (t) =>
+      t.id !== parentTask.id &&
+      t.customerId === parentTask.customerId &&
+      t.projectId === parentTask.projectId,
   );
 
   const handleToggle = (id: number) => {
-    setSelectedIds(ids => ids.includes(id) ? ids.filter(x => x !== id) : [...ids, id]);
+    setSelectedIds((ids) =>
+      ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id],
+    );
   };
 
   const handleLink = async () => {
@@ -32,12 +41,12 @@ const AddChildModal: React.FC<AddChildModalProps> = ({ isOpen, onRequestClose, p
     try {
       const newChildren: Task[] = [];
       for (const id of selectedIds) {
-        const childTask = allTasks.find(t => t.id === id);
+        const childTask = allTasks.find((t) => t.id === id);
         if (!childTask) continue;
         const updatedChild = { ...childTask, parentId: parentTask.id };
         const response = await fetch(`/api/task`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedChild),
         });
         if (response.ok) {
@@ -48,7 +57,7 @@ const AddChildModal: React.FC<AddChildModalProps> = ({ isOpen, onRequestClose, p
       onChildrenAdded(newChildren);
       onRequestClose();
     } catch {
-      alert('Något gick fel vid koppling!');
+      alert("Något gick fel vid koppling!");
     } finally {
       setIsSaving(false);
     }
@@ -57,16 +66,39 @@ const AddChildModal: React.FC<AddChildModalProps> = ({ isOpen, onRequestClose, p
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
-        <button className={styles.closeButton} onClick={onRequestClose}>X</button>
+        <button className={styles.closeButton} onClick={onRequestClose}>
+          X
+        </button>
         <h2 className={styles.modalTitle}>Link Child Tasks</h2>
         <div className={styles.modalBody}>
-          <div style={{ marginBottom: 16, fontWeight: 'bold' }}>
-            Select one or more tasks to link as child to: <span style={{ color: '#3b82f6' }}>{parentTask.title}</span>
+          <div style={{ marginBottom: 16, fontWeight: "bold" }}>
+            Select one or more tasks to link as child to:{" "}
+            <span style={{ color: "#3b82f6" }}>{parentTask.title}</span>
           </div>
-          <ul style={{ listStyle: 'none', padding: 0, maxHeight: 300, overflowY: 'auto', margin: 0 }}>
-            {availableTasks.length === 0 && <li style={{ color: '#888' }}>No available tasks</li>}
-            {availableTasks.map(t => (
-              <li key={t.id} style={{ display: 'flex', alignItems: 'center', marginBottom: 8, background: '#f3f7fd', borderRadius: 6, padding: '6px 10px' }}>
+          <ul
+            style={{
+              listStyle: "none",
+              padding: 0,
+              maxHeight: 300,
+              overflowY: "auto",
+              margin: 0,
+            }}
+          >
+            {availableTasks.length === 0 && (
+              <li style={{ color: "#888" }}>No available tasks</li>
+            )}
+            {availableTasks.map((t) => (
+              <li
+                key={t.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: 8,
+                  background: "#f3f7fd",
+                  borderRadius: 6,
+                  padding: "6px 10px",
+                }}
+              >
                 <input
                   type="checkbox"
                   checked={selectedIds.includes(t.id)}
@@ -80,7 +112,11 @@ const AddChildModal: React.FC<AddChildModalProps> = ({ isOpen, onRequestClose, p
           </ul>
         </div>
         <div className={styles.buttonContainer}>
-          <button className={styles.updateButton} onClick={handleLink} disabled={isSaving || selectedIds.length === 0}>
+          <button
+            className={styles.updateButton}
+            onClick={handleLink}
+            disabled={isSaving || selectedIds.length === 0}
+          >
             Link selected
           </button>
         </div>
@@ -89,4 +125,4 @@ const AddChildModal: React.FC<AddChildModalProps> = ({ isOpen, onRequestClose, p
   );
 };
 
-export default AddChildModal; 
+export default AddChildModal;

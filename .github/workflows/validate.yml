@@ -14,20 +14,20 @@ on:
         description: Enable ESLint
         default: false
       eslint-command:
-          required: false
-          type: string
-          description: ESLint command
-          default: npx eslint --config eslint.config.mjs '**/*.{js,ts,tsx}' || exit 1
+        required: false
+        type: string
+        description: ESLint command
+        default: npx eslint --config eslint.config.mjs '**/*.{js,ts,tsx}' || exit 1
       unit-test-enable:
-            required: false
-            type: boolean
-            description: "To disable the unit-tests job set to false"
-            default: true
+        required: false
+        type: boolean
+        description: "To disable the unit-tests job set to false"
+        default: true
       unit-test-command:
-            required: false
-            type: string
-            description: "Used to override the default command to run your unit tests e.g. yarn test:unit-ci"
-            default: "npm run test"
+        required: false
+        type: string
+        description: "Used to override the default command to run your unit tests e.g. yarn test:unit-ci"
+        default: "npm run test"
     secrets:
       token:
         required: true

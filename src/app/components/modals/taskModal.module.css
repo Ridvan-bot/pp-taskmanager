@@ -4,21 +4,23 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.925);
+  background-color: rgba(15, 23, 42, 0.96);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 3000;
 }
 
 .modalContent {
-  background-color: #3b83f62f;
+  background-color: #1e293b;
   border: 2px solid #3b82f6;
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 32px;
   color: #f0f0f0;
   max-width: 800px;
   width: 100%;
   position: relative;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
 }
 
 .closeButton {
@@ -48,14 +50,16 @@
 }
 
 .modalTextarea,
-.modalTitleTextarea {
+.modalTitleTextarea,
+.modalInput,
+.modalSelect {
   width: 100%;
   padding: 8px;
   margin-top: 8px;
   margin-bottom: 16px;
   border: 1px solid #3b82f6;
   border-radius: 4px;
-  background-color: #3b83f62f;
+  background-color: #1e293b;
   color: #f0f0f0;
   font-size: 16px;
 }
@@ -75,7 +79,7 @@
   margin-bottom: 16px;
   border: 1px solid #3b82f6;
   border-radius: 4px;
-  background-color: #3b83f62f;
+  background-color: #1e293b;
   color: #f3f4f5;
   font-size: 16px;
 }
@@ -92,17 +96,47 @@
 }
 
 .updateButton {
-  background-color: #4caf50;
+  background-color: rgba(20, 184, 166, 0.75);
   color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
+  padding: 6px 14px;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 11px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px 0 rgba(20, 184, 166, 0.1);
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .updateButton:hover {
-  background-color: #45a049;
+  background-color: rgba(14, 116, 144, 0.85);
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 4px 16px 0 rgba(14, 116, 144, 0.18);
+}
+
+.deleteButton {
+  background: rgba(244, 67, 54, 0.75);
+  color: white;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 1rem;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px 0 rgba(244, 67, 54, 0.1);
+  font-size: 11px;
+}
+.deleteButton:hover {
+  background: rgba(198, 40, 40, 0.85);
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 4px 16px 0 rgba(198, 40, 40, 0.18);
 }
 
 .modalInput {
@@ -112,19 +146,5 @@
   border: 1px solid #3b82f6;
   border-radius: 4px;
   margin-bottom: 12px;
-  background-color: #3b83f62f;
-}
-
-.deleteButton {
-  background: #f44336;
-  color: white;
-  border: none;
-  padding: 0.5rem 1.2rem;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-left: 1rem;
-  transition: background 0.2s;
-}
-.deleteButton:hover {
-  background: #c62828;
+  background-color: #1e293b;
 }

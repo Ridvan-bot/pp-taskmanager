@@ -1,4 +1,4 @@
-import { LRUCache } from 'lru-cache';
+import { LRUCache } from "lru-cache";
 
 const rateLimitOptions = {
   max: 500, // max 500 olika IP
