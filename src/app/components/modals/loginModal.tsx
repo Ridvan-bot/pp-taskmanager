@@ -54,7 +54,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
             />
           </div>
           <h2 className="text-3xl font-bold text-center text-white">
-            Logga in
+            Login
           </h2>
         </div>
         <div className="flex justify-center">
@@ -65,7 +65,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
                 htmlFor="email"
                 className="block text-sm font-medium text-slate-300"
               >
-                E-post:
+                Email:
               </label>
               <input
                 type="email"
@@ -82,7 +82,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
                 htmlFor="password"
                 className="block text-sm font-medium text-slate-300"
               >
-                Lösenord:
+                Password:
               </label>
               <input
                 type="password"
@@ -99,7 +99,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
                 type="submit"
                 className="mt-6 w-full flex justify-center py-3 px-6 rounded-xl text-sm font-semibold text-white bg-white/10 backdrop-blur-md border border-white/20 shadow-xl hover:bg-white/20 hover:border-white/30 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300 ease-in-out transform hover:scale-[1.02]"
               >
-                Logga in
+                Login
               </button>
             </div>
           </form>
@@ -109,7 +109,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
             onClick={handleRegisterClick}
             className="w-full max-w-md flex justify-center py-3 px-6 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-green-400/20 to-emerald-400/20 backdrop-blur-md border border-green-300/30 shadow-xl hover:from-green-400/30 hover:to-emerald-400/30 hover:border-green-300/50 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-green-300/50 transition-all duration-300 ease-in-out transform hover:scale-[1.02]"
           >
-            Registrera
+            Register
           </button>
         </div>
       </Modal>
