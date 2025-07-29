@@ -75,10 +75,10 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
         <button className={styles.closeButton} onClick={handleClose}>
           X
         </button>
-        <h2>New Task</h2>
+        <h2>Ny uppgift</h2>
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
-            <label htmlFor="title">Title</label>
+            <label htmlFor="title">Titel</label>
             <input
               type="text"
               id="title"
@@ -88,7 +88,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
             />
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="content">Content</label>
+            <label htmlFor="content">Innehåll</label>
             <textarea
               id="content"
               value={content}
@@ -97,7 +97,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
             />
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="priority">Priority</label>
+            <label htmlFor="priority">Prioritet</label>
             <select
               id="priority"
               value={priority}
@@ -105,7 +105,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
               required
             >
               <option value="" disabled>
-                Select priority
+                Välj prioritet
               </option>
               {["LOW", "MEDIUM", "HIGH"].map((value) => (
                 <option key={value} value={value}>
@@ -123,7 +123,7 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
               required
             >
               <option value="" disabled>
-                Select status
+                Välj status
               </option>
               {["NOT_STARTED", "WIP", "WAITING", "CLOSED"].map((value) => (
                 <option key={value} value={value}>
@@ -133,13 +133,13 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
             </select>
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="parent">Parent Task (Optional)</label>
+            <label htmlFor="parent">Förälder (Valfritt)</label>
             <select
               id="parent"
               value={parentId || ""}
               onChange={(e) => setParentId(Number(e.target.value) || null)}
             >
-              <option value="">No parent task</option>
+              <option value="">Ingen förälder</option>
               {availableTasks
                 .filter(
                   (task) =>
@@ -155,20 +155,20 @@ const NewTaskModal: React.FC<NewTaskModalProps> = ({
           </div>
           <div className={styles.metaInfo}>
             <div>
-              <strong>Customer:</strong>{" "}
+              <strong>Kund:</strong>{" "}
               {selectedCustomerObj
                 ? selectedCustomerObj.name
                 : "No customer selected"}
             </div>
             <div>
-              <strong>Project:</strong>{" "}
+              <strong>Projekt:</strong>{" "}
               {selectedProjectObj
                 ? selectedProjectObj.title
                 : "No project selected"}
             </div>
           </div>
           <button type="submit" className={styles.submitButton}>
-            Create
+            Skapa
           </button>
         </form>
       </div>
