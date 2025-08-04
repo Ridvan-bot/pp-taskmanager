@@ -85,19 +85,19 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             ●
           </span>
         )}
-        <strong>Title:</strong> {task.title}
+        <strong>Titel:</strong> {task.title}
         {task.subtasks && task.subtasks.length > 0 && (
-          <span className={styles.parentIndicator}>(Parent)</span>
+          <span className={styles.parentIndicator}>(Förälder)</span>
         )}
         {task.parentId && (
-          <span className={styles.subtaskIndicator}> (Subtask)</span>
+          <span className={styles.subtaskIndicator}> (Underuppgift)</span>
         )}
         <br />
-        <strong>Prio:</strong> {task.priority}
+        <strong>Prioritet:</strong> {task.priority}
         {task.subtasks && task.subtasks.length > 0 && (
           <>
             <br />
-            <strong>Subtasks:</strong> {task.subtasks.length}
+            <strong>Underuppgifter:</strong> {task.subtasks.length}
           </>
         )}
         <br />

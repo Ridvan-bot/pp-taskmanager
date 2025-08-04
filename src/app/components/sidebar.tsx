@@ -23,20 +23,20 @@ export default function Sidebar({
   const navItems = [
     {
       icon: CheckSquare,
-      label: "Tasks",
+      label: "Uppgifter",
       href: "#",
       active: activeMenu === "Tasks",
     },
-    { icon: FolderOpen, label: "Projects", href: "#" },
-    { icon: Users, label: "Customers", href: "#" },
+    { icon: FolderOpen, label: "Projekt", href: "#" },
+    { icon: Users, label: "Kunder", href: "#" },
     {
       icon: MessageCircle,
-      label: "Chat",
+      label: "Chatt",
       href: "#chat",
       onClick: onChatClick,
       active: activeMenu === "Chat",
     },
-    { icon: Settings, label: "Settings", href: "#" },
+    { icon: Settings, label: "Inställningar", href: "#" },
   ];
 
   return (
@@ -59,7 +59,6 @@ export default function Sidebar({
         />
         <div>
           <h1 className="text-xl font-bold text-white">Pohlman Protean</h1>
-          <p className="text-sm text-slate-400">Project Management</p>
         </div>
       </div>
 

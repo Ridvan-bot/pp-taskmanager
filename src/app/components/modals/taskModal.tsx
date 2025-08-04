@@ -124,10 +124,10 @@ const TaskModal: React.FC<TaskModalProps> = ({
         <button className={styles.closeButton} onClick={onRequestClose}>
           X
         </button>
-        <h2 className={styles.modalTitle}>Edit Task</h2>
+        <h2 className={styles.modalTitle}></h2>
         <div className={styles.modalBody}>
           <label htmlFor="title">
-            <strong>Title:</strong>
+            <strong>Titel:</strong>
           </label>
           <textarea
             id="title"
@@ -145,17 +145,17 @@ const TaskModal: React.FC<TaskModalProps> = ({
             className={styles.modalTextarea}
           />
           <label htmlFor="solution">
-            <strong>Solution:</strong>
+            <strong>Lösning:</strong>
           </label>
           <textarea
             id="solution"
             value={solution}
             onChange={handleSolutionChange}
             className={styles.modalTextarea}
-            placeholder="Describe how you solved or implemented this task..."
+            placeholder="Beskriv hur du löste eller implementerade denna uppgift..."
           />
           <label htmlFor="priority">
-            <strong>Prio:</strong>
+            <strong>Prioritet:</strong>
           </label>
           <select
             id="priority"
@@ -172,7 +172,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
 
           <div style={{ marginTop: 16, fontSize: "0.95em", color: "#666" }}>
             <div>
-              <strong>Created:</strong>{" "}
+              <strong>Skapad:</strong>{" "}
               {task.createdAt
                 ? new Date(task.createdAt).toLocaleString("sv-SE", {
                     year: "numeric",
@@ -184,7 +184,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                 : "-"}
             </div>
             <div>
-              <strong>Updated:</strong>{" "}
+              <strong>Uppdaterad:</strong>{" "}
               {task.updatedAt
                 ? new Date(task.updatedAt).toLocaleString("sv-SE", {
                     year: "numeric",
@@ -197,7 +197,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
             </div>
             {task.closedAt && (
               <div>
-                <strong>Closed:</strong>{" "}
+                <strong>Stängd:</strong>{" "}
                 {new Date(task.closedAt).toLocaleString("sv-SE", {
                   year: "numeric",
                   month: "2-digit",
@@ -227,7 +227,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                   transition: "background 0.2s",
                   marginBottom: 16,
                 }}
-                title="Add child"
+                title="Lägg till underuppgift"
                 onClick={() => setShowAddChildModal(true)}
               >
                 +
@@ -252,7 +252,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                   fontSize: "1.05em",
                 }}
               >
-                Child Tasks:
+                Underuppgifter:
               </div>
               <ul style={{ paddingLeft: 0, margin: 0 }}>
                 {task.subtasks.map((subtask) => (
@@ -356,16 +356,16 @@ const TaskModal: React.FC<TaskModalProps> = ({
                 (e.currentTarget.style.color = "#3b82f6")
               )}
             >
-              ⬆ To Parent Task: {task.parent.title}
+              ⬆ Tillbaka till förälder: {task.parent.title}
             </button>
           )}
         </div>
         <div className={styles.buttonContainer}>
           <button className={styles.updateButton} onClick={handleUpdateClick}>
-            Update
+            Uppdatera
           </button>
           <button className={styles.deleteButton} onClick={handleDeleteClick}>
-            Delete
+            Ta bort
           </button>
         </div>
       </div>
