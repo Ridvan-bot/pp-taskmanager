@@ -132,7 +132,7 @@ export default NextAuth({
           : "next-auth.session-token",
       options: {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
       },
@@ -144,7 +144,7 @@ export default NextAuth({
           : "next-auth.callback-url",
       options: {
         httpOnly: true,
-        secure: false, 
+        secure: process.env.NODE_ENV === "production", 
         sameSite: "lax",
         path: "/",
       },

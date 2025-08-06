@@ -19,8 +19,8 @@ export default async function handler(
         const customers = await getAllUsersCustomers(userIdNum);
         res.status(200).json({ customers });
       } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-        res.status(500).json({ error: "Failed to fetch tasks" });
+        console.error("Failed to fetch customers for userId:", userIdNum, error);
+        res.status(500).json({ error: "Failed to fetch customers", details: error instanceof Error ? error.message : String(error) });
       }
       break;
     default:

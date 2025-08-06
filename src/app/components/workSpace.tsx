@@ -162,6 +162,8 @@ const WorkSpace: React.FC = () => {
       );
     } catch (error) {
       console.error("Failed to fetch customers:", error);
+      console.error("Session user ID:", session?.user?.id);
+      console.error("API response error details:", error);
       // If there's an error fetching user data, sign out
       signOut();
     }
