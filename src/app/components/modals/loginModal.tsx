@@ -65,7 +65,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onRequestClose }) => {
                 htmlFor="email"
                 className="block text-sm font-medium text-slate-300"
               >
-                E-post:
+                Email:
               </label>
               <input
                 type="email"

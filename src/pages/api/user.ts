@@ -72,7 +72,7 @@ export default async function handler(
   // Check rate limit
   if (!checkRateLimit(ip)) {
     return res.status(429).json({
-      error: "För många registreringsförsök. Försök igen om 15 minuter.",
+      error: "Too many registration attempts. Try again later.",
     });
   }
 
@@ -80,19 +80,19 @@ export default async function handler(
 
   // Input validation
   if (!name || !email || !password) {
-    return res.status(400).json({ error: "Alla fält krävs" });
+    return res.status(400).json({ error: "All fields are required" });
   }
 
   if (password.length < 6) {
     return res
       .status(400)
-      .json({ error: "Lösenordet måste vara minst 6 tecken" });
+      .json({ error: "Password must be at least 6 characters" });
   }
 
   // Email format validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    return res.status(400).json({ error: "Ogiltig e-postadress" });
+    return res.status(400).json({ error: "Invalid email address" });
   }
 
   try {
@@ -106,7 +106,7 @@ export default async function handler(
     if (existingUser) {
       return res
         .status(400)
-        .json({ error: "En användare med denna e-post finns redan" });
+        .json({ error: "A user with this email already exists" });
     }
 
     // Hash password
@@ -135,12 +135,12 @@ export default async function handler(
     await sendVerificationEmail(email, verifyToken);
 
     res.status(201).json({
-      message: "Användare skapad framgångsrikt",
+      message: "User created successfully",
       user: { id: user.id, name: user.name, email: user.email },
     });
   } catch (error: unknown) {
     console.error("Registration error:", error);
-    let errorMessage = "Något gick fel vid registrering";
+    let errorMessage = "Something went wrong during registration";
     if (
       error &&
       typeof error === "object" &&

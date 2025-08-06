@@ -32,7 +32,7 @@ const Header: React.FC = () => {
             className="p-3 px-6 rounded-lg pohlman-button"
             onClick={() => signOut()}
           >
-            Logout
+            Logga ut
           </button>
         </div>
       ) : (

@@ -479,7 +479,6 @@ const WorkSpace: React.FC = () => {
                 </button>
                 <div>
                   <h2 className="text-xl md:text-2xl font-bold text-white">Task Manager</h2>
-                  <p className="text-xs md:text-sm text-slate-400 hidden sm:block">Manage your tasks</p>
                 </div>
               </div>
               {/* Mobile chat button */}
@@ -525,7 +524,7 @@ const WorkSpace: React.FC = () => {
                 className="px-4 py-2 text-xs rounded-lg pohlman-button hidden sm:block"
                 onClick={() => signOut()}
               >
-                Logout
+                Logga ut
               </button>
             </div>
           </header>
@@ -571,7 +570,6 @@ const WorkSpace: React.FC = () => {
                             d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
-                        (Sorted by updated)
                       </span>
                     )}
                   </span>
