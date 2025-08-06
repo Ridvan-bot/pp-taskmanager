@@ -14,9 +14,9 @@ export default async function handler(
           project as string,
         );
         res.status(200).json({ data });
-      } catch {
-        console.error(`Failed to fetch tasks for customer:`);
-        res.status(500).json({ error: "Failed to fetch tasks" });
+      } catch (error) {
+        console.error(`Failed to fetch tasks for customer: ${customer}, project: ${project}`, error);
+        res.status(500).json({ error: "Failed to fetch tasks", details: error instanceof Error ? error.message : String(error) });
       }
       break;
     default:

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { signOut, useSession } from "next-auth/react";
 import Sidebar from "./sidebar";
 import TaskCard from "./taskCard";
@@ -133,6 +133,42 @@ const WorkSpace: React.FC = () => {
     }
   }, [status]);
 
+  const fetchUserCustomers = useCallback(async () => {
+
+    if (!session || !session.user) {
+      console.error("User ID is not available");
+      return;
+    }
+    try {
+      const response = await fetch(`/api/customer?userId=${session.user.id}`);
+
+      if (!response.ok) {
+        if (response.status === 500) {
+          // User not found in database, sign out
+          console.error("User not found in database, signing out");
+          signOut();
+          return;
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const customerData = await response.json();
+      const customerArray = Array.isArray(customerData.customers)
+        ? customerData.customers.map((customer: Customer) => customer.name)
+        : [];
+      setCustomersName(customerArray);
+      setCustomerData(
+        Array.isArray(customerData.customers) ? customerData.customers : [],
+      );
+    } catch (error) {
+      console.error("Failed to fetch customers:", error);
+      console.error("Session user ID:", session?.user?.id);
+      console.error("API response error details:", error);
+      // If there's an error fetching user data, sign out
+      signOut();
+    }
+  }, [session]);
+
   useEffect(() => {
     if (customersName.length > 0) {
       const fetchData = async () => {
@@ -147,7 +183,7 @@ const WorkSpace: React.FC = () => {
     if (session && session.user) {
       fetchUserCustomers();
     }
-  }, [session]);
+  }, [session, fetchUserCustomers]);
 
   useEffect(() => {
     prevIsTaskModalOpen.current = isTaskModalOpen;
@@ -205,40 +241,6 @@ const WorkSpace: React.FC = () => {
         handleOpenTaskModal as EventListener,
       );
   }, []);
-
-  const fetchUserCustomers = async () => {
-
-    if (!session || !session.user) {
-      console.error("User ID is not available");
-      return;
-    }
-    try {
-      const response = await fetch(`/api/customer?userId=${session.user.id}`);
-
-      if (!response.ok) {
-        if (response.status === 500) {
-          // User not found in database, sign out
-          console.error("User not found in database, signing out");
-          signOut();
-          return;
-        }
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const customerData = await response.json();
-      const customerArray = Array.isArray(customerData.customers)
-        ? customerData.customers.map((customer: Customer) => customer.name)
-        : [];
-      setCustomersName(customerArray);
-      setCustomerData(
-        Array.isArray(customerData.customers) ? customerData.customers : [],
-      );
-    } catch (error) {
-      console.error("Failed to fetch customers:", error);
-      // If there's an error fetching user data, sign out
-      signOut();
-    }
-  };
 
   // Auto-select first customer if none is selected and data is loaded
   useEffect(() => {
