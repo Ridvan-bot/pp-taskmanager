@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { supabase } from "../../lib/supaBase";
 import { rateLimit } from "../../lib/rateLimit";
 import crypto from "crypto";
-import { sendVerificationEmail } from "../../lib/sendMail";
+
 
 // Rate limiting storage (in production, use Redis or database)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -60,7 +60,7 @@ export default async function handler(
     return res
       .status(429)
       .json({
-        error: "För många registreringsförsök. Försök igen om en minut.",
+        error: "För många registreringsförsök. Försök igen om en stund.",
       });
   }
 
@@ -131,8 +131,6 @@ export default async function handler(
       console.error("Supabase createUserError:", createUserError, user);
       throw createUserError;
     }
-
-    await sendVerificationEmail(email, verifyToken);
 
     res.status(201).json({
       message: "User created successfully",
