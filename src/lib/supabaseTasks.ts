@@ -178,8 +178,10 @@ export async function getTasksByCustomerAndProject(
       .eq("title", projectTitle)
       .eq("customerId", customer.id)
       .single();
-    if (projectError || !project)
-      throw new Error("Project not found for this customer");
+    if (projectError || !project) {
+      // Gracefully handle unknown project for this customer by returning no tasks
+      return [] as Task[];
+    }
     projectId = project.id;
   }
 
