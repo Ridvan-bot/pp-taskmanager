@@ -108,11 +108,6 @@ git reset --hard origin/dev
 git clean -fd
 ```
 
-## Roadmap Ideas
-- Searchable assignee selection & avatars
-- URL‑based customer/project (shareable links)
-- User‑level preferences persisted in DB
-- Role‑based access per project
-
-## License
-MIT (or your preferred license)
+<p align="center">
+  Crafted with care by <strong>Robin Pohlman</strong> at <strong>Pohlman Protean AB</strong>.
+</p>
