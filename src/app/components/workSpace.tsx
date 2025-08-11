@@ -108,6 +108,8 @@ const WorkSpace: React.FC = () => {
   const [showDelayedLoading, setShowDelayedLoading] = useState(false);
 
   const prevIsTaskModalOpen = useRef(isTaskModalOpen);
+  const hasAppliedSavedCustomer = useRef(false);
+  const lastCustomerInitializedForProject = useRef<string | null>(null);
 
   // Delayed loading state - show spinner only after 10 seconds
   useEffect(() => {
@@ -192,6 +194,8 @@ const WorkSpace: React.FC = () => {
   // Update projects when selectedCustomer changes
   useEffect(() => {
     setSelectedProject(""); // Always reset project first
+    // allow project initialization effect to run for the new customer
+    lastCustomerInitializedForProject.current = null;
     if (selectedCustomer) {
       const customer = customerData.find((c) => c.name === selectedCustomer);
       if (customer) {
@@ -242,19 +246,66 @@ const WorkSpace: React.FC = () => {
       );
   }, []);
 
-  // Auto-select first customer if none is selected and data is loaded
+  // Apply saved selected customer from localStorage once when customers load
   useEffect(() => {
-    if (!selectedCustomer && customerData.length > 0) {
-      setSelectedCustomer(customerData[0].name);
+    if (hasAppliedSavedCustomer.current) return;
+    if (customerData.length === 0) return;
+    try {
+      const savedCustomer = localStorage.getItem("pp.selectedCustomer") || "";
+      const exists = customerData.some((c) => c.name === savedCustomer);
+      if (savedCustomer && exists) {
+        setSelectedCustomer(savedCustomer);
+      } else if (!selectedCustomer) {
+        // fallback to first
+        setSelectedCustomer(customerData[0].name);
+      }
+    } catch {
+      if (!selectedCustomer) setSelectedCustomer(customerData[0].name);
+    } finally {
+      hasAppliedSavedCustomer.current = true;
     }
   }, [customerData, selectedCustomer]);
 
-  // Auto-select first project if none is selected and projects are loaded
+  // Initialize selected project per customer, using saved value if available
   useEffect(() => {
-    if (!selectedProject && projects.length > 0) {
-      setSelectedProject(projects[0].title);
+    if (!selectedCustomer) return;
+    if (projects.length === 0) return;
+    if (lastCustomerInitializedForProject.current === selectedCustomer) return;
+    try {
+      const key = `pp.selectedProject:${selectedCustomer}`;
+      const savedProject = localStorage.getItem(key) || "";
+      const exists = projects.some((p) => p.title === savedProject);
+      if (savedProject && exists) {
+        setSelectedProject(savedProject);
+      } else if (!selectedProject) {
+        setSelectedProject(projects[0].title);
+      }
+    } catch {
+      if (!selectedProject) setSelectedProject(projects[0].title);
+    } finally {
+      lastCustomerInitializedForProject.current = selectedCustomer;
     }
-  }, [projects, selectedProject]);
+  }, [projects, selectedCustomer, selectedProject]);
+
+  // Persist selections to localStorage
+  useEffect(() => {
+    if (selectedCustomer) {
+      try {
+        localStorage.setItem("pp.selectedCustomer", selectedCustomer);
+      } catch {}
+    }
+  }, [selectedCustomer]);
+
+  useEffect(() => {
+    if (selectedCustomer && selectedProject) {
+      try {
+        localStorage.setItem(
+          `pp.selectedProject:${selectedCustomer}`,
+          selectedProject,
+        );
+      } catch {}
+    }
+  }, [selectedCustomer, selectedProject]);
 
   // Always reset selectedProject when selectedCustomer changes
   useEffect(() => {
