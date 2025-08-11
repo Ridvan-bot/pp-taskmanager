@@ -9,9 +9,10 @@ export default async function handler(
     case "GET":
       const { customer, project } = req.query;
       try {
+        const projectTitle = typeof project === 'string' && project.trim() !== '' ? (project as string) : undefined;
         const data = await getTasksByCustomerAndProject(
           customer as string,
-          project as string,
+          projectTitle,
         );
         res.status(200).json({ data });
       } catch (error) {
