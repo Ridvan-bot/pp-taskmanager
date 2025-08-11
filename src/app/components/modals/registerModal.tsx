@@ -42,7 +42,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
         setIsSuccess(true);
 
         // Start countdown
-        let timeLeft = 7;
+        let timeLeft = 4;
         setCountdown(timeLeft);
 
         const timer = setInterval(() => {
@@ -101,7 +101,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
           />
         </div>
         <h2 className="text-3xl font-bold text-center text-white">
-          Register user
+          Registrera användare
         </h2>
       </div>
 
@@ -110,12 +110,12 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
         <div className="flex flex-col items-center text-center space-y-6">
           <div className="space-y-3">
             <h3 className="text-2xl font-bold text-green-400">
-              Registration successful!
+              Registrering lyckades!
             </h3>
             <p className="text-slate-400">
-              You will be redirected to the login page in{" "}
+              Du kommer att omdirigeras till inloggningssidan om{" "}
               <span className="text-white font-semibold">{countdown}</span>{" "}
-              seconds...
+              sekunder...
             </p>
           </div>
           <div className="w-full max-w-md bg-gray-700 rounded-full h-2">
@@ -136,7 +136,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                   htmlFor="name"
                   className="block text-sm font-medium text-slate-300"
                 >
-                  Name:
+                  Namn:
                 </label>
                 <input
                   type="text"
@@ -153,7 +153,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                   htmlFor="email"
                   className="block text-sm font-medium text-slate-300"
                 >
-                  Email:
+                  E-post:
                 </label>
                 <input
                   type="email"
@@ -170,7 +170,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                   htmlFor="password"
                   className="block text-sm font-medium text-slate-300"
                 >
-                  Password:
+                  Lösenord:
                 </label>
                 <input
                   type="password"
@@ -207,13 +207,13 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
           </div>
           <div className="flex flex-col items-center mt-6">
             <p className="text-slate-300 text-sm mb-2">
-              Do you already have an account?
+              Har du redan ett konto?
             </p>
             <button
               onClick={handleLoginClick}
               className="w-full max-w-md flex justify-center py-3 px-6 rounded-xl text-sm font-semibold text-white bg-white/5 backdrop-blur-md border border-white/10 shadow-lg hover:bg-white/10 hover:border-white/20 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300 ease-in-out transform hover:scale-[1.02]"
             >
-              Back to login
+              Tillbaka till inloggning
             </button>
           </div>
         </>
