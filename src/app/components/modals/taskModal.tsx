@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Priority } from "@/types";
+import { Priority, Status } from "@/types";
 import { Task } from "@/types";
 import styles from "./taskModal.module.css";
 import { MinusCircle } from "lucide-react";
@@ -25,7 +25,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
   const [title, setTitle] = useState(task.title);
   const [content, setContent] = useState(task.content);
   const [priority, setPriority] = useState(task.priority);
-  const [status] = useState(task.status);
+  const [status, setStatus] = useState(task.status);
   const [showAddChildModal, setShowAddChildModal] = useState(false);
   const [solution, setSolution] = useState(task.solution || "");
 
@@ -58,6 +58,10 @@ const TaskModal: React.FC<TaskModalProps> = ({
 
   const handlePriorityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setPriority(e.target.value as Priority);
+  };
+
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setStatus(e.target.value as Status);
   };
 
   const handleUpdateClick = async () => {
@@ -164,6 +168,27 @@ const TaskModal: React.FC<TaskModalProps> = ({
             className={styles.modalSelect}
           >
             {["LOW", "MEDIUM", "HIGH"].map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+
+          <label htmlFor="status">
+            <strong>Status:</strong>
+          </label>
+          <select
+            id="status"
+            value={status}
+            onChange={handleStatusChange}
+            className={styles.modalSelect}
+          >
+            {[
+              "NOT_STARTED",
+              "WIP",
+              "WAITING",
+              "CLOSED"
+            ].map((value) => (
               <option key={value} value={value}>
                 {value}
               </option>

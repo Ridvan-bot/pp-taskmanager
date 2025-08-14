@@ -93,6 +93,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           <span className={styles.subtaskIndicator}> (Underuppgift)</span>
         )}
         <br />
+        <strong>Status:</strong> {task.status}
+        <br />
         <strong>Prioritet:</strong> {task.priority}
         {task.subtasks && task.subtasks.length > 0 && (
           <>
